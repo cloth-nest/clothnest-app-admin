@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1051658091586",
+    "project_id": "gocery-79ef0",
+    "storage_bucket": "gocery-79ef0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051658091586:android:80ced7d852dee4688101db",
+        "android_client_info": {
+          "package_name": "com.clothnest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1051658091586-q4nn208vkc6r9q9r8clds2r1shifbic1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCWVVLlNNYInDeojK-O-_fP7FzXfC6GrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1051658091586-q4nn208vkc6r9q9r8clds2r1shifbic1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
