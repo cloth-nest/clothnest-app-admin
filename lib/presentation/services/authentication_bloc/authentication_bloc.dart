@@ -16,7 +16,7 @@ class AuthenticationBloc
       if (result == false) {
         emit(AuthenticatonUnAuthorized());
       } else {
-        emit(AuthenticationAuthorized(role: _authRepository.getRole()));
+        emit(const AuthenticationAuthorized(role: 'Admin'));
       }
     });
 

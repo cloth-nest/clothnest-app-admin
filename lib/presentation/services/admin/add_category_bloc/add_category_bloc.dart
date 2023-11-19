@@ -20,7 +20,7 @@ class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
             .uploadImage(event.imageFile.path, 'categories');
 
         Category category =
-            Category(name: event.nameCategory, image: urlImage!);
+            Category(name: event.nameCategory, image: urlImage!, level: 0);
 
         category = await categoryRepository.addCategory(category);
 

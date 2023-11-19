@@ -17,10 +17,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         BaseResponse? baseResponse =
             await _authRepository.login(event.email, event.password);
 
-        if (baseResponse!.statusCode == 201) {
+        if (baseResponse!.statusCode == 200) {
           _authRepository.saveAccessToken(baseResponse.data['accessToken']);
           _authRepository.saveRefreshToken(baseResponse.data['refreshToken']);
-          emit(LoginSuccess(role: _authRepository.getRole()));
+          emit(const LoginSuccess(role: 'Admin'));
         } else {
           emit(LoginFailure(error: baseResponse.message!));
         }

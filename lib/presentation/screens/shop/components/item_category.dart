@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:grocery/data/models/category.dart';
 import 'package:grocery/presentation/res/style.dart';
@@ -17,7 +15,6 @@ class ItemCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    log('size of item category: ${size.width} ${size.height}');
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -29,7 +26,7 @@ class ItemCategory extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 image: DecorationImage(
-                  image: NetworkImage(category.image),
+                  image: NetworkImage(category.image ?? ''),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(6),

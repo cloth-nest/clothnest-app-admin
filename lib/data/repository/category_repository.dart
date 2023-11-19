@@ -12,7 +12,7 @@ class CategoryRepository extends IServiceAPI {
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
   final String urlAddCategory = "${localURL}category/add";
-  final String urlGetCategories = "${localURL}category/get-all";
+  final String urlGetCategories = "${localURL}category?page=1&limit=0";
   final String urlDeleteCategory = "${localURL}category";
   final String urlEditCategory = "${localURL}category";
 
@@ -27,20 +27,21 @@ class CategoryRepository extends IServiceAPI {
     List<Category> categories = [];
 
     var response;
+
     try {
       response = await apiServices.get(
         urlGetCategories,
         _appData.headers,
       );
     } catch (e) {
-      log("error add category: $e");
+      log("error get categories: $e");
     }
 
     BaseResponse baseResponse = BaseResponse.fromJson(response);
 
     if (baseResponse.data == null) return null;
 
-    for (var json in baseResponse.data) {
+    for (var json in baseResponse.data["categories"]) {
       Category category = Category.fromMap(json);
       categories.add(category);
     }

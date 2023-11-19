@@ -12,7 +12,7 @@ import 'package:grocery/presentation/services/app_data.dart';
 
 class AuthRepository extends IServiceAPI {
   String urlRegister = 'auth/register';
-  String urlLogin = 'auth/login';
+  String urlLogin = 'auth/sign-in';
   String urlRefreshToken = 'auth/refresh-token';
   String urlLogout = "auth/logout";
 

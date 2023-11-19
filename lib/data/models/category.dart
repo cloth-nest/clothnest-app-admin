@@ -3,28 +3,32 @@ import 'dart:convert';
 
 class Category {
   final String name;
-  final String image;
+  final String? image;
   final int? id;
+  final int level;
 
   Category({
     required this.name,
-    required this.image,
+    this.image,
     this.id,
+    required this.level,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'categoryName': name,
+      'name': name,
       'categoryImage': image,
       'id': id,
+      'level': level,
     };
   }
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
-      name: map["categoryName"] as String,
-      image: map['categoryImage'] as String,
-      id: map['id'] as int,
+      name: map["name"] as String,
+      image: map['categoryImage'],
+      id: map['id'],
+      level: map['level'] ?? 0,
     );
   }
 

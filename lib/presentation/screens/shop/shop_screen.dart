@@ -12,7 +12,6 @@ import 'package:grocery/presentation/screens/category/category_detail_screen.dar
 import 'package:grocery/presentation/screens/checkout/successful_checkout_screen.dart';
 import 'package:grocery/presentation/screens/shop/components/box_search.dart';
 import 'package:grocery/presentation/screens/shop/components/item_category.dart';
-import 'package:grocery/presentation/screens/shop/components/item_promo.dart';
 import 'package:grocery/presentation/services/user/shop_bloc/shop_bloc.dart';
 
 class ShopScreen extends StatefulWidget {
@@ -60,6 +59,7 @@ class _ShopScreenState extends State<ShopScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
           child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -67,8 +67,10 @@ class _ShopScreenState extends State<ShopScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kPaddingHorizontal,
+              padding: const EdgeInsets.only(
+                left: kPaddingHorizontal,
+                right: kPaddingHorizontal,
+                top: 65,
               ),
               child: Row(
                 children: [

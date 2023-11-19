@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grocery/data/models/category.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
-import 'package:grocery/presentation/res/dimensions.dart';
-import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/admin/category/add_category_screen.dart';
-import 'package:grocery/presentation/screens/admin/category/components/item_add_category.dart';
 import 'package:grocery/presentation/screens/admin/category/detail_category_screen.dart';
-import 'package:grocery/presentation/screens/shop/components/item_category.dart';
 import 'package:grocery/presentation/services/admin/categories_overview_bloc/categories_overview_bloc.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -42,36 +37,35 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.3,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              AppAssets.icLogo,
-              width: 35,
-              height: 35,
-            ),
-            const Spacer(),
-            Text(
-              'Categories',
-              style: AppStyles.bold.copyWith(fontSize: 18),
-            ),
-            const Spacer(),
-            const Icon(
-              FontAwesomeIcons.bell,
-              color: AppColors.primary,
-            ),
-          ],
-        ),
-      ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 70),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Categories',
+                      style: AppStyles.semibold,
+                    ),
+                    GestureDetector(
+                      onTap: handleAddCategory,
+                      child: Text(
+                        'Create category',
+                        style: AppStyles.medium.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
               //list categories
               _categories(size),
@@ -111,41 +105,50 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           return Text(state.errorMessage);
         } else if (state is CategoriesOverviewSuccess) {
           List<Category> categories = state.categories;
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kPaddingHorizontal,
-            ),
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.8,
+          return ScrollConfiguration(
+            behavior: const ScrollBehavior(),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
               ),
-              itemCount: categories.length + 1,
-              itemBuilder: (context, index) {
-                if (index == categories.length) {
-                  return GestureDetector(
-                    onTap: handleAddCategory,
-                    child: ItemAddCategory(index: index),
-                  );
-                }
-                Category category = categories[index];
-                return ItemCategory(
-                  category: category,
-                  onTap: () => navigateToDetailCategoryScreen(
-                    category,
-                  ),
-                );
-              },
+              child: _buildCategories(categories),
             ),
           );
+          // return Padding(
+          //   padding: const EdgeInsets.symmetric(
+          //     horizontal: kPaddingHorizontal,
+          //   ),
+          //   child: GridView.builder(
+          //     physics: const NeverScrollableScrollPhysics(),
+          //     shrinkWrap: true,
+          //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //       crossAxisCount: 4,
+          //       crossAxisSpacing: 8,
+          //       mainAxisSpacing: 8,
+          //       childAspectRatio: 0.8,
+          //     ),
+          //     itemCount: categories.length,
+          //     itemBuilder: (context, index) {
+          //       Category category = categories[index];
+          //       return ItemCategory(
+          //         category: category,
+          //         onTap: () => navigateToDetailCategoryScreen(
+          //           category,
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // );
         }
         return LoadingScreen().showLoadingWidget();
       },
     );
+  }
+
+  Widget _buildCategories(List<Category> categories) {
+    final categoriesWidget = [];
+
+    return const SizedBox.shrink();
   }
 
   handleAddCategory() async {

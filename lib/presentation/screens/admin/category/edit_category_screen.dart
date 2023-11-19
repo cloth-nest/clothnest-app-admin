@@ -36,7 +36,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   void initState() {
     super.initState();
     nameController.text = widget.category.name;
-    img = widget.category.image;
+    img = widget.category.image ?? '';
   }
 
   @override
@@ -183,10 +183,10 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   void updateCategory() async {
     if (_addCategoryFormKey.currentState!.validate()) {
       Category category = Category(
-        name: nameController.text,
-        image: img,
-        id: widget.category.id,
-      );
+          name: nameController.text,
+          image: img,
+          id: widget.category.id,
+          level: 0);
       context
           .read<EditCategoryBloc>()
           .add(EditCategorySubmitted(newCategory: category));

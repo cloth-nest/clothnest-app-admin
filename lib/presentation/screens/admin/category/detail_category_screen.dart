@@ -40,7 +40,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
     super.initState();
 
     nameController.text = widget.category.name;
-    urlImage = widget.category.image;
+    urlImage = widget.category.image ?? '';
     name = widget.category.name;
 
     _bloc.add(DetailCategoryStarted(category: widget.category));
@@ -82,7 +82,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
 
         if (state is EditCategorySuccess) {
           nameController.text = state.category.name;
-          urlImage = state.category.image;
+          urlImage = state.category.image ?? '';
           name = state.category.name;
           newCategory = state.category;
         }
