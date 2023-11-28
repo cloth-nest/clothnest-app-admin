@@ -20,8 +20,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     emit(ShopLoading());
 
     try {
-      List<Category>? result = await _categoryRepository.getCategories();
-      categories = result!;
+      //List<Category>? result = await _categoryRepository.getCategories();
+      //categories = result!;
       emit(ShopFetchCategoriesSuccess(categories: categories));
     } catch (e) {
       emit(ShopFetchCategoriesFailure(errorMessage: e.toString()));

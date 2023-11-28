@@ -17,7 +17,7 @@ class DeleteCategoryDialog extends StatelessWidget {
     Navigator.pop(context, true);
     context
         .read<DetailCategoryBloc>()
-        .add(DeleteCategorySubmitted(id: category.id!));
+        .add(DeleteCategorySubmitted(id: category.id));
   }
 
   @override

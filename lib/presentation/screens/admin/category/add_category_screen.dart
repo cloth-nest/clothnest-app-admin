@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery/data/models/category.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
+import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/services/admin/add_category_bloc/add_category_bloc.dart';
 import 'package:grocery/presentation/utils/functions.dart';
@@ -12,7 +14,12 @@ import 'package:grocery/presentation/widgets/item_image.dart';
 import 'package:grocery/presentation/widgets/text_field_input.dart';
 
 class AddCategoryScreen extends StatefulWidget {
-  const AddCategoryScreen({super.key});
+  final int? parentId;
+
+  const AddCategoryScreen({
+    super.key,
+    this.parentId,
+  });
 
   @override
   State<AddCategoryScreen> createState() => _AddCategoryScreenState();
@@ -22,6 +29,13 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final TextEditingController nameController = TextEditingController();
   File? imageFile;
   final _addCategoryFormKey = GlobalKey<FormState>();
+  Category? selectedCategory;
+  @override
+  void initState() {
+    super.initState();
+    context.read<AddCategoryBloc>().add(CategoryInit());
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -55,6 +69,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               state.errorMessage,
               const Icon(Icons.error_outline),
             );
+          } else {
+            LoadingScreen().hide();
           }
         },
         child: Form(
@@ -101,10 +117,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         ),
                   const SizedBox(height: 20),
                   Center(
-                    child: CustomButton(
-                      content: 'Add Category',
-                      onTap: addCategory,
-                      width: size.width * .4,
+                    child: BlocBuilder<AddCategoryBloc, AddCategoryState>(
+                      builder: (context, state) => CustomButton(
+                        content: 'Add Category',
+                        onTap: () => addCategory(state.selectedCategory?.id),
+                        width: size.width * .4,
+                      ),
                     ),
                   )
                 ],
@@ -116,12 +134,46 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     );
   }
 
-  void addCategory() async {
-    if (_addCategoryFormKey.currentState!.validate() && imageFile != null) {
+  Widget comboBox(
+      List<dynamic> source, Function(dynamic)? callback, dynamic value) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppColors.gray,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<dynamic>(
+          isExpanded: true,
+          value: value,
+          style: AppStyles.medium,
+          dropdownColor: Colors.white,
+          items: source
+              .map(
+                (e) => DropdownMenuItem<dynamic>(
+                  value: e,
+                  child: Text(
+                    '${e.name}',
+                    style: AppStyles.medium,
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: callback,
+        ),
+      ),
+    );
+  }
+
+  void addCategory(int? id) async {
+    if (_addCategoryFormKey.currentState!.validate()) {
       context.read<AddCategoryBloc>().add(
             CategoryAdded(
               nameCategory: nameController.text,
-              imageFile: imageFile!,
+              imageFile: imageFile,
+              parentId: widget.parentId,
             ),
           );
     } else {

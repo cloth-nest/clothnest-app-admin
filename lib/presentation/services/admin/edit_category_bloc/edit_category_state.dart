@@ -27,4 +27,12 @@ class EditCategorySuccess extends EditCategoryState {
   List<Object> get props => [newCategory];
 }
 
+class EditCategoryLoaded extends EditCategoryState {
+  final CategoryDataSourceAsync? categoryDataSource;
+
+  const EditCategoryLoaded({
+    required this.categoryDataSource,
+  });
+}
+
 class EditCategoryLoading extends EditCategoryState {}

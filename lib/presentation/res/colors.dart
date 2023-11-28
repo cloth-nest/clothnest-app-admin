@@ -12,4 +12,7 @@ class AppColors {
   static const Color appBarColor = Color(0xff2cb84b);
   static const Color foregroundColor = Color(0xFF000000);
   static const Color backgroundColor1 = Color(0xFFffffff);
+  static const Color black = Color(0xff000000);
+  static const Color textLightBasic = Color(0xff222222);
+  static const Color textGray999 = Color(0xff999999);
 }

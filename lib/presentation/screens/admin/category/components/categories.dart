@@ -4,22 +4,23 @@ import 'package:grocery/presentation/screens/admin/category/components/i_categor
 class Categories extends StatelessWidget implements ICategory {
   final String title;
   final bool isInitiallyExpanded;
-
+  final Function(int?)? callback;
+  final int? id;
   final List<ICategory> categories = [];
 
-  Categories(this.title, {super.key, this.isInitiallyExpanded = false});
+  Categories(
+    this.title, {
+    super.key,
+    this.isInitiallyExpanded = false,
+    this.callback,
+    this.id,
+  });
 
   void addCategory(ICategory category) => categories.add(category);
 
   @override
   int getSize() {
-    var sum = 0;
-
-    for (final category in categories) {
-      sum += category.getSize();
-    }
-
-    return sum;
+    return categories.length;
   }
 
   @override
@@ -30,13 +31,16 @@ class Categories extends StatelessWidget implements ICategory {
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 4),
-        child: ExpansionTile(
-          leading: const Icon(Icons.folder),
-          title: Text('$title (${getSize()}) subcategories'),
-          initiallyExpanded: isInitiallyExpanded,
-          children: categories
-              .map((ICategory category) => category.render(context))
-              .toList(),
+        child: GestureDetector(
+          onTap: () => callback?.call(id),
+          child: ExpansionTile(
+            leading: const Icon(Icons.category),
+            title: Text('$title (${getSize()}) subcategories'),
+            initiallyExpanded: isInitiallyExpanded,
+            children: categories
+                .map((ICategory category) => category.render(context))
+                .toList(),
+          ),
         ),
       ),
     );
@@ -44,4 +48,9 @@ class Categories extends StatelessWidget implements ICategory {
 
   @override
   Widget build(BuildContext context) => render(context);
+
+  @override
+  int getId() {
+    return -1;
+  }
 }

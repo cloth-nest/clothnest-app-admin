@@ -67,6 +67,11 @@ class AppData extends ChangeNotifier {
   Map<String, String> _headers = {'Content-Type': 'application/json'};
   Map<String, String> get headers => _headers;
 
+  setContentTypeForFormData(String contentType) {
+    _headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    notifyListeners();
+  }
+
   AppData(this.sharedPreferences) {
     getTypeLanguage();
     //getToken();
@@ -74,12 +79,14 @@ class AppData extends ChangeNotifier {
     //initHeaders();
   }
 
+  String fakeAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDExODMzNzksImV4cCI6MTcwMTU0MzM3OX0.oAqgMp-x7eQSV4e4Zd7ngvnSze_dInaUG9KMgZME_0Q";
   initHeaders() {
     if (_accessToken != null) {
       _headers = {
         'Accept': '*/*',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $_accessToken'
+        'Authorization': 'Bearer $fakeAccessToken',
       };
       notifyListeners();
     } else {

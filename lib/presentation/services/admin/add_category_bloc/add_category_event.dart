@@ -9,13 +9,26 @@ abstract class AddCategoryEvent extends Equatable {
 
 class CategoryAdded extends AddCategoryEvent {
   final String nameCategory;
-  final File imageFile;
+  final File? imageFile;
+  final int? parentId;
 
   const CategoryAdded({
     required this.nameCategory,
-    required this.imageFile,
+    this.imageFile,
+    this.parentId,
   });
 
   @override
-  List<Object> get props => [nameCategory, imageFile];
+  List<Object> get props => [nameCategory];
+}
+
+class CategoryInit extends AddCategoryEvent {}
+
+class CategoryChanged extends AddCategoryEvent {
+  final Category selectedCategory;
+
+  const CategoryChanged({required this.selectedCategory});
+
+  @override
+  List<Object> get props => [selectedCategory];
 }

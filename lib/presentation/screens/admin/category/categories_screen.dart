@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery/data/models/category.dart';
+import 'package:grocery/data/models/categories_data_source.dart';
+import 'package:grocery/data/models/category.dart' as c;
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/admin/category/add_category_screen.dart';
-import 'package:grocery/presentation/screens/admin/category/detail_category_screen.dart';
+import 'package:grocery/presentation/screens/admin/category/components/categories_table.dart';
 import 'package:grocery/presentation/services/admin/categories_overview_bloc/categories_overview_bloc.dart';
+import 'package:data_table_2/data_table_2.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -20,10 +22,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   CategoriesOverviewBloc get _bloc =>
       BlocProvider.of<CategoriesOverviewBloc>(context);
 
+  bool sortAscending = true;
+  final PaginatorController _controller = PaginatorController();
+  int _rowsPerPage = 10;
+  int initialRow = 0;
+
+  final GlobalKey rangeSelectorKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
-    _bloc.add(CategoriesOverviewFetched());
+    _bloc.add(CategoriesOverviewFetched(context: context));
   }
 
   @override
@@ -34,133 +43,126 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 70),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Categories',
-                      style: AppStyles.semibold,
-                    ),
-                    GestureDetector(
-                      onTap: handleAddCategory,
-                      child: Text(
-                        'Create category',
-                        style: AppStyles.medium.copyWith(
-                          color: AppColors.primary,
-                        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Categories',
+                    style: AppStyles.semibold,
+                  ),
+                  GestureDetector(
+                    onTap: () => handleAddCategory(null),
+                    child: Text(
+                      'Create category',
+                      style: AppStyles.medium.copyWith(
+                        color: AppColors.primary,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              //list categories
-              _categories(size),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            //list categories
+            BlocBuilder<CategoriesOverviewBloc, CategoriesOverviewState>(
+              builder: (context, state) {
+                if (state is CategoriesOverviewLoading) {
+                  return LoadingScreen().showLoadingWidget();
+                } else if (state is CategoriesOverviewFailure) {
+                  return Text(state.errorMessage);
+                } else if (state is CategoriesOverviewSuccess) {
+                  CategoryDataSourceAsync? categoryDataSource =
+                      state.categoryDataSource;
+
+                  return _buildCategoryTable(categoryDataSource);
+                }
+                return LoadingScreen().showLoadingWidget();
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  navigateToDetailCategoryScreen(Category category) async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => DetailCategoryScreen(category: category),
+  List<DataColumn> get _columns {
+    return [
+      DataColumn(
+        label: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Category name'),
+        ),
+        onSort: (columnIndex, ascending) => () {
+          setState(() {});
+        },
       ),
-    );
-
-    if (result != null) {
-      if (result is int) {
-        _bloc.add(
-          NewCategoryDeleted(idDeleted: result),
-        );
-      } else {
-        _bloc.add(
-          NewCategoryEditted(newCategory: result),
-        );
-      }
-    }
+      DataColumn(
+        label: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Subcategories',
+          ),
+        ),
+        onSort: (columnIndex, ascending) => () {
+          setState(() {});
+        },
+      ),
+      DataColumn(
+        label: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Number of products'),
+        ),
+        onSort: (columnIndex, ascending) => () {
+          setState(() {});
+        },
+      ),
+    ];
   }
 
-  _categories(Size size) {
-    return BlocBuilder<CategoriesOverviewBloc, CategoriesOverviewState>(
-      builder: (context, state) {
-        if (state is CategoriesOverviewLoading) {
-          return LoadingScreen().showLoadingWidget();
-        } else if (state is CategoriesOverviewFailure) {
-          return Text(state.errorMessage);
-        } else if (state is CategoriesOverviewSuccess) {
-          List<Category> categories = state.categories;
-          return ScrollConfiguration(
-            behavior: const ScrollBehavior(),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-              child: _buildCategories(categories),
-            ),
-          );
-          // return Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //     horizontal: kPaddingHorizontal,
-          //   ),
-          //   child: GridView.builder(
-          //     physics: const NeverScrollableScrollPhysics(),
-          //     shrinkWrap: true,
-          //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          //       crossAxisCount: 4,
-          //       crossAxisSpacing: 8,
-          //       mainAxisSpacing: 8,
-          //       childAspectRatio: 0.8,
-          //     ),
-          //     itemCount: categories.length,
-          //     itemBuilder: (context, index) {
-          //       Category category = categories[index];
-          //       return ItemCategory(
-          //         category: category,
-          //         onTap: () => navigateToDetailCategoryScreen(
-          //           category,
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // );
-        }
-        return LoadingScreen().showLoadingWidget();
+  _buildCategoryTable(CategoryDataSourceAsync? categoryDataSource) {
+    return CategoriesTable(
+      controller: _controller,
+      columns: _columns,
+      categoryDataSource: categoryDataSource,
+      onPageChanged: (rowIndex) {
+        int page = (rowIndex / _rowsPerPage).round();
+        _bloc.add(CategoriesPageChanged(
+            page: page, limit: _rowsPerPage, context: context));
+      },
+      onRowsPerPageChanged: (value) {
+        _rowsPerPage = value!;
+        _bloc.add(
+          CategoriesPageChanged(
+            page: 1,
+            limit: value,
+            context: context,
+          ),
+        );
       },
     );
   }
 
-  Widget _buildCategories(List<Category> categories) {
-    final categoriesWidget = [];
-
-    return const SizedBox.shrink();
-  }
-
-  handleAddCategory() async {
-    final Category? newCategory = await Navigator.of(context).push(
+  handleAddCategory(int? parentId) async {
+    final c.Category? newCategory = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const AddCategoryScreen(),
+        builder: (_) => AddCategoryScreen(
+          parentId: parentId,
+        ),
       ),
     );
 
     if (newCategory != null) {
       _bloc.add(
-        NewCategoryAdded(category: newCategory),
+        NewCategoryAdded(category: newCategory, context: context),
       );
     }
   }

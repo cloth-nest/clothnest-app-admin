@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:grocery/data/models/categories_data.dart';
+import 'package:grocery/data/models/categories_data_source.dart';
 import 'package:grocery/data/models/category.dart';
 import 'package:grocery/data/repository/category_repository.dart';
 import 'package:grocery/data/services/cloudinary_service.dart';
@@ -15,7 +18,7 @@ class CategoriesOverviewBloc
   late CategoryRepository categoryRepository;
 
   // Data
-  List<Category> categories = [];
+  CategoriesData? categoriesData;
 
   CategoriesOverviewBloc(this.categoryRepository)
       : super(CategoriesOverviewInitial()) {
@@ -23,6 +26,7 @@ class CategoriesOverviewBloc
     on<NewCategoryAdded>(_onNewAdded);
     on<NewCategoryDeleted>(_onNewDeleted);
     on<NewCategoryEditted>(_onNewEditted);
+    on<CategoriesPageChanged>(_onPageChanged);
   }
 
   void _onFetched(CategoriesOverviewFetched event,
@@ -30,12 +34,31 @@ class CategoriesOverviewBloc
     emit(CategoriesOverviewLoading());
 
     try {
-      List<Category> categoryList =
-          await categoryRepository.getCategories() ?? [];
+      categoriesData = await categoryRepository.getCategories();
 
-      categories = categoryList;
+      CategoryDataSourceAsync? categoryDataSource = CategoryDataSourceAsync(
+        categoriesData: categoriesData!,
+        context: event.context,
+      );
 
-      emit(CategoriesOverviewSuccess(categories: categories));
+      emit(CategoriesOverviewSuccess(categoryDataSource: categoryDataSource));
+    } catch (e) {
+      emit(CategoriesOverviewFailure(errorMessage: e.toString()));
+    }
+  }
+
+  void _onPageChanged(CategoriesPageChanged event,
+      Emitter<CategoriesOverviewState> emit) async {
+    emit(CategoriesOverviewLoading());
+
+    try {
+      categoriesData = await categoryRepository.getCategories(
+          page: event.page, limit: event.limit);
+
+      CategoryDataSourceAsync? categoryDataSource = CategoryDataSourceAsync(
+          categoriesData: categoriesData!, context: event.context);
+
+      emit(CategoriesOverviewSuccess(categoryDataSource: categoryDataSource));
     } catch (e) {
       emit(CategoriesOverviewFailure(errorMessage: e.toString()));
     }
@@ -48,23 +71,29 @@ class CategoriesOverviewBloc
   }
 
   void _onNewAdded(
-      NewCategoryAdded event, Emitter<CategoriesOverviewState> emit) {
-    categories.add(event.category);
-    emit(CategoriesOverviewSuccess(categories: categories));
+      NewCategoryAdded event, Emitter<CategoriesOverviewState> emit) async {
+    emit(CategoriesOverviewLoading());
+
+    categoriesData = await categoryRepository.getCategories();
+
+    CategoryDataSourceAsync? categoryDataSource = CategoryDataSourceAsync(
+        categoriesData: categoriesData!, context: event.context);
+
+    emit(CategoriesOverviewSuccess(categoryDataSource: categoryDataSource));
   }
 
   void _onNewDeleted(
       NewCategoryDeleted event, Emitter<CategoriesOverviewState> emit) {
-    categories.removeWhere((category) => category.id == event.idDeleted);
+    // categories.removeWhere((category) => category.id == event.idDeleted);
 
-    emit(CategoriesOverviewSuccess(categories: categories));
+    // //emit(CategoriesOverviewSuccess(categories: categories));
   }
 
   void _onNewEditted(
       NewCategoryEditted event, Emitter<CategoriesOverviewState> emit) {
-    categories.removeWhere((category) => category.id == event.newCategory.id);
-    categories.add(event.newCategory);
-    emit(CategoriesOverviewSuccess(categories: categories));
+    // categories.removeWhere((category) => category.id == event.newCategory.id);
+    // categories.add(event.newCategory);
+    //emit(CategoriesOverviewSuccess(categories: categories));
     // categories = categories.map((e) {
     //   if(e.id == event.newCategory.id){
     //     return event.newCategory

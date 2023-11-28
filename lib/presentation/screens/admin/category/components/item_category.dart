@@ -4,9 +4,17 @@ import 'package:grocery/presentation/screens/admin/category/components/i_categor
 
 class ItemCategory extends StatelessWidget implements ICategory {
   final String title;
-  final int size;
+  final int? size;
+  final int? id;
+  final Widget? leading;
 
-  const ItemCategory({super.key, required this.title, required this.size});
+  const ItemCategory({
+    super.key,
+    required this.title,
+    required this.size,
+    this.id,
+    this.leading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +23,7 @@ class ItemCategory extends StatelessWidget implements ICategory {
 
   @override
   int getSize() {
-    return size;
+    return size ?? 0;
   }
 
   @override
@@ -23,16 +31,22 @@ class ItemCategory extends StatelessWidget implements ICategory {
     return Padding(
       padding: const EdgeInsets.only(left: 4),
       child: ListTile(
+        leading: leading,
         title: Text(
           title,
           style: AppStyles.medium,
         ),
         trailing: Text(
-          size.toString(),
+          size == 0 ? '' : size.toString(),
           style: AppStyles.regular,
         ),
         dense: true,
       ),
     );
+  }
+
+  @override
+  int getId() {
+    return id ?? -1;
   }
 }

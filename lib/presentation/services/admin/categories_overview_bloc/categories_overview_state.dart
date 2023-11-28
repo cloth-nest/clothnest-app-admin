@@ -18,8 +18,9 @@ class CategoriesOverviewFailure extends CategoriesOverviewState {
 class CategoriesOverviewInitial extends CategoriesOverviewState {}
 
 class CategoriesOverviewSuccess extends CategoriesOverviewState {
-  final List<Category> categories;
+  final CategoryDataSourceAsync? categoryDataSource;
+
   CategoriesOverviewSuccess({
-    required this.categories,
+    required this.categoryDataSource,
   });
 }

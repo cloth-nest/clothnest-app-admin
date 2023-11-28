@@ -40,12 +40,12 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
     super.initState();
 
     nameController.text = widget.category.name;
-    urlImage = widget.category.image ?? '';
+    urlImage = widget.category.bgImgUrl ?? '';
     name = widget.category.name;
 
     _bloc.add(DetailCategoryStarted(category: widget.category));
 
-    _bloc.add(ProductsFetched(idCategory: widget.category.id!));
+    _bloc.add(ProductsFetched(idCategory: widget.category.id));
   }
 
   @override
@@ -82,7 +82,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
 
         if (state is EditCategorySuccess) {
           nameController.text = state.category.name;
-          urlImage = state.category.image ?? '';
+          urlImage = state.category.bgImgUrl ?? '';
           name = state.category.name;
           newCategory = state.category;
         }
@@ -148,17 +148,18 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
                       style: AppStyles.medium.copyWith(),
                     ),
                     const SizedBox(height: 10),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: SizedBox(
-                        height: 80,
-                        width: 80,
-                        child: Image.network(
-                          urlImage,
-                          fit: BoxFit.cover,
+                    if (urlImage.isNotEmpty)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: SizedBox(
+                          height: 80,
+                          width: 80,
+                          child: Image.network(
+                            urlImage,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 10),
                     ..._products(state),
                   ],
@@ -191,7 +192,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
                   MaterialPageRoute(
                     builder: (_) => ProductsScreen(
                       products: products,
-                      idCategory: widget.category.id!,
+                      idCategory: widget.category.id,
                     ),
                   ),
                 );
@@ -221,7 +222,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
                     MaterialPageRoute(
                       builder: (_) => AddEditProductScreen(
                         product: product,
-                        idCategory: widget.category.id!,
+                        idCategory: widget.category.id,
                       ),
                     ),
                   );
