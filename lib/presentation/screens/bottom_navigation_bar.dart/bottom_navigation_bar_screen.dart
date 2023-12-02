@@ -8,7 +8,7 @@ import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/screens/admin/category/categories_screen.dart';
 import 'package:grocery/presentation/screens/cart/cart_screen.dart';
 import 'package:grocery/presentation/screens/order/order_screen.dart';
-import 'package:grocery/presentation/screens/profile/profile_screen.dart';
+import 'package:grocery/presentation/screens/configuration/configuration_screen.dart';
 import 'package:grocery/presentation/screens/side_menu/side_menu.dart';
 import 'package:grocery/presentation/services/bottom_navigation_bloc/cubit/navigation_cubit.dart';
 
@@ -81,7 +81,23 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
             width: 288,
             left: isSideMenuClosed ? -288 : 0,
             height: size.height,
-            child: const SideMenu(),
+            child: SideMenu(
+              callback: (title) {
+                switch (title) {
+                  case 'Categories':
+                    BlocProvider.of<NavigationCubit>(context)
+                        .getNavBarItem(NavBarItem.shop);
+                    break;
+                  case 'Configuration':
+                    BlocProvider.of<NavigationCubit>(context)
+                        .getNavBarItem(NavBarItem.profile);
+                    break;
+
+                  default:
+                }
+                ;
+              },
+            ),
           ),
           Transform(
             alignment: Alignment.center,
@@ -104,7 +120,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                       } else if (state.navBarItem == NavBarItem.order) {
                         return const OrderScreen();
                       }
-                      return const ProfileScreen();
+                      return const ConfigurationScreen();
                     },
                   ),
                 ),

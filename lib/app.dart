@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/repository/address_repository.dart';
+import 'package:grocery/data/repository/attribute_value_repository.dart';
 import 'package:grocery/data/repository/auth_repository.dart';
 import 'package:grocery/data/repository/cart_repository.dart';
 import 'package:grocery/data/repository/category_repository.dart';
 import 'package:grocery/data/repository/comment_repository.dart';
 import 'package:grocery/data/repository/coupon_repository.dart';
 import 'package:grocery/data/repository/order_repository.dart';
+import 'package:grocery/data/repository/product_attribute_repository.dart';
 import 'package:grocery/data/repository/product_repository.dart';
+import 'package:grocery/data/repository/product_type_repository.dart';
 import 'package:grocery/data/repository/statistic_repository.dart';
 import 'package:grocery/data/repository/user_repository.dart';
 import 'package:grocery/data/repository/zalo_pay_repository.dart';
 import 'package:grocery/presentation/res/colors.dart';
-import 'package:grocery/presentation/screens/admin/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart'
-    as admin;
 import 'package:grocery/presentation/screens/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart'
     as user;
 import 'package:grocery/presentation/screens/onboarding/splash_screen.dart';
@@ -26,6 +27,8 @@ import 'package:grocery/presentation/services/admin/coupon_bloc/coupon_bloc.dart
     as admin;
 import 'package:grocery/presentation/services/admin/transaction_bloc/transaction_bloc.dart';
 import 'package:grocery/presentation/services/admin/transaction_detail_bloc/transaction_detail_bloc.dart';
+import 'package:grocery/presentation/services/detail_attribute_bloc/detail_attribute_bloc.dart';
+import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
 import 'package:grocery/presentation/services/user/coupon_bloc/coupon_bloc.dart'
     as user;
 
@@ -52,6 +55,8 @@ import 'package:grocery/presentation/services/user/second_checkout_bloc/second_c
 import 'package:grocery/presentation/services/user/shop_bloc/shop_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'presentation/services/product_attribute_bloc/product_attribute_bloc.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -218,6 +223,21 @@ class _AppState extends State<App> {
               BlocProvider<TransactionDetailBloc>(
                 create: (context) => TransactionDetailBloc(
                   OrderRepository(appData),
+                ),
+              ),
+              BlocProvider<ProductAttributeBloc>(
+                create: (context) => ProductAttributeBloc(
+                  ProductAttributeRepository(appData),
+                ),
+              ),
+              BlocProvider<DetailAttributeBloc>(
+                create: (context) => DetailAttributeBloc(
+                  AttributeValueRepository(appData),
+                ),
+              ),
+              BlocProvider<ProductTypeBloc>(
+                create: (context) => ProductTypeBloc(
+                  ProductTypeRepository(appData),
                 ),
               ),
             ],

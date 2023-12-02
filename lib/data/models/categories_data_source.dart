@@ -101,9 +101,14 @@ class CategoryDataSourceAsync extends AsyncDataTableSource {
 
     assert(startIndex >= 0);
 
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    List<Category> categories =
+        categoriesData.categories.skip(startIndex).take(count).toList();
+
     var r = AsyncRowsResponse(
-        categoriesData.categories.length,
-        categoriesData.categories.map((category) {
+        categoriesData.pageInformation.totalCount,
+        categories.map((category) {
           return DataRow(
             key: ValueKey<int>(category.id),
             selected: category.selected ?? false,

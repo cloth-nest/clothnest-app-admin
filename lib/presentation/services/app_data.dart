@@ -80,7 +80,7 @@ class AppData extends ChangeNotifier {
   }
 
   String fakeAccessToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDExODMzNzksImV4cCI6MTcwMTU0MzM3OX0.oAqgMp-x7eQSV4e4Zd7ngvnSze_dInaUG9KMgZME_0Q";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDE1MDYzNTgsImV4cCI6MTcwMTg2NjM1OH0.i6HcRyJ06nNWnIMauSaYBJKfl6luig3QT8aJshMfgSM";
   initHeaders() {
     if (_accessToken != null) {
       _headers = {

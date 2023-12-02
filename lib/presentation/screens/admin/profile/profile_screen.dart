@@ -6,8 +6,8 @@ import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/address/address_screen.dart';
 import 'package:grocery/presentation/screens/admin/coupon/coupon_screen.dart';
 import 'package:grocery/presentation/screens/authentication/login_screen.dart';
-import 'package:grocery/presentation/screens/profile/components/item_profile.dart';
-import 'package:grocery/presentation/screens/profile/edit_profile_screen.dart';
+import 'package:grocery/presentation/screens/configuration/components/item_profile.dart';
+import 'package:grocery/presentation/screens/configuration/edit_profile_screen.dart';
 import 'package:grocery/presentation/services/profile_bloc/profile_bloc.dart';
 import 'package:grocery/presentation/utils/functions.dart';
 

@@ -66,4 +66,6 @@ class AppAssets {
   static const String iconConfiguration = '$svgPath/ic_configuration.svg';
   static const String iconMenu = '$svgPath/ic_menu.svg';
   static const String iconClose = '$svgPath/ic_close.svg';
+  static const String iconAttributes = '$svgPath/ic_attributes.svg';
+  static const String iconProductType = '$svgPath/ic_product_type.svg';
 }

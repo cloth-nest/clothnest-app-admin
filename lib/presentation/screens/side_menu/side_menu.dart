@@ -5,7 +5,11 @@ import 'package:grocery/presentation/screens/side_menu/components/side_menu_expa
 import 'package:grocery/presentation/screens/side_menu/components/side_menu_tile.dart';
 
 class SideMenu extends StatefulWidget {
-  const SideMenu({super.key});
+  final Function(String) callback;
+  const SideMenu({
+    super.key,
+    required this.callback,
+  });
 
   @override
   State<SideMenu> createState() => _SideMenuState();
@@ -20,27 +24,48 @@ class _SideMenuState extends State<SideMenu> {
         width: 288,
         height: double.infinity,
         color: const Color(0xFFFAFAF9),
-        child: const SafeArea(
+        child: SafeArea(
           child: Column(
             children: [
-              InfoCard(),
-              SideMenuExpansionTile(
-                icon: AppAssets.iconProduct,
-                title: 'Products',
-                subTitles: ['Categories'],
+              const InfoCard(),
+              GestureDetector(
+                onTap: () {
+                  widget.callback('Products');
+                },
+                child: SideMenuExpansionTile(
+                  icon: AppAssets.iconProduct,
+                  title: 'Products',
+                  subTitles: const ['Categories'],
+                  callback: (value) {
+                    widget.callback(value);
+                  },
+                ),
               ),
-              SideMenuTile(
-                icon: AppAssets.iconOrder,
-                title: 'Orders',
+              GestureDetector(
+                onTap: () {
+                  widget.callback('Orders');
+                },
+                child: const SideMenuTile(
+                  icon: AppAssets.iconOrder,
+                  title: 'Orders',
+                ),
               ),
               SideMenuExpansionTile(
                 icon: AppAssets.iconDiscount,
                 title: 'Discounts',
-                subTitles: ['Vouchers'],
+                subTitles: const ['Vouchers'],
+                callback: (value) {
+                  widget.callback(value);
+                },
               ),
-              SideMenuTile(
-                icon: AppAssets.iconConfiguration,
-                title: 'Configuration',
+              GestureDetector(
+                onTap: () {
+                  widget.callback('Configuration');
+                },
+                child: const SideMenuTile(
+                  icon: AppAssets.iconConfiguration,
+                  title: 'Configuration',
+                ),
               ),
             ],
           ),

@@ -1,11 +1,9 @@
 import 'dart:developer';
 
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
 import 'package:grocery/data/models/inventory.dart';
 import 'package:grocery/data/models/order.dart';
-import 'package:grocery/data/models/user.dart';
 import 'package:grocery/data/network/base_api_service.dart';
 import 'package:grocery/data/network/network_api_service.dart';
 import 'package:grocery/data/response/base_response.dart';

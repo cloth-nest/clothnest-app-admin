@@ -99,4 +99,22 @@ class NetworkApiService extends BaseApiServices {
         return responseJson;
     }
   }
+
+  @override
+  Future patch(String url, data, Map<String, String> headers) async {
+    dynamic responseJson;
+    try {
+      final response = await http.patch(
+        Uri.parse(url),
+        body: jsonEncode(data),
+        headers: headers,
+      );
+      // .timeout(const Duration(seconds: 100));
+      responseJson = jsonDecode(response.body);
+    } on SocketException {
+      log('Error Patch To Server');
+      throw FetchDataException('Error Patch To Server');
+    }
+    return responseJson;
+  }
 }

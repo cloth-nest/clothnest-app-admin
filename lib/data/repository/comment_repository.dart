@@ -5,7 +5,6 @@ import 'package:grocery/data/models/comment.dart';
 import 'package:grocery/data/models/coupon.dart';
 import 'package:grocery/data/network/base_api_service.dart';
 import 'package:grocery/data/network/network_api_service.dart';
-import 'package:grocery/data/response/base_response.dart';
 import 'package:grocery/presentation/services/app_data.dart';
 
 class CommentRepository extends IServiceAPI {

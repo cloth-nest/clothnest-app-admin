@@ -11,16 +11,19 @@ class TextFieldInput extends StatefulWidget {
   final Widget? prefixIcon;
   final bool? isEnabled;
   final int? maxLines;
+  final Function(String?)? onChanged;
 
-  const TextFieldInput(
-      {super.key,
-      required this.hintText,
-      required this.controller,
-      this.isPass = false,
-      this.type = TextInputType.text,
-      this.prefixIcon,
-      this.isEnabled = true,
-      this.maxLines = 1});
+  const TextFieldInput({
+    super.key,
+    required this.hintText,
+    required this.controller,
+    this.isPass = false,
+    this.type = TextInputType.text,
+    this.prefixIcon,
+    this.isEnabled = true,
+    this.maxLines = 1,
+    this.onChanged,
+  });
 
   @override
   State<TextFieldInput> createState() => _TextFieldInputState();
@@ -79,6 +82,9 @@ class _TextFieldInputState extends State<TextFieldInput> {
         }
 
         return null;
+      },
+      onChanged: (value) {
+        widget.onChanged?.call(value);
       },
     );
   }

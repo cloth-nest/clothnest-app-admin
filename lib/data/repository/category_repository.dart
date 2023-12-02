@@ -37,8 +37,8 @@ class CategoryRepository extends IServiceAPI {
     try {
       response = await apiServices.get(
         parentId == null
-            ? '${urlGetCategories}level=0&page=$page&limit=$limit'
-            : '${urlGetCategories}page=$page&limit=$limit&parentId=$parentId',
+            ? '${urlGetCategories}level=0&page=$page&limit=0'
+            : '${urlGetCategories}page=$page&limit=0&parentId=$parentId',
         _appData.headers,
       );
     } catch (e) {
@@ -110,7 +110,6 @@ class CategoryRepository extends IServiceAPI {
   }
 
   Future<Category?> editCategory(Category category, File? imageFile) async {
-    var response;
     _appData.setContentTypeForFormData('multipart/form-data');
 
     try {
@@ -134,14 +133,11 @@ class CategoryRepository extends IServiceAPI {
       }
 
       request.headers.addAll(_appData.headers);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
+      await request.send();
     } catch (e) {
       log("error edit category: $e");
     }
 
-    BaseResponse baseResponse =
-        BaseResponse.fromJson(jsonDecode(response.body));
     return null;
   }
 
