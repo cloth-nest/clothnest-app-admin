@@ -4,6 +4,8 @@ class Category {
   final String name;
   final int level;
   final String? bgImgUrl;
+  final int? subCategories;
+  final int? numOfProducts;
   final bool? selected;
 
   Category({
@@ -12,6 +14,8 @@ class Category {
     required this.level,
     this.bgImgUrl,
     this.selected = false,
+    this.subCategories,
+    this.numOfProducts,
   });
 
   factory Category.fromMap(Map<String, dynamic> map) {
@@ -20,6 +24,8 @@ class Category {
       name: map['name'] as String,
       bgImgUrl: map['bgImgUrl'],
       level: map['level'],
+      subCategories: map['subCategories'],
+      numOfProducts: map['numOfProducts'],
     );
   }
 }

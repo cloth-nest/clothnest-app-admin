@@ -137,19 +137,19 @@ class CategoryDataSourceAsync extends AsyncDataTableSource {
                       .add(CategoriesOverviewFetched(context: context));
                 },
               ),
-              const DataCell(
+              DataCell(
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '10',
+                    category.subCategories.toString(),
                   ),
                 ),
               ),
-              const DataCell(
+              DataCell(
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '12',
+                    category.numOfProducts.toString(),
                   ),
                 ),
               ),
