@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
 import 'package:grocery/data/models/product.dart';
+import 'package:grocery/data/models/products_data.dart';
 import 'package:grocery/data/models/review.dart';
 import 'package:grocery/data/network/base_api_service.dart';
 import 'package:grocery/data/network/network_api_service.dart';
@@ -12,8 +13,8 @@ import 'package:grocery/presentation/services/app_data.dart';
 class ProductRepository extends IServiceAPI {
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
-  final String urlAddProduct = "${localURL}Product/add-one";
-  final String urlGetProducts = "${localURL}product/get-product-of-category";
+  final String urlAddProduct = "${localURL}product/admin";
+  final String urlGetProducts = "${localURL}product/admin?page=1&limit=0";
   final String urlDeleteProduct = "${localURL}Product";
   final String urlEditProduct = "${localURL}Product";
   final String urlSearchProductInCategory = "${localURL}search";
@@ -48,6 +49,26 @@ class ProductRepository extends IServiceAPI {
       return products;
     } catch (e) {
       log("error get products belong category: $e");
+    }
+
+    return null;
+  }
+
+  Future<ProductsData?> getProducts() async {
+    var response;
+    try {
+      response = await apiServices.get(
+        urlGetProducts,
+        _appData.headers,
+      );
+
+      BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.data == null) return null;
+
+      return ProductsData.fromMap(baseResponse.data);
+    } catch (e) {
+      log("error get products: $e");
     }
 
     return null;
@@ -99,23 +120,37 @@ class ProductRepository extends IServiceAPI {
     return null;
   }
 
-  Future<Product> addProduct(Product product) async {
-    var response;
-
+  Future<void> addProduct({
+    required int productTypeId,
+    required int categoryId,
+    required String productName,
+    required String productDescription,
+    required List<Map<String, dynamic>> attributes,
+  }) async {
     try {
-      response = await apiServices.post(
+      final List<Map<String, dynamic>> maps = [];
+
+      for (var attribute in attributes) {
+        maps.add({
+          'id': attribute['productType'].id,
+          'valueId': attribute['attributeValues'].id,
+        });
+      }
+
+      await apiServices.post(
         urlAddProduct,
-        product.toMap(),
+        {
+          'productTypeId': productTypeId,
+          'categoryId': categoryId,
+          'productName': productName,
+          'productDescription': productDescription,
+          'attributes': maps,
+        },
         _appData.headers,
       );
-      print(response);
     } catch (e) {
       log("error add Product: $e");
     }
-
-    BaseResponse baseResponse = BaseResponse.fromJson(response);
-
-    return convertToObject(baseResponse.data);
   }
 
   Future<BaseResponse> deleteProduct(int idProduct) async {

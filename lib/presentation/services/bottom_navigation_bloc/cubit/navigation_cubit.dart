@@ -8,15 +8,16 @@ class NavigationCubit extends Cubit<NavigationState> {
   NavigationCubit()
       : super(
           const NavigationState(
-            navBarItem: NavBarItem.shop,
+            navBarItem: NavBarItem.products,
             index: 0,
           ),
         );
 
   void getNavBarItem(NavBarItem navBarItem) {
     switch (navBarItem) {
-      case NavBarItem.shop:
-        emit(const NavigationState(navBarItem: NavBarItem.shop, index: 0));
+      case NavBarItem.categories:
+        emit(
+            const NavigationState(navBarItem: NavBarItem.categories, index: 0));
         break;
       case NavBarItem.cart:
         emit(const NavigationState(navBarItem: NavBarItem.cart, index: 1));
@@ -26,6 +27,9 @@ class NavigationCubit extends Cubit<NavigationState> {
         break;
       case NavBarItem.profile:
         emit(const NavigationState(navBarItem: NavBarItem.profile, index: 3));
+        break;
+      case NavBarItem.products:
+        emit(const NavigationState(navBarItem: NavBarItem.products, index: 3));
         break;
     }
   }

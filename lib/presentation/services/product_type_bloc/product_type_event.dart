@@ -15,13 +15,11 @@ class ProductTypeStarted extends ProductTypeEvent {
 
 class ProductTypeAdded extends ProductTypeEvent {
   final BuildContext context;
-  final String attribute;
-  final int id;
+  final String productType;
 
   const ProductTypeAdded(
     this.context,
-    this.attribute,
-    this.id,
+    this.productType,
   );
 }
 

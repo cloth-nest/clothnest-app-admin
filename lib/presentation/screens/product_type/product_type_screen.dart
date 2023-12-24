@@ -5,7 +5,7 @@ import 'package:grocery/data/models/product_type_data_source.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
-import 'package:grocery/presentation/screens/attributes/components/add_product_attribute_dialog.dart';
+import 'package:grocery/presentation/screens/product_type/components/add_product_type_dialog.dart';
 import 'package:grocery/presentation/screens/product_type/components/product_types_table.dart';
 import 'package:grocery/presentation/services/product_attribute_bloc/product_attribute_bloc.dart';
 import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
@@ -102,10 +102,13 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                     onTap: () async {
                       final result = await showDialog(
                         context: context,
-                        builder: (_) => AddProductAttributeDialog(
+                        builder: (_) => AddProductTypeDialog(
                           controller: TextEditingController(),
                         ),
                       );
+                      if (result != null) {
+                        _bloc.add(ProductTypeAdded(context, result));
+                      }
                     },
                     child: Text(
                       'Create product type',

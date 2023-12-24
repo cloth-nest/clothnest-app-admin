@@ -1,24 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:grocery/data/models/product.dart';
+import 'package:grocery/data/models/product_type.dart';
+import 'package:grocery/data/models/products_data_source_async.dart';
+import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
-import 'package:grocery/presentation/res/dimensions.dart';
-import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/res/style.dart';
-import 'package:grocery/presentation/screens/admin/product/add_edit_product_screen.dart';
-import 'package:grocery/presentation/screens/category/components/item_product.dart';
+import 'package:grocery/presentation/screens/admin/product/add_product_screen.dart';
+import 'package:grocery/presentation/screens/admin/product/components/choose_product_type_dialog.dart';
+import 'package:grocery/presentation/screens/admin/product/components/products_table.dart';
 import 'package:grocery/presentation/services/admin/products_overview_bloc/products_overview_bloc.dart';
 
 class ProductsScreen extends StatefulWidget {
-  final List<Product> products;
-  final int idCategory;
-
   const ProductsScreen({
     Key? key,
-    required this.products,
-    required this.idCategory,
   }) : super(key: key);
 
   @override
@@ -30,120 +28,170 @@ class _ProductsScreenState extends State<ProductsScreen> {
       BlocProvider.of<ProductsOverviewBloc>(context);
   Product? newProductAdded;
 
+  bool sortAscending = true;
+  final PaginatorController _controller = PaginatorController();
+  int _rowsPerPage = 10;
+  int initialRow = 0;
+
   @override
   void initState() {
     super.initState();
-    _bloc.add(ProductsOverviewStarted(products: widget.products));
+    _bloc.add(ProductsOverviewStarted(context: context));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.3,
-        leading: GestureDetector(
-          onTap: () {
-            if (newProductAdded == null) {
-              Navigator.of(context).pop();
-            } else {
-              Navigator.of(context).pop(newProductAdded);
-            }
-          },
-          child: Image.asset(AppAssets.icBack),
-        ),
-        centerTitle: false,
-        title: Text(
-          'Products',
-          style: AppStyles.bold.copyWith(
-            fontSize: 18,
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: const Icon(
-              Icons.search,
-              color: AppColors.primary,
-              size: 28,
-            ),
-          ),
-          const SizedBox(width: 5),
-          GestureDetector(
-            onTap: handleAddProduct,
-            child: const Icon(
-              Icons.add,
-              color: AppColors.primary,
-              size: 28,
-            ),
-          ),
-          const SizedBox(width: 5),
-          GestureDetector(
-            onTap: () {},
-            child: const Icon(
-              Icons.sort,
-              color: AppColors.primary,
-              size: 28,
-            ),
-          ),
-          const SizedBox(width: 20),
-        ],
-      ),
-      body: BlocBuilder<ProductsOverviewBloc, ProductsOverviewState>(
-        builder: (context, state) {
-          if (state is ProductsOverviewSuccess) {
-            List<Product> products = state.products;
-
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
-              child: Column(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: GridView.builder(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1 / 1.3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                      ),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        Product product = products[index];
-                        return GestureDetector(
-                          onTap: () => {},
-                          child: ItemProduct(
-                            product: product,
+                  Text(
+                    'Products',
+                    style: AppStyles.semibold,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      List<ProductType> productTypes = [];
+
+                      final result = await showDialog(
+                        context: context,
+                        builder: (_) => BlocBuilder<ProductsOverviewBloc,
+                            ProductsOverviewState>(
+                          builder: (context, state) {
+                            if (state is ProductsOverviewSuccess) {
+                              productTypes = state.productTypes;
+                              return ChooseProductTypeDialog(
+                                productTypes: productTypes,
+                              );
+                            }
+                            return const SizedBox();
+                          },
+                        ),
+                      );
+
+                      if (result != null) {
+                        final isAdded = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => AddProductScreen(
+                              productType: result,
+                              productTypes: productTypes,
+                            ),
                           ),
                         );
-                      },
+                        if (isAdded) {
+                          _bloc.add(ProductsOverviewStarted(context: context));
+                        }
+                      }
+                    },
+                    child: Text(
+                      'Create product',
+                      style: AppStyles.medium.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
                 ],
               ),
-            );
-          }
-          return const SizedBox();
-        },
+            ),
+            const SizedBox(height: 20),
+            //list categories
+            BlocBuilder<ProductsOverviewBloc, ProductsOverviewState>(
+              builder: (context, state) {
+                if (state is ProductsOverviewLoading) {
+                  return LoadingScreen().showLoadingWidget();
+                } else if (state is ProductsOverviewSuccess) {
+                  ProductDataSourceAsync? productDataSourceAsync =
+                      state.dataSourceAsync;
+
+                  return _buildProductTable(productDataSourceAsync);
+                }
+                return LoadingScreen().showLoadingWidget();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void handleAddProduct() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => AddEditProductScreen(
-          product: null,
-          idCategory: widget.idCategory,
+  List<DataColumn> get _columns {
+    return [
+      DataColumn(
+        label: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Product'),
         ),
+        onSort: (columnIndex, ascending) => () {
+          setState(() {});
+        },
       ),
-    );
+      DataColumn(
+        label: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Type',
+          ),
+        ),
+        onSort: (columnIndex, ascending) => () {
+          setState(() {});
+        },
+      ),
+      DataColumn(
+        label: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Description'),
+        ),
+        onSort: (columnIndex, ascending) => () {
+          setState(() {});
+        },
+      ),
+    ];
+  }
 
-    if (result != null) {
-      newProductAdded = result[0];
-      _bloc.add(NewProductAdded(product: result[0]));
-    }
+  _buildProductTable(ProductDataSourceAsync? productDataSourceAsync) {
+    return ProductsTable(
+      controller: _controller,
+      columns: _columns,
+      productDataSource: productDataSourceAsync,
+      onPageChanged: (rowIndex) {
+        int page = (rowIndex / _rowsPerPage).round();
+        // _bloc.add(CategoriesPageChanged(
+        //     page: page, limit: _rowsPerPage, context: context));
+      },
+      onRowsPerPageChanged: (value) {
+        _rowsPerPage = value!;
+        // _bloc.add(
+        //   CategoriesPageChanged(
+        //     page: 1,
+        //     limit: value,
+        //     context: context,
+        //   ),
+        // );
+      },
+    );
+  }
+
+  void handleAddProduct() async {
+    // final result = await Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (_) => AddEditProductScreen(
+    //       product: null,
+    //       idCategory: widget.idCategory,
+    //     ),
+    //   ),
+    // );
+
+    // if (result != null) {
+    //   newProductAdded = result[0];
+    //   _bloc.add(NewProductAdded(product: result[0]));
+    // }
   }
 }

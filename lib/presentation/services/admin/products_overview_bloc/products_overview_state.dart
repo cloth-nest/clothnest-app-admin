@@ -12,10 +12,14 @@ class ProductsOverviewInitial extends ProductsOverviewState {}
 class ProductsOverviewLoading extends ProductsOverviewState {}
 
 class ProductsOverviewSuccess extends ProductsOverviewState {
-  final List<Product> products;
+  final ProductDataSourceAsync dataSourceAsync;
+  final List<ProductType> productTypes;
 
-  const ProductsOverviewSuccess({required this.products});
+  const ProductsOverviewSuccess({
+    required this.dataSourceAsync,
+    required this.productTypes,
+  });
 
   @override
-  List<Object> get props => [products];
+  List<Object> get props => [dataSourceAsync, productTypes];
 }

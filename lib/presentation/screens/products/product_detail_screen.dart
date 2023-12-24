@@ -40,11 +40,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(ProductDetailStarted(
-      idProduct: widget.product.id!,
-      discountPrice: widget.product.discount,
-      originalPrice: widget.product.price,
-    ));
+    // _bloc.add(ProductDetailStarted(
+    //   idProduct: widget.product.id!,
+    //   discountPrice: widget.product.discount,
+    //   originalPrice: widget.product.price,
+    // ));
   }
 
   @override
@@ -98,7 +98,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 top: 15,
               ),
               child: Text(
-                widget.product.productName,
+                'widget.product.productName',
                 style: AppStyles.bold.copyWith(
                   fontSize: 18,
                 ),
@@ -108,7 +108,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Padding(
               padding: const EdgeInsets.only(left: kPaddingHorizontal),
               child: Text(
-                widget.product.unit,
+                'widget.product.unit',
                 style: AppStyles.regular.copyWith(
                   color: AppColors.gray,
                   fontSize: 16,
@@ -116,46 +116,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             // original price
-            if (widget.product.discount != 0)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
-                child: Text(
-                  '\$${widget.product.price}',
-                  style: AppStyles.regular.copyWith(
-                    fontSize: 15,
-                    decoration: TextDecoration.lineThrough,
-                    color: AppColors.text,
-                  ),
-                ),
-              ),
+            // if (widget.product.discount != 0)
+            //   Padding(
+            //     padding:
+            //         const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
+            //     child: Text(
+            //       '\$${widget.product.price}',
+            //       style: AppStyles.regular.copyWith(
+            //         fontSize: 15,
+            //         decoration: TextDecoration.lineThrough,
+            //         color: AppColors.text,
+            //       ),
+            //     ),
+            //   ),
             const SizedBox(height: 10),
             // price
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
-              child: Row(
-                children: [
-                  widget.product.discount == 0
-                      ? Text(
-                          '\$${widget.product.price}',
-                          style: AppStyles.medium.copyWith(
-                            color: AppColors.secondary,
-                          ),
-                        )
-                      : Text(
-                          '\$${widget.product.price * (100 - widget.product.discount) * 0.01}',
-                          style: AppStyles.medium.copyWith(
-                            color: AppColors.secondary,
-                          ),
-                        ),
-                  const Spacer(),
-                  EditProductCart(
-                    idProduct: widget.product.id!,
-                  ),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding:
+            //       const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
+            //   child: Row(
+            //     children: [
+            //       widget.product.discount == 0
+            //           ? Text(
+            //               '\$${widget.product.price}',
+            //               style: AppStyles.medium.copyWith(
+            //                 color: AppColors.secondary,
+            //               ),
+            //             )
+            //           : Text(
+            //               '\$${widget.product.price * (100 - widget.product.discount) * 0.01}',
+            //               style: AppStyles.medium.copyWith(
+            //                 color: AppColors.secondary,
+            //               ),
+            //             ),
+            //       const Spacer(),
+            //       EditProductCart(
+            //         idProduct: widget.product.id!,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             const Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: kPaddingHorizontal,
@@ -176,15 +176,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kPaddingHorizontal,
-              ),
-              child: Text(
-                widget.product.productDescription,
-                style: AppStyles.regular,
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: kPaddingHorizontal,
+            //   ),
+            //   child: Text(
+            //     widget.product.productDescription,
+            //     style: AppStyles.regular,
+            //   ),
+            // ),
             BlocBuilder<ProductDetailBloc, ProductDetailState>(
               builder: (context, state) {
                 if (state is ProductDetailLoaded) {
@@ -239,30 +239,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: const BoxCart(),
                 ),
                 const SizedBox(width: 15),
-                Expanded(
-                  child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
-                    builder: (context, state) {
-                      if (state is ProductDetailLoaded) {
-                        double totalPrice =
-                            state.quantity.toDouble() * state.price;
+                // Expanded(
+                //   child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
+                //     builder: (context, state) {
+                //       if (state is ProductDetailLoaded) {
+                //         double totalPrice =
+                //             state.quantity.toDouble() * state.price;
 
-                        return CustomButton(
-                          margin: 0,
-                          content: 'Buy \$$totalPrice',
-                          onTap: () {
-                            _bloc.add(
-                              ProductDetailChecked(
-                                idProduct: widget.product.id!,
-                                quantity: state.quantity,
-                              ),
-                            );
-                          },
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                  ),
-                ),
+                //         return CustomButton(
+                //           margin: 0,
+                //           content: 'Buy \$$totalPrice',
+                //           onTap: () {
+                //             _bloc.add(
+                //               ProductDetailChecked(
+                //                 idProduct: widget.product.id!,
+                //                 quantity: state.quantity,
+                //               ),
+                //             );
+                //           },
+                //         );
+                //       }
+                //       return const SizedBox();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -303,15 +303,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         itemCount: productSuggestions.length,
         itemBuilder: (context, index) {
           Product product = productSuggestions[index];
-          return Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Image.asset(
-              product.productImgList![0].imgUrl,
-              fit: BoxFit.fitWidth,
-              width: 113,
-              height: 113,
-            ),
-          );
+          // return Padding(
+          //   padding: const EdgeInsets.only(left: 20.0),
+          //   child: Image.asset(
+          //     product.productImgList![0].imgUrl,
+          //     fit: BoxFit.fitWidth,
+          //     width: 113,
+          //     height: 113,
+          //   ),
+          // );
         },
       ),
     );
@@ -382,56 +382,56 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       color: const Color(0xFFF5F6F6),
       child: Stack(
         children: [
-          CarouselSlider(
-            items: widget.product.productImgList!
-                .map(
-                  (item) => Image.network(
-                    item.imgUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                )
-                .toList(),
-            carouselController: controller,
-            options: CarouselOptions(
-              scrollPhysics: const BouncingScrollPhysics(),
-              autoPlay: true,
-              aspectRatio: 1.7,
-              viewportFraction: 1,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children:
-                  widget.product.productImgList!.asMap().entries.map((entry) {
-                return GestureDetector(
-                  onTap: () => controller.animateToPage(entry.key),
-                  child: Container(
-                    width: 7.0,
-                    height: 7.0,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 3.0,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: currentIndex == entry.key
-                          ? AppColors.primary
-                          : AppColors.primary.withOpacity(0.4),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
+          // CarouselSlider(
+          //   items: widget.product.productImgList!
+          //       .map(
+          //         (item) => Image.network(
+          //           item.imgUrl,
+          //           fit: BoxFit.cover,
+          //           width: double.infinity,
+          //         ),
+          //       )
+          //       .toList(),
+          //   carouselController: controller,
+          //   options: CarouselOptions(
+          //     scrollPhysics: const BouncingScrollPhysics(),
+          //     autoPlay: true,
+          //     aspectRatio: 1.7,
+          //     viewportFraction: 1,
+          //     onPageChanged: (index, reason) {
+          //       setState(() {
+          //         currentIndex = index;
+          //       });
+          //     },
+          //   ),
+          // ),
+          // Positioned(
+          //   bottom: 10,
+          //   left: 0,
+          //   right: 0,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children:
+          //         widget.product.productImgList!.asMap().entries.map((entry) {
+          //       return GestureDetector(
+          //         onTap: () => controller.animateToPage(entry.key),
+          //         child: Container(
+          //           width: 7.0,
+          //           height: 7.0,
+          //           margin: const EdgeInsets.symmetric(
+          //             horizontal: 3.0,
+          //           ),
+          //           decoration: BoxDecoration(
+          //             borderRadius: BorderRadius.circular(10),
+          //             color: currentIndex == entry.key
+          //                 ? AppColors.primary
+          //                 : AppColors.primary.withOpacity(0.4),
+          //           ),
+          //         ),
+          //       );
+          //     }).toList(),
+          //   ),
+          // ),
         ],
       ),
     );

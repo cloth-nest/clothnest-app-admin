@@ -35,49 +35,49 @@ class _BoxAddToCartState extends State<BoxAddToCart> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Image.network(
-                widget.product.productImgList![0].imgUrl,
-                width: 150,
-                height: 150,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      children: [
-                        Text(
-                          widget.product.productName,
-                          style: AppStyles.medium.copyWith(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    widget.product.discount == 0
-                        ? Text(
-                            '\$${widget.product.price}',
-                            textAlign: TextAlign.end,
-                            style: AppStyles.medium.copyWith(
-                              color: AppColors.secondary,
-                            ),
-                          )
-                        : Text(
-                            '\$${widget.product.price * (100 - widget.product.discount) * 0.01}',
-                            style: AppStyles.medium.copyWith(
-                              color: AppColors.secondary,
-                            ),
-                          ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.end,
+          //   children: [
+          //     Image.network(
+          //       widget.product.productImgList![0].imgUrl,
+          //       width: 150,
+          //       height: 150,
+          //       fit: BoxFit.cover,
+          //     ),
+          //     const SizedBox(width: 10),
+          //     Expanded(
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Wrap(
+          //             children: [
+          //               Text(
+          //                 widget.product.productName,
+          //                 style: AppStyles.medium.copyWith(
+          //                   fontSize: 16,
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //           widget.product.discount == 0
+          //               ? Text(
+          //                   '\$${widget.product.price}',
+          //                   textAlign: TextAlign.end,
+          //                   style: AppStyles.medium.copyWith(
+          //                     color: AppColors.secondary,
+          //                   ),
+          //                 )
+          //               : Text(
+          //                   '\$${widget.product.price * (100 - widget.product.discount) * 0.01}',
+          //                   style: AppStyles.medium.copyWith(
+          //                     color: AppColors.secondary,
+          //                   ),
+          //                 ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
           const SizedBox(height: 20),
           Row(
             children: [
@@ -123,24 +123,24 @@ class _BoxAddToCartState extends State<BoxAddToCart> {
             ],
           ),
           const SizedBox(height: 20),
-          CustomButton(
-            content: 'Add To Cart',
-            margin: 0,
-            onTap: () {
-              _bloc.add(
-                ProductAddedToCart(
-                  idProduct: widget.product.id!,
-                  quantity: quantity,
-                ),
-              );
-              Navigator.pop(context);
-              showSnackBar(
-                context,
-                'Add to cart successfully',
-                const Icon(Icons.check, color: Colors.white),
-              );
-            },
-          ),
+          // CustomButton(
+          //   content: 'Add To Cart',
+          //   margin: 0,
+          //   onTap: () {
+          //     _bloc.add(
+          //       ProductAddedToCart(
+          //         idProduct: widget.product.id!,
+          //         quantity: quantity,
+          //       ),
+          //     );
+          //     Navigator.pop(context);
+          //     showSnackBar(
+          //       context,
+          //       'Add to cart successfully',
+          //       const Icon(Icons.check, color: Colors.white),
+          //     );
+          //   },
+          // ),
         ],
       ),
     );

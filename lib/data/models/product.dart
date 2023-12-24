@@ -1,91 +1,57 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:grocery/data/models/comment.dart';
-import 'package:grocery/data/models/product_image.dart';
-
 class Product {
-  final String? id;
-  final int categoryId;
-  final String productName;
-  final List<ProductImage>? productImgList;
-  final String unit;
-  final int price;
-  final int discount;
-  final String productDescription;
-  final String? thumbnail;
-  final int? quantity;
+  final int id;
+  final String name;
+  final String description;
+  final String? image;
+  final String productType;
+  final bool? selected;
 
   Product({
-    this.id,
-    required this.categoryId,
-    required this.productName,
-    this.productImgList,
-    required this.unit,
-    required this.price,
-    required this.discount,
-    required this.productDescription,
-    this.thumbnail,
-    this.quantity,
+    required this.id,
+    required this.name,
+    required this.description,
+    this.image,
+    required this.productType,
+    this.selected = false,
   });
 
   Product copyWith({
-    String? id,
-    int? categoryId,
-    String? productName,
-    List<ProductImage>? productImgList,
-    String? unit,
-    int? price,
-    int? discount,
-    String? productDescription,
-    List<Comment>? comments,
-    int? quantity,
+    int? id,
+    String? name,
+    String? description,
+    String? image,
+    String? productType,
   }) {
     return Product(
       id: id ?? this.id,
-      categoryId: categoryId ?? this.categoryId,
-      productName: productName ?? this.productName,
-      productImgList: productImgList ?? this.productImgList,
-      unit: unit ?? this.unit,
-      price: price ?? this.price,
-      discount: discount ?? this.discount,
-      quantity: quantity ?? this.quantity,
-      productDescription: productDescription ?? this.productDescription,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      image: image ?? this.image,
+      productType: productType ?? this.productType,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'categoryId': categoryId,
-      'name': productName,
-      'imageList': productImgList!.map((x) => x.toMap()).toList(),
-      'unit': unit,
-      'price': price,
-      'discount': discount,
-      'description': productDescription,
+      'name': name,
+      'description': description,
+      'image': image,
+      'productType': productType,
     };
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-        quantity: map['quantity'] ?? -1,
-        id: map['id'] != null ? map['id'] as String : null,
-        categoryId: map['categoryId'] ?? -1,
-        productName: map['productName'] as String,
-        productImgList: map['productImgList'] != null
-            ? List<ProductImage>.from(
-                (map['productImgList']).map(
-                  (x) => ProductImage.fromMap(x),
-                ),
-              )
-            : [],
-        unit: map['unit'] as String,
-        price: map['price'] as int,
-        discount: map['discount'] as int,
-        productDescription: map['productDescription'] as String,
-        thumbnail:
-            map['thumbnail'] != null ? map['thumbnail'] as String : null);
+      id: map['id'] as int,
+      name: map['name'] as String,
+      description: map['description'] as String,
+      image: map['image'],
+      productType: map['productType'] as String,
+    );
   }
 
   String toJson() => json.encode(toMap());

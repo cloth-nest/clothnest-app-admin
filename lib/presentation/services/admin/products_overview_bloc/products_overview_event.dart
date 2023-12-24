@@ -5,12 +5,14 @@ abstract class ProductsOverviewEvent extends Equatable {
 }
 
 class ProductsOverviewStarted extends ProductsOverviewEvent {
-  final List<Product> products;
+  final BuildContext context;
 
-  const ProductsOverviewStarted({required this.products});
+  const ProductsOverviewStarted({
+    required this.context,
+  });
 
   @override
-  List<Object> get props => [products];
+  List<Object> get props => [];
 }
 
 class NewProductAdded extends ProductsOverviewEvent {

@@ -11,8 +11,10 @@ import 'package:grocery/presentation/services/app_data.dart';
 class ProductTypeRepository extends IServiceAPI {
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
-  final String urlGetProductTypes = "${localURL}product/types?limit=0&page=1";
-  final String urlAddProductAttribute = "${localURL}product/attributes/values";
+  final String urlGetProductTypes = "${localURL}product/type?limit=0&page=1";
+  final String urlGetAllAttributes = "${localURL}product/type";
+
+  final String urlAddProductType = "${localURL}product/type";
   final String urlGetCategories = "${localURL}category/admin?";
   final String urlDeleteCategory = "${localURL}category";
   final String urlEditCategory = "${localURL}category";
@@ -44,18 +46,17 @@ class ProductTypeRepository extends IServiceAPI {
     return baseResponse;
   }
 
-  Future<void> addAttributeValue(String attribute, int id) async {
+  Future<void> addProductType(String productType) async {
     try {
       await apiServices.post(
-        urlAddProductAttribute,
+        urlAddProductType,
         {
-          'attributeValue': attribute,
-          'attributeId': id,
+          'productTypeName': productType,
         },
         _appData.headers,
       );
     } catch (e) {
-      log("error addProductAttribute: $e");
+      log("error addProductType: $e");
     }
   }
 
@@ -90,6 +91,50 @@ class ProductTypeRepository extends IServiceAPI {
       return productTypesData;
     } catch (e) {
       log('error getProductTypeData:: $e');
+    }
+    return null;
+  }
+
+  Future<List<ProductType>?> getAllProductAttributes(
+      {required int productTypeId}) async {
+    try {
+      var response = await apiServices.get(
+        '$urlGetAllAttributes/$productTypeId',
+        _appData.headers,
+      );
+
+      BaseResponse baseResponse = BaseResponse.fromJson(response);
+      if (baseResponse.data == null) return null;
+
+      List<ProductType>? result =
+          List.from(baseResponse.data['productAttributes'])
+              .map((e) => ProductType.fromMap(e))
+              .toList();
+      return result;
+    } catch (e) {
+      log('error getAllProductAttributes:: $e');
+    }
+    return null;
+  }
+
+  Future<List<ProductType>?> getAllVariantAttributes(
+      {required int productTypeId}) async {
+    try {
+      var response = await apiServices.get(
+        '$urlGetAllAttributes/$productTypeId',
+        _appData.headers,
+      );
+
+      BaseResponse baseResponse = BaseResponse.fromJson(response);
+      if (baseResponse.data == null) return null;
+
+      List<ProductType>? result =
+          List.from(baseResponse.data['variantAttributes'])
+              .map((e) => ProductType.fromMap(e))
+              .toList();
+      return result;
+    } catch (e) {
+      log('error getAllVariantAttributes:: $e');
     }
     return null;
   }

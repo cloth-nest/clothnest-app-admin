@@ -69,51 +69,51 @@ class _ReviewOrderScreenState extends State<ReviewOrderScreen> {
         builder: (context, state) {
           return ListView(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Wrap(
-                  direction: Axis.vertical,
-                  spacing: 5,
-                  children: widget.order.products!
-                      .map((e) => Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  e.thumbnail!,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    e.productName,
-                                    style: AppStyles.medium,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Quantity: ',
-                                          style: AppStyles.regular),
-                                      Text('2', style: AppStyles.medium),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Price: ', style: AppStyles.regular),
-                                      Text('2', style: AppStyles.medium),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
-                          ))
-                      .toList(),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 20),
+              //   child: Wrap(
+              //     direction: Axis.vertical,
+              //     spacing: 5,
+              //     children: widget.order.products!
+              //         .map((e) => Row(
+              //               children: [
+              //                 ClipRRect(
+              //                   borderRadius: BorderRadius.circular(8),
+              //                   child: Image.network(
+              //                     e.thumbnail!,
+              //                     width: 100,
+              //                     height: 100,
+              //                     fit: BoxFit.cover,
+              //                   ),
+              //                 ),
+              //                 const SizedBox(width: 10),
+              //                 Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Text(
+              //                       e.productName,
+              //                       style: AppStyles.medium,
+              //                     ),
+              //                     Row(
+              //                       children: [
+              //                         Text('Quantity: ',
+              //                             style: AppStyles.regular),
+              //                         Text('2', style: AppStyles.medium),
+              //                       ],
+              //                     ),
+              //                     Row(
+              //                       children: [
+              //                         Text('Price: ', style: AppStyles.regular),
+              //                         Text('2', style: AppStyles.medium),
+              //                       ],
+              //                     )
+              //                   ],
+              //                 ),
+              //               ],
+              //             ))
+              //         .toList(),
+              //   ),
+              // ),
               const SizedBox(height: 10),
               _buildDivider(),
               const SizedBox(height: 10),
@@ -179,21 +179,21 @@ class _ReviewOrderScreenState extends State<ReviewOrderScreen> {
                 child: _image(),
               ),
               const SizedBox(height: 30),
-              CustomButton(
-                content: 'Review',
-                onTap: () {
-                  for (Product product in widget.order.products!) {
-                    _bloc.add(
-                      ReviewSubmitted(
-                        image: imageFile!,
-                        review: controller.text.trim(),
-                        rating: rating!,
-                        idProduct: product.id!,
-                      ),
-                    );
-                  }
-                },
-              ),
+              // CustomButton(
+              //   content: 'Review',
+              //   onTap: () {
+              //     for (Product product in widget.order.products!) {
+              //       _bloc.add(
+              //         ReviewSubmitted(
+              //           image: imageFile!,
+              //           review: controller.text.trim(),
+              //           rating: rating!,
+              //           idProduct: product.id!,
+              //         ),
+              //       );
+              //     }
+              //   },
+              // ),
             ],
           );
         },

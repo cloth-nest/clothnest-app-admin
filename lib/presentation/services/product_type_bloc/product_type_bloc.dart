@@ -44,9 +44,8 @@ class ProductTypeBloc extends Bloc<ProductTypeEvent, ProductTypeState> {
       ProductTypeAdded event, Emitter<ProductTypeState> emit) async {
     emit(ProductTypeLoading());
     try {
-      await productTypeRepository.addAttributeValue(
-        event.attribute,
-        event.id,
+      await productTypeRepository.addProductType(
+        event.productType,
       );
       ProductTypesData? productTypesData =
           await productTypeRepository.getProductTypeData();

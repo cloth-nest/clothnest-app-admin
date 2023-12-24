@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:grocery/presentation/enum/enum.dart';
 import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/screens/admin/category/categories_screen.dart';
+import 'package:grocery/presentation/screens/admin/product/products_screen.dart';
 import 'package:grocery/presentation/screens/cart/cart_screen.dart';
 import 'package:grocery/presentation/screens/order/order_screen.dart';
 import 'package:grocery/presentation/screens/configuration/configuration_screen.dart';
@@ -52,7 +53,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
       curve: Curves.fastOutSlowIn,
     ));
 
-    BlocProvider.of<NavigationCubit>(context).getNavBarItem(NavBarItem.shop);
+    BlocProvider.of<NavigationCubit>(context)
+        .getNavBarItem(NavBarItem.products);
 
     if (widget.index != 1) {
       BlocProvider.of<NavigationCubit>(context).getNavBarItem(NavBarItem.order);
@@ -84,9 +86,13 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
             child: SideMenu(
               callback: (title) {
                 switch (title) {
+                  case 'Products':
+                    BlocProvider.of<NavigationCubit>(context)
+                        .getNavBarItem(NavBarItem.products);
+                    break;
                   case 'Categories':
                     BlocProvider.of<NavigationCubit>(context)
-                        .getNavBarItem(NavBarItem.shop);
+                        .getNavBarItem(NavBarItem.categories);
                     break;
                   case 'Configuration':
                     BlocProvider.of<NavigationCubit>(context)
@@ -95,7 +101,6 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
 
                   default:
                 }
-                ;
               },
             ),
           ),
@@ -113,12 +118,14 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                   borderRadius: BorderRadius.circular(24),
                   child: BlocBuilder<NavigationCubit, NavigationState>(
                     builder: (context, state) {
-                      if (state.navBarItem == NavBarItem.shop) {
+                      if (state.navBarItem == NavBarItem.categories) {
                         return const CategoriesScreen();
                       } else if (state.navBarItem == NavBarItem.cart) {
                         return const CartScreen();
                       } else if (state.navBarItem == NavBarItem.order) {
                         return const OrderScreen();
+                      } else if (state.navBarItem == NavBarItem.products) {
+                        return const ProductsScreen();
                       }
                       return const ConfigurationScreen();
                     },
@@ -170,69 +177,6 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
           ),
         ],
       ),
-      // bottomNavigationBar: BlocBuilder<NavigationCubit, NavigationState>(
-      //     builder: (contextx, state) {
-      //   return BottomNavigationBar(
-      //     type: BottomNavigationBarType.fixed,
-      //     showUnselectedLabels: true,
-      //     selectedItemColor: AppColors.primary,
-      //     unselectedItemColor: AppColors.gray,
-      //     items: <BottomNavigationBarItem>[
-      //       BottomNavigationBarItem(
-      //         icon: Image.asset(
-      //           AppAssets.icShop,
-      //           width: 24,
-      //           height: 24,
-      //           color: state.index == 0 ? AppColors.primary : AppColors.gray,
-      //         ),
-      //         label: 'Shop',
-      //       ),
-      //       BottomNavigationBarItem(
-      //         icon: Image.asset(
-      //           AppAssets.icCart,
-      //           width: 24,
-      //           height: 24,
-      //           color: state.index == 1 ? AppColors.primary : AppColors.gray,
-      //         ),
-      //         label: 'Cart',
-      //       ),
-      //       BottomNavigationBarItem(
-      //         icon: Image.asset(
-      //           AppAssets.icOrder,
-      //           width: 24,
-      //           height: 24,
-      //           color: state.index == 2 ? AppColors.primary : AppColors.gray,
-      //         ),
-      //         label: 'My Order',
-      //       ),
-      //       BottomNavigationBarItem(
-      //         icon: Image.asset(
-      //           AppAssets.icProfile,
-      //           width: 24,
-      //           height: 24,
-      //           color: state.index == 3 ? AppColors.primary : AppColors.gray,
-      //         ),
-      //         label: 'Profile',
-      //       ),
-      //     ],
-      //     currentIndex: state.index,
-      //     onTap: (index) {
-      //       if (index == 0) {
-      //         BlocProvider.of<NavigationCubit>(context)
-      //             .getNavBarItem(NavBarItem.shop);
-      //       } else if (index == 1) {
-      //         BlocProvider.of<NavigationCubit>(context)
-      //             .getNavBarItem(NavBarItem.cart);
-      //       } else if (index == 2) {
-      //         BlocProvider.of<NavigationCubit>(context)
-      //             .getNavBarItem(NavBarItem.order);
-      //       } else {
-      //         BlocProvider.of<NavigationCubit>(context)
-      //             .getNavBarItem(NavBarItem.profile);
-      //       }
-      //     },
-      //   );
-      // }),
     );
   }
 }

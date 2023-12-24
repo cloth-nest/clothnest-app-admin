@@ -22,9 +22,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   double countOrginalPrice(Product product) {
-    return product.discount == 0
-        ? product.price.toDouble()
-        : product.price * (100 - product.discount) * 0.01;
+    return 0;
   }
 
   double countTotalMoney() {
@@ -58,7 +56,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   FutureOr<void> _onAdded(CartAdded event, Emitter<CartState> emit) async {
     try {
       Cart cart = event.cart.copyWith(quantity: event.cart.quantity + 1);
-      await _cartRepository.addToCart(event.cart.product.id!, 1);
+      //await _cartRepository.addToCart(event.cart.product.id!, 1);
       int index = carts.indexOf(event.cart);
       carts.removeWhere((cart) => cart.product.id == event.cart.product.id);
       carts.insert(index, cart);
@@ -75,7 +73,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   FutureOr<void> _onRemoved(CartRemoved event, Emitter<CartState> emit) async {
     try {
       Cart cart = event.cart.copyWith(quantity: event.cart.quantity - 1);
-      await _cartRepository.removeFromCart(event.cart.product.id!, 1);
+      //await _cartRepository.removeFromCart(event.cart.product.id!, 1);
       int index = carts.indexOf(event.cart);
       carts.removeWhere((cart) => cart.product.id == event.cart.product.id);
       if (cart.quantity != 0) {

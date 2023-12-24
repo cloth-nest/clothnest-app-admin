@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery/data/models/product_type.dart';
 import 'package:grocery/data/models/product_types_data.dart';
+import 'package:grocery/presentation/screens/product_type/detail_product_type_screen.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorableProductTypeSelections extends RestorableProperty<Set<int>> {
@@ -126,6 +127,14 @@ class ProductTypeDataSourceAsync extends AsyncDataTableSource {
                     attribute.id.toString(),
                   ),
                 ),
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          DetailProductTypeScreen(productType: attribute),
+                    ),
+                  );
+                },
               ),
               DataCell(
                 Align(
@@ -134,7 +143,110 @@ class ProductTypeDataSourceAsync extends AsyncDataTableSource {
                     attribute.name,
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          DetailProductTypeScreen(productType: attribute),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        }).toList());
+
+    return r;
+  }
+}
+
+class ProductTypeDataSourceAsync2 extends AsyncDataTableSource {
+  final List<ProductType> productTypes;
+  final BuildContext context;
+
+  ProductTypeDataSourceAsync2({
+    required this.productTypes,
+    required this.context,
+  }) {
+    debugPrint('ProductTypeDataSourceAsync created');
+  }
+
+  ProductTypeDataSourceAsync2.empty(this.productTypes, this.context) {
+    _empty = true;
+    debugPrint('ProductTypeDataSourceAsync.empty created');
+  }
+
+  ProductTypeDataSourceAsync2.error(this.productTypes, this.context) {
+    _errorCounter = 0;
+    debugPrint('ProductTypeDataSourceAsync.error created');
+  }
+
+  bool _empty = false;
+  int? _errorCounter;
+
+  String _sortColumn = "Product Type";
+  bool _sortAscending = true;
+
+  void sort(String columnName, bool ascending) {
+    _sortColumn = columnName;
+    _sortAscending = ascending;
+    refreshDatasource();
+  }
+
+  int Function(ProductType, ProductType)? _getComparisonFunction(
+      bool ascending) {
+    var coef = ascending ? 1 : -1;
+
+    return (ProductType d1, ProductType d2) =>
+        coef * d1.name.compareTo(d2.name);
+  }
+
+  @override
+  Future<AsyncRowsResponse> getRows(int startIndex, int count) async {
+    if (_errorCounter != null) {
+      _errorCounter = _errorCounter! + 1;
+
+      if (_errorCounter! % 2 == 1) {
+        await Future.delayed(const Duration(milliseconds: 1000));
+        throw 'Error #${((_errorCounter! - 1) / 2).round() + 1} has occured';
+      }
+    }
+
+    assert(startIndex >= 0);
+
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    productTypes.sort(_getComparisonFunction(_sortAscending));
+
+    productTypes.skip(startIndex).take(count).toList();
+
+    var r = AsyncRowsResponse(
+        productTypes.length,
+        productTypes.map((attribute) {
+          return DataRow(
+            key: ValueKey<int>(attribute.id),
+            selected: attribute.selected ?? false,
+            onSelectChanged: (value) {
+              if (value != null) {
+                setRowSelection(ValueKey<int>(attribute.id), value);
+              }
+            },
+            cells: [
+              DataCell(
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    attribute.id.toString(),
+                  ),
+                ),
+              ),
+              DataCell(
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    attribute.name,
+                  ),
+                ),
               ),
             ],
           );

@@ -1,4 +1,3 @@
-import 'package:grocery/data/models/attribute_value.dart';
 import 'package:grocery/data/models/page_information.dart';
 import 'package:grocery/data/models/product_type.dart';
 
@@ -13,7 +12,7 @@ class ProductTypesData {
   factory ProductTypesData.fromMap(Map<String, dynamic> map) {
     return ProductTypesData(
       productTypes: List<ProductType>.from(
-        (map['productTypes']).map<AttributeValue>(
+        (map['productTypes']).map<ProductType>(
           (x) => ProductType.fromMap(x as Map<String, dynamic>),
         ),
       ),

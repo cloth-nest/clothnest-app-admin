@@ -9,7 +9,7 @@ import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/admin/category/components/detele_category_dialog.dart';
 import 'package:grocery/presentation/screens/admin/category/edit_category_screen.dart';
-import 'package:grocery/presentation/screens/admin/product/add_edit_product_screen.dart';
+import 'package:grocery/presentation/screens/admin/product/add_product_screen.dart';
 import 'package:grocery/presentation/screens/admin/product/products_screen.dart';
 import 'package:grocery/presentation/screens/category/components/item_product.dart';
 import 'package:grocery/presentation/services/admin/detail_category_bloc/detail_category_bloc.dart';
@@ -190,10 +190,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
               onTap: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => ProductsScreen(
-                      products: products,
-                      idCategory: widget.category.id,
-                    ),
+                    builder: (_) => const ProductsScreen(),
                   ),
                 );
                 if (result != null) {
@@ -218,14 +215,14 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
               Product product = products[index];
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => AddEditProductScreen(
-                        product: product,
-                        idCategory: widget.category.id,
-                      ),
-                    ),
-                  );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (_) => AddEditProductScreen(
+                  //       product: product,
+                  //       idCategory: widget.category.id,
+                  //     ),
+                  //   ),
+                  // );
                 },
                 child: ItemProduct(
                   product: product,

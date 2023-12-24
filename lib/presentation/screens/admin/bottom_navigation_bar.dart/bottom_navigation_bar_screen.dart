@@ -21,7 +21,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<NavigationCubit>(context).getNavBarItem(NavBarItem.shop);
+    BlocProvider.of<NavigationCubit>(context)
+        .getNavBarItem(NavBarItem.categories);
   }
 
   @override
@@ -34,7 +35,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     return Scaffold(
       body: BlocBuilder<NavigationCubit, NavigationState>(
           builder: (context, state) {
-        if (state.navBarItem == NavBarItem.shop) {
+        if (state.navBarItem == NavBarItem.categories) {
           return const CategoriesScreen();
         } else if (state.navBarItem == NavBarItem.cart) {
           return const TransactionScreen();
@@ -92,7 +93,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           onTap: (index) {
             if (index == 0) {
               BlocProvider.of<NavigationCubit>(context)
-                  .getNavBarItem(NavBarItem.shop);
+                  .getNavBarItem(NavBarItem.categories);
             } else if (index == 1) {
               BlocProvider.of<NavigationCubit>(context)
                   .getNavBarItem(NavBarItem.cart);

@@ -8,9 +8,11 @@ import 'package:grocery/data/repository/category_repository.dart';
 import 'package:grocery/data/repository/comment_repository.dart';
 import 'package:grocery/data/repository/coupon_repository.dart';
 import 'package:grocery/data/repository/order_repository.dart';
+import 'package:grocery/data/repository/permission_repository.dart';
 import 'package:grocery/data/repository/product_attribute_repository.dart';
 import 'package:grocery/data/repository/product_repository.dart';
 import 'package:grocery/data/repository/product_type_repository.dart';
+import 'package:grocery/data/repository/staff_member_repository.dart';
 import 'package:grocery/data/repository/statistic_repository.dart';
 import 'package:grocery/data/repository/user_repository.dart';
 import 'package:grocery/data/repository/zalo_pay_repository.dart';
@@ -22,13 +24,15 @@ import 'package:grocery/presentation/services/add_edit_address_bloc/add_edit_add
 import 'package:grocery/presentation/services/address_bloc/address_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_category_bloc/add_category_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_edit_coupon_bloc/add_edit_coupon_bloc.dart';
-import 'package:grocery/presentation/services/admin/add_edit_product_bloc/add_edit_product_bloc.dart';
+import 'package:grocery/presentation/services/admin/add_product_bloc/add_product_bloc.dart';
 import 'package:grocery/presentation/services/admin/coupon_bloc/coupon_bloc.dart'
     as admin;
 import 'package:grocery/presentation/services/admin/transaction_bloc/transaction_bloc.dart';
 import 'package:grocery/presentation/services/admin/transaction_detail_bloc/transaction_detail_bloc.dart';
+import 'package:grocery/presentation/services/bloc/permission_bloc.dart';
 import 'package:grocery/presentation/services/detail_attribute_bloc/detail_attribute_bloc.dart';
 import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
+import 'package:grocery/presentation/services/staff_member_bloc/staff_member_bloc.dart';
 import 'package:grocery/presentation/services/user/coupon_bloc/coupon_bloc.dart'
     as user;
 
@@ -56,6 +60,7 @@ import 'package:grocery/presentation/services/user/shop_bloc/shop_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'presentation/services/admin/bloc/detail_product_type_bloc.dart';
 import 'presentation/services/product_attribute_bloc/product_attribute_bloc.dart';
 
 class App extends StatefulWidget {
@@ -122,11 +127,19 @@ class _AppState extends State<App> {
                 ),
               ),
               BlocProvider<ProductsOverviewBloc>(
-                create: (context) => ProductsOverviewBloc(),
-              ),
-              BlocProvider<AddEditProductBloc>(
-                create: (context) => AddEditProductBloc(
+                create: (context) => ProductsOverviewBloc(
                   ProductRepository(appData),
+                  ProductTypeRepository(appData),
+                ),
+              ),
+              BlocProvider<AddProductBloc>(
+                create: (context) => AddProductBloc(
+                  ProductRepository(appData),
+                  CategoryRepository(
+                    appData,
+                  ),
+                  ProductTypeRepository(appData),
+                  AttributeValueRepository(appData),
                 ),
               ),
               BlocProvider<ShopBloc>(
@@ -238,6 +251,21 @@ class _AppState extends State<App> {
               BlocProvider<ProductTypeBloc>(
                 create: (context) => ProductTypeBloc(
                   ProductTypeRepository(appData),
+                ),
+              ),
+              BlocProvider<DetailProductTypeBloc>(
+                create: (context) => DetailProductTypeBloc(
+                  ProductTypeRepository(appData),
+                ),
+              ),
+              BlocProvider<StaffMemberBloc>(
+                create: (context) => StaffMemberBloc(
+                  StaffMemberRepository(appData),
+                ),
+              ),
+              BlocProvider<PermissionBloc>(
+                create: (context) => PermissionBloc(
+                  PermissionRepository(appData),
                 ),
               ),
             ],
