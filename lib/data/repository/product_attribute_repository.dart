@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:grocery/data/models/attribute.dart';
 import 'package:grocery/data/models/attributes_data.dart';
 import 'package:grocery/data/environment.dart';
@@ -45,13 +46,14 @@ class ProductAttributeRepository extends IServiceAPI {
 
   Future<void> addProductAttribute(String attribute) async {
     try {
-      await apiServices.post(
+      final response = await apiServices.post(
         urlAddProductAttribute,
         {
           'productAttributeName': attribute,
         },
         _appData.headers,
       );
+      debugPrint('##go to here');
     } catch (e) {
       log("error addProductAttribute: $e");
     }

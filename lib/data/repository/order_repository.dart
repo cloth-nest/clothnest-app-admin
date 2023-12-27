@@ -4,6 +4,8 @@ import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
 import 'package:grocery/data/models/inventory.dart';
 import 'package:grocery/data/models/order.dart';
+import 'package:grocery/data/models/order_detail_model.dart';
+import 'package:grocery/data/models/order_model.dart';
 import 'package:grocery/data/network/base_api_service.dart';
 import 'package:grocery/data/network/network_api_service.dart';
 import 'package:grocery/data/response/base_response.dart';
@@ -13,11 +15,12 @@ class OrderRepository extends IServiceAPI {
   String urlCreateOrder = 'order/';
   String urlCreateOrderFromCart = 'order/cart';
   String urlGetAllOrderBelongToUser = 'order';
-  String urlGetAllOrder = 'order/admin';
+  String urlGetAllOrder = 'order/admin?page=1&limit=0';
+  String urlGetDetailOrder = 'order/admin';
   String urlLogin = 'auth/login';
   String urlRefreshToken = 'auth/refresh-token';
   String urlLogout = "auth/logout";
-  String urlUpdateStatus = "order/";
+  String urlUpdateStatus = "order/admin";
   String urlInventoryCheck = 'order/pre-order';
   String urlCheckCoupon = 'order/pre-order-cp';
 
@@ -34,6 +37,7 @@ class OrderRepository extends IServiceAPI {
     urlUpdateStatus = localURL + urlUpdateStatus;
     urlInventoryCheck = localURL + urlInventoryCheck;
     urlCheckCoupon = localURL + urlCheckCoupon;
+    urlGetDetailOrder = localURL + urlGetDetailOrder;
   }
 
   @override
@@ -103,12 +107,12 @@ class OrderRepository extends IServiceAPI {
   }
 
 //"message" -> "invalid input syntax for type uuid: "7a78e280-f93b-48e4-b2df-480f6c826445}""
-  Future<void> updateStatus(String orderId, String status) async {
+  Future<void> updateStatus(int orderId, bool isCancelled) async {
     try {
       final response = await apiServices.put(
-        '$urlUpdateStatus$orderId',
+        '$urlUpdateStatus/$orderId',
         {
-          "newStatus": status,
+          "orderStatus": isCancelled ? 'CANCELED' : 'DELIVERED',
         },
         _appData.headers,
       );
@@ -152,23 +156,19 @@ class OrderRepository extends IServiceAPI {
     return orders;
   }
 
-  Future<List<Order>> getAllOrders(List<String> filters, String sort) async {
-    String query = "";
-    for (var filter in filters) {
-      query += 'filter=$filter&';
-    }
-
-    List<Order> orders = [];
+  Future<List<OrderModel>> getAllOrders(
+      List<String> filters, String sort) async {
+    List<OrderModel> orders = [];
     try {
       final response = await apiServices.get(
-        '$urlGetAllOrder?${query}limit=1000&page=1&sort=$sort',
+        urlGetAllOrder,
         _appData.headers,
       );
 
       final BaseResponse baseResponse = BaseResponse.fromJson(response);
 
-      for (var json in baseResponse.data) {
-        Order order = Order.fromMap(json);
+      for (var json in baseResponse.data['orders']) {
+        OrderModel order = OrderModel.fromMap(json);
         orders.add(order);
       }
     } catch (e) {
@@ -176,5 +176,22 @@ class OrderRepository extends IServiceAPI {
     }
 
     return orders;
+  }
+
+  Future<OrderDetailModel> getOrderDetail(int orderId) async {
+    try {
+      final response = await apiServices.get(
+        '$urlGetDetailOrder/$orderId',
+        _appData.headers,
+      );
+
+      final BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      OrderDetailModel order = OrderDetailModel.fromMap(baseResponse.data);
+      return order;
+    } catch (e) {
+      log("error get all orders: $e");
+      rethrow;
+    }
   }
 }

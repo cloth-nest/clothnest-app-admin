@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:grocery/data/models/order.dart';
+import 'package:grocery/data/models/order_model.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/order/components/item_tag_order.dart';
 import 'package:intl/intl.dart';
 
 class ItemTransaction extends StatelessWidget {
-  final Order order;
+  final OrderModel order;
 
   const ItemTransaction({
     super.key,
@@ -35,8 +36,8 @@ class ItemTransaction extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 5),
-          itemRow('Transaction ID', order.id!),
-          itemRow('User', order.address!.name),
+          itemRow('Transaction ID', order.id.toString()),
+          itemRow('User', '${order.firstName} ${order.lastName}'),
           itemRow('Total Payment', '\$ ${order.total.toString()}'),
         ],
       ),

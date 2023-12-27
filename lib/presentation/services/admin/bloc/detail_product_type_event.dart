@@ -14,3 +14,23 @@ class DetailProductTypeInit extends DetailProductTypeEvent {
     required this.productTypeId,
   });
 }
+
+class ProductAttributesAdded extends DetailProductTypeEvent {
+  final int productTypeId;
+  final List<Attribute> attributes;
+
+  const ProductAttributesAdded({
+    required this.productTypeId,
+    required this.attributes,
+  });
+}
+
+class VariantAttributesAdded extends DetailProductTypeEvent {
+  final int productTypeId;
+  final List<Attribute> attributes;
+
+  const VariantAttributesAdded({
+    required this.productTypeId,
+    required this.attributes,
+  });
+}

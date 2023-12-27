@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:grocery/data/models/data.dart';
 import 'package:grocery/data/models/notification_request.dart';
+import 'package:grocery/data/models/order_detail_model.dart';
 import 'package:grocery/data/repository/order_repository.dart';
 import 'package:grocery/data/services/firebase_service.dart';
 
@@ -18,6 +20,7 @@ class TransactionDetailBloc
   TransactionDetailBloc(this._orderRepository)
       : super(TransactionDetailInitial()) {
     on<TransactionDetailStatusChanged>(_onStatusChanged);
+    on<TransactionDetailStarted>(_onStarted);
   }
 
   FutureOr<void> _onStatusChanged(TransactionDetailStatusChanged event,
@@ -25,10 +28,10 @@ class TransactionDetailBloc
     emit(TransactionDetailLoading());
 
     try {
-      await _orderRepository.updateStatus(event.orderId, event.newStatus);
+      await _orderRepository.updateStatus(event.orderId, event.isCancelled);
       String? token = await firebaseService.getFCMToken(event.email);
       String content = "";
-      if (event.newStatus == 'Finished') {
+      if (event.isCancelled == false) {
         content = 'Your order has been finished';
       } else {
         content = 'Your order has been cancelled';
@@ -53,5 +56,19 @@ class TransactionDetailBloc
     );
 
     await firebaseService.sendNotification(notificationRequest);
+  }
+
+  FutureOr<void> _onStarted(TransactionDetailStarted event,
+      Emitter<TransactionDetailState> emit) async {
+    try {
+      emit(TransactionDetailLoading());
+
+      OrderDetailModel model =
+          await _orderRepository.getOrderDetail(event.orderId);
+
+      emit(TransactionDetailLoaded(orderDetailModel: model));
+    } catch (e) {
+      debugPrint('###error on started: $e');
+    }
   }
 }

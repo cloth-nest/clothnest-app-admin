@@ -8,13 +8,21 @@ abstract class TransactionDetailEvent extends Equatable {
 }
 
 class TransactionDetailStatusChanged extends TransactionDetailEvent {
-  final String orderId;
+  final int orderId;
+  final bool isCancelled;
   final String email;
-  final String newStatus;
 
   const TransactionDetailStatusChanged({
     required this.orderId,
-    required this.newStatus,
+    required this.isCancelled,
     required this.email,
+  });
+}
+
+class TransactionDetailStarted extends TransactionDetailEvent {
+  final int orderId;
+
+  const TransactionDetailStarted({
+    required this.orderId,
   });
 }

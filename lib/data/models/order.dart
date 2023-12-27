@@ -58,7 +58,7 @@ class Order {
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
       id: map['id'] as String,
-      total: double.parse(map['total'].toString()),
+      total: map['total'] * 1.0,
       status: map['status'] as String,
       phoneNum: map['phoneNum'] as String,
       addressId: 3,

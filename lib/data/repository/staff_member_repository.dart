@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
 import 'package:grocery/data/models/product_type.dart';
@@ -12,7 +13,8 @@ class StaffMemberRepository extends IServiceAPI {
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
   final String urlGetStaffMembers = "${localURL}user/staff?page=1&limit=0";
-  final String urlAddProductAttribute = "${localURL}product/attributes/values";
+  final String urlInviteStaffMember = "${localURL}user/staff/invite";
+  final String urlUpdateGroupPermission = "${localURL}user/staff";
   final String urlGetCategories = "${localURL}category/admin?";
   final String urlDeleteCategory = "${localURL}category";
   final String urlEditCategory = "${localURL}category";
@@ -44,18 +46,46 @@ class StaffMemberRepository extends IServiceAPI {
     return baseResponse;
   }
 
-  Future<void> addAttributeValue(String attribute, int id) async {
+  Future<int> inviteStaffMember({
+    required String email,
+    required String firstName,
+    required String lastName,
+  }) async {
     try {
-      await apiServices.post(
-        urlAddProductAttribute,
+      final response = await apiServices.post(
+        urlInviteStaffMember,
         {
-          'attributeValue': attribute,
-          'attributeId': id,
+          "email": email,
+          'firstName': firstName,
+          'lastName': lastName,
         },
         _appData.headers,
       );
+
+      return BaseResponse.fromJson(response).data['userId'];
     } catch (e) {
-      log("error addProductAttribute: $e");
+      log("error inviteStaffMember: $e");
+      return -1;
+    }
+  }
+
+  Future<void> updateGroupPermission({
+    required int idStaff,
+    required List<int> groupPermissionIds,
+    required bool isActive,
+  }) async {
+    try {
+      final response = await apiServices.patch(
+        '$urlUpdateGroupPermission/$idStaff',
+        {
+          "isActive": isActive,
+          'groupPermissionIds': groupPermissionIds,
+        },
+        _appData.headers,
+      );
+      debugPrint('go to here');
+    } catch (e) {
+      log("error inviteStaffMember: $e");
     }
   }
 

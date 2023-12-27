@@ -1,7 +1,6 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery/data/models/permissions_data_source.dart';
-import 'package:grocery/data/models/staff_data_source.dart';
 import 'package:grocery/presentation/res/colors.dart';
 
 class PermissionsTable extends StatelessWidget {
@@ -34,7 +33,7 @@ class PermissionsTable extends StatelessWidget {
             horizontalMargin: 20,
             checkboxHorizontalMargin: 5,
             columnSpacing: 20,
-            wrapInCard: false,
+            wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
 
             /// TODO: add search category

@@ -6,3 +6,5 @@ abstract class AssignAttributesEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class AssignAttributeInit extends AssignAttributesEvent {}

@@ -1,8 +1,8 @@
 import 'package:grocery/data/models/page_information.dart';
-import 'package:grocery/data/models/permission.dart';
+import 'package:grocery/data/models/group_permission.dart';
 
 class PermissionsData {
-  final List<Permission> permissions;
+  final List<GroupPermission> permissions;
   final PageInformation pageInformation;
 
   PermissionsData({
@@ -12,9 +12,9 @@ class PermissionsData {
 
   factory PermissionsData.fromMap(Map<String, dynamic> map) {
     return PermissionsData(
-      permissions: List<Permission>.from(
-        (map['groupPermissions']).map<Permission>(
-          (x) => Permission.fromMap(x as Map<String, dynamic>),
+      permissions: List<GroupPermission>.from(
+        (map['groupPermissions']).map<GroupPermission>(
+          (x) => GroupPermission.fromMap(x as Map<String, dynamic>),
         ),
       ),
       pageInformation: PageInformation.fromMap(

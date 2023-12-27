@@ -31,6 +31,9 @@ class NavigationCubit extends Cubit<NavigationState> {
       case NavBarItem.products:
         emit(const NavigationState(navBarItem: NavBarItem.products, index: 3));
         break;
+      case NavBarItem.home:
+        emit(const NavigationState(navBarItem: NavBarItem.home, index: 3));
+        break;
     }
   }
 }

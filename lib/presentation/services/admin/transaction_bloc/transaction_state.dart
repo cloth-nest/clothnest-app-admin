@@ -47,7 +47,7 @@ class TransactionFailure extends TransactionState {
 }
 
 class TransactionSuccess extends TransactionState {
-  final List<Order> orders;
+  final List<OrderModel> orders;
 
   const TransactionSuccess({
     required this.orders,

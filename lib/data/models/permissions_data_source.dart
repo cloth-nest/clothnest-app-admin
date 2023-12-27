@@ -1,6 +1,6 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery/data/models/permission.dart';
+import 'package:grocery/data/models/group_permission.dart';
 import 'package:grocery/data/models/permissions_data.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
@@ -10,7 +10,7 @@ class RestorablePermissionSelections extends RestorableProperty<Set<int>> {
   /// Returns whether or not a dessert row is selected by index.
   bool isSelected(int index) => _permissionSelections.contains(index);
 
-  void setPermissionsSelection(List<Permission> permissionsData) {
+  void setPermissionsSelection(List<GroupPermission> permissionsData) {
     final updatedSet = <int>{};
     for (var i = 0; i < permissionsData.length; i += 1) {
       var staff = permissionsData[i];
@@ -79,10 +79,12 @@ class PermissionDataSourceAsync extends AsyncDataTableSource {
     refreshDatasource();
   }
 
-  int Function(Permission, Permission)? _getComparisonFunction(bool ascending) {
+  int Function(GroupPermission, GroupPermission)? _getComparisonFunction(
+      bool ascending) {
     var coef = ascending ? 1 : -1;
 
-    return (Permission d1, Permission d2) => coef * d1.name.compareTo(d2.name);
+    return (GroupPermission d1, GroupPermission d2) =>
+        coef * d1.name.compareTo(d2.name);
   }
 
   @override
@@ -100,10 +102,11 @@ class PermissionDataSourceAsync extends AsyncDataTableSource {
 
     await Future.delayed(const Duration(milliseconds: 400));
 
-    List<Permission> permissions = permissionsData.permissions;
-    permissions.sort(_getComparisonFunction(_sortAscending));
+    List<GroupPermission> result = permissionsData.permissions;
+    result.sort(_getComparisonFunction(_sortAscending));
 
-    permissions.skip(startIndex).take(count).toList();
+    List<GroupPermission> permissions =
+        result.skip(startIndex).take(count).toList();
 
     var r = AsyncRowsResponse(
         permissionsData.pageInformation.totalCount,

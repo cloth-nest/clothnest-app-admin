@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/order.dart';
+import 'package:grocery/data/models/order_model.dart';
 import 'package:grocery/data/models/transaction.dart';
 import 'package:grocery/data/repository/order_repository.dart';
 
@@ -13,7 +14,7 @@ part 'transaction_state.dart';
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final OrderRepository _orderRepository;
 
-  List<Order> orders = [];
+  List<OrderModel> orders = [];
   List<String> filterStatuses = ['All'];
   String sort = 'Nearest Date';
 
@@ -32,7 +33,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionLoading(filterStatus: filterStatuses, sort: sort));
 
     try {
-      List<Order> result = await _orderRepository.getAllOrders(
+      List<OrderModel> result = await _orderRepository.getAllOrders(
         filterStatuses,
         sort == 'Nearest Date' ? 'nearest' : 'farest',
       );
@@ -57,18 +58,18 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionLoading(filterStatus: filterStatuses, sort: sort));
 
     try {
-      List<Order> result = await _orderRepository.getAllOrders(
-        filterStatuses,
-        sort == 'Nearest Date' ? 'nearest' : 'farest',
-      );
-      orders = [];
-      orders = result;
+      // List<Order> result = await _orderRepository.getAllOrders(
+      //   filterStatuses,
+      //   sort == 'Nearest Date' ? 'nearest' : 'farest',
+      // );
+      // orders = [];
+      // orders = result;
 
-      emit(TransactionSuccess(
-        orders: [...result],
-        sort: sort,
-        filterStatus: filterStatuses,
-      ));
+      // emit(TransactionSuccess(
+      //   orders: [...result],
+      //   sort: sort,
+      //   filterStatus: filterStatuses,
+      // ));
     } catch (e) {
       emit(
         TransactionFailure(
@@ -87,19 +88,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionLoading(filterStatus: filterStatuses, sort: sort));
 
     try {
-      List<Order> result = await _orderRepository.getAllOrders(
-        filterStatuses,
-        sort == 'Nearest Date' ? 'nearest' : 'farest',
-      );
+      // List<Order> result = await _orderRepository.getAllOrders(
+      //   filterStatuses,
+      //   sort == 'Nearest Date' ? 'nearest' : 'farest',
+      // );
 
-      orders = [];
-      orders = result;
+      // orders = [];
+      // orders = result;
 
-      emit(TransactionSuccess(
-        orders: [...orders],
-        sort: sort,
-        filterStatus: filterStatuses,
-      ));
+      // emit(TransactionSuccess(
+      //   orders: [...orders],
+      //   sort: sort,
+      //   filterStatus: filterStatuses,
+      // ));
     } catch (e) {
       emit(
         TransactionFailure(
@@ -116,16 +117,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionLoading(filterStatus: filterStatuses, sort: sort));
 
     try {
-      List<Order> result = await _orderRepository.getAllOrders(
-        filterStatuses,
-        sort == 'Nearest Date' ? 'nearest' : 'farest',
-      );
-      orders = result;
-      emit(TransactionSuccess(
-        orders: [...result],
-        sort: sort,
-        filterStatus: filterStatuses,
-      ));
+      // List<Order> result = await _orderRepository.getAllOrders(
+      //   filterStatuses,
+      //   sort == 'Nearest Date' ? 'nearest' : 'farest',
+      // );
+      // orders = result;
+      // emit(TransactionSuccess(
+      //   orders: [...result],
+      //   sort: sort,
+      //   filterStatus: filterStatuses,
+      // ));
     } catch (e) {
       emit(TransactionFailure(
           errorMessage: e.toString(),

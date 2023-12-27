@@ -1,1 +1,1 @@
-enum NavBarItem { categories, cart, order, profile, products }
+enum NavBarItem { categories, cart, order, profile, products, home }

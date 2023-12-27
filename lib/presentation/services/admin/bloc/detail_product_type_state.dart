@@ -18,3 +18,5 @@ class DetailProductTypeInitial extends DetailProductTypeState {
 }
 
 class DetailProductTypeLoading extends DetailProductTypeState {}
+
+class DetailProductTypeAdded extends DetailProductTypeState {}

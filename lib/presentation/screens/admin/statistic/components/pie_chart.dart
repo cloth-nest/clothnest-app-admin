@@ -21,74 +21,71 @@ class _CustomPieChartState extends State<CustomPieChart> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.3,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: PieChart(
-                PieChartData(
-                  pieTouchData: PieTouchData(
-                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      setState(() {
-                        if (!event.isInterestedForInteractions ||
-                            pieTouchResponse == null ||
-                            pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
-                          return;
-                        }
-                        touchedIndex = pieTouchResponse
-                            .touchedSection!.touchedSectionIndex;
-                      });
-                    },
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  sectionsSpace: 0,
-                  centerSpaceRadius: 40,
-                  sections: showingSections(),
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: AspectRatio(
+            aspectRatio: 1.3,
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null) {
+                        touchedIndex = -1;
+                        return;
+                      }
+                      touchedIndex =
+                          pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    });
+                  },
                 ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 70,
+                sections: showingSections(),
               ),
             ),
           ),
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Indicator(
-                color: AppColors.primary,
-                text: 'Finished',
-                isSquare: true,
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Indicator(
-                color: Color(0xFFFBC02D),
-                text: 'In Progress',
-                isSquare: true,
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Indicator(
-                color: Color(0xFFFF0000),
-                text: 'Cancelled',
-                isSquare: true,
-              ),
-              SizedBox(
-                height: 18,
-              ),
-            ],
-          ),
-          const SizedBox(
-            width: 28,
-          ),
-        ],
-      ),
+        ),
+        const Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Indicator(
+              color: AppColors.primary,
+              text: 'Finished',
+              isSquare: true,
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            Indicator(
+              color: Color(0xFFFBC02D),
+              text: 'In Progress',
+              isSquare: true,
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            Indicator(
+              color: Color(0xFFFF0000),
+              text: 'Cancelled',
+              isSquare: true,
+            ),
+            SizedBox(
+              height: 18,
+            ),
+          ],
+        ),
+        const SizedBox(
+          width: 28,
+        ),
+      ],
     );
   }
 

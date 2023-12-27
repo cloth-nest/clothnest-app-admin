@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
+import 'package:grocery/data/models/permission.dart';
 import 'package:grocery/data/models/permissions_data.dart';
 import 'package:grocery/data/models/product_type.dart';
 import 'package:grocery/data/network/base_api_service.dart';
@@ -13,65 +14,14 @@ class PermissionRepository extends IServiceAPI {
   final AppData _appData;
   final String urlGetPermissionGroups =
       "${localURL}permission/group?page=1&limit=0";
-  final String urlAddProductAttribute = "${localURL}product/attributes/values";
-  final String urlGetCategories = "${localURL}category/admin?";
-  final String urlDeleteCategory = "${localURL}category";
-  final String urlEditCategory = "${localURL}category";
-  final String urlGetOneCategory = "${localURL}category";
-  final String urlUpdateProductAttribute = "${localURL}product/attributes";
+  final String urlGetPermissions = "${localURL}permission?page=1&limit=0";
+  final String urlAddGroupPermission = "${localURL}permission/group";
 
   PermissionRepository(this._appData);
 
   @override
   ProductType convertToObject(value) {
     return ProductType.fromMap(value);
-  }
-
-  Future<BaseResponse> deleteCategory(int idCategory) async {
-    var response;
-
-    try {
-      response = await apiServices.delete(
-        '$urlDeleteCategory/$idCategory',
-        {},
-        _appData.headers,
-      );
-    } catch (e) {
-      log("error delete category: $e");
-    }
-
-    BaseResponse baseResponse = BaseResponse.fromJson(response);
-
-    return baseResponse;
-  }
-
-  Future<void> addAttributeValue(String attribute, int id) async {
-    try {
-      await apiServices.post(
-        urlAddProductAttribute,
-        {
-          'attributeValue': attribute,
-          'attributeId': id,
-        },
-        _appData.headers,
-      );
-    } catch (e) {
-      log("error addProductAttribute: $e");
-    }
-  }
-
-  Future<void> updateProductAttribute(String attribute, int id) async {
-    try {
-      await apiServices.patch(
-        '$urlUpdateProductAttribute/$id',
-        {
-          'productAttributeName': attribute,
-        },
-        _appData.headers,
-      );
-    } catch (e) {
-      log("error updateProductAttribute: $e");
-    }
   }
 
   Future<PermissionsData?> getPermissionData(
@@ -94,27 +44,39 @@ class PermissionRepository extends IServiceAPI {
     return null;
   }
 
-  // Future<Category?> getOneCategory(int id) async {
-  //   try {
-  //     var response;
+  Future<List<Permission>?> getPermissions() async {
+    try {
+      var response = await apiServices.get(
+        urlGetPermissions,
+        _appData.headers,
+      );
 
-  //     try {
-  //       response = await apiServices.get(
-  //         '$urlGetOneCategory/$id',
-  //         _appData.headers,
-  //       );
-  //     } catch (e) {
-  //       log("error get one category: $e");
-  //     }
+      BaseResponse baseResponse = BaseResponse.fromJson(response);
+      if (baseResponse.data == null) return null;
 
-  //     BaseResponse baseResponse = BaseResponse.fromJson(response);
+      return List.from(baseResponse.data['permissions'])
+          .map((e) => Permission.fromMap(e))
+          .toList();
+    } catch (e) {
+      log('error getPermissionData:: $e');
+    }
+    return null;
+  }
 
-  //     if (baseResponse.data == null) return null;
-
-  //     return convertToObject(baseResponse.data);
-  //   } catch (e) {
-  //     log('get first categories: $e');
-  //   }
-  //   return null;
-  // }
+  Future<void> addPermissionGroup(
+      {required String groupPermissionName,
+      required List<Permission> permissions}) async {
+    try {
+      await apiServices.post(
+        urlAddGroupPermission,
+        {
+          'groupPermissionName': groupPermissionName,
+          'permissionIds': permissions.map((e) => e.id).toList(),
+        },
+        _appData.headers,
+      );
+    } catch (e) {
+      log('error addPermissionGroup:: $e');
+    }
+  }
 }

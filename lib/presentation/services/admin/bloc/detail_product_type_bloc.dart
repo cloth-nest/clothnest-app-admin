@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery/data/models/attribute.dart';
 import 'package:grocery/data/models/product_type.dart';
 import 'package:grocery/data/repository/product_type_repository.dart';
 
@@ -17,6 +18,8 @@ class DetailProductTypeBloc
     this.productTypeRepository,
   ) : super(DetailProductTypeLoading()) {
     on<DetailProductTypeInit>(_onInit);
+    on<ProductAttributesAdded>(_onProductAttributesAdded);
+    on<VariantAttributesAdded>(_onVariantAttributesAdded);
   }
 
   FutureOr<void> _onInit(
@@ -37,6 +40,39 @@ class DetailProductTypeBloc
       );
     } catch (e) {
       debugPrint('error _onInit: $e');
+    }
+  }
+
+  FutureOr<void> _onProductAttributesAdded(ProductAttributesAdded event,
+      Emitter<DetailProductTypeState> emit) async {
+    emit(DetailProductTypeLoading());
+
+    try {
+      await productTypeRepository.addAttribute(
+        productTypeId: event.productTypeId,
+        attributeType: 'PRODUCT_ATTRIBUTE',
+        productAttributeIds: event.attributes.map((e) => e.id).toList(),
+      );
+      emit(DetailProductTypeAdded());
+    } catch (e) {
+      debugPrint('##error _onProductAttributesAdded: $e');
+    }
+  }
+
+  FutureOr<void> _onVariantAttributesAdded(VariantAttributesAdded event,
+      Emitter<DetailProductTypeState> emit) async {
+    emit(DetailProductTypeLoading());
+
+    try {
+      await productTypeRepository.addAttribute(
+        productTypeId: event.productTypeId,
+        attributeType: 'VARIANT_ATTRIBUTE',
+        productAttributeIds: event.attributes.map((e) => e.id).toList(),
+      );
+
+      emit(DetailProductTypeAdded());
+    } catch (e) {
+      debugPrint('##error _onVariantAttributesAdded: $e');
     }
   }
 }

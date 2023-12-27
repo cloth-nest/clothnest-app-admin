@@ -148,20 +148,9 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
       controller: _controller,
       columns: _columns,
       productTypeDataSourceAsync: productTypeDataSourceAsync,
-      onPageChanged: (rowIndex) {
-        int page = (rowIndex / _rowsPerPage).round();
-        // _bloc.add(CategoriesPageChanged(
-        //     page: page, limit: _rowsPerPage, context: context));
-      },
+      onPageChanged: (rowIndex) {},
       onRowsPerPageChanged: (value) {
         _rowsPerPage = value!;
-        // _bloc.add(
-        //   CategoriesPageChanged(
-        //     page: 1,
-        //     limit: value,
-        //     context: context,
-        //   ),
-        // );
       },
       rowsPerPage: _rowsPerPage,
       sortAscending: sortAscending,

@@ -204,7 +204,7 @@ class _DetailStatisticScreenState extends State<DetailStatisticScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 30),
                   Text(
                     'Detail',
                     style: AppStyles.bold.copyWith(

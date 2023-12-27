@@ -25,10 +25,13 @@ import 'package:grocery/presentation/services/address_bloc/address_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_category_bloc/add_category_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_edit_coupon_bloc/add_edit_coupon_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_product_bloc/add_product_bloc.dart';
+import 'package:grocery/presentation/services/admin/bloc/add_permission_group_bloc.dart';
 import 'package:grocery/presentation/services/admin/coupon_bloc/coupon_bloc.dart'
     as admin;
 import 'package:grocery/presentation/services/admin/transaction_bloc/transaction_bloc.dart';
 import 'package:grocery/presentation/services/admin/transaction_detail_bloc/transaction_detail_bloc.dart';
+import 'package:grocery/presentation/services/bloc/assign_attributes_bloc.dart';
+import 'package:grocery/presentation/services/bloc/invite_staff_bloc.dart';
 import 'package:grocery/presentation/services/bloc/permission_bloc.dart';
 import 'package:grocery/presentation/services/detail_attribute_bloc/detail_attribute_bloc.dart';
 import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
@@ -266,6 +269,22 @@ class _AppState extends State<App> {
               BlocProvider<PermissionBloc>(
                 create: (context) => PermissionBloc(
                   PermissionRepository(appData),
+                ),
+              ),
+              BlocProvider<AssignAttributesBloc>(
+                create: (context) => AssignAttributesBloc(
+                  ProductAttributeRepository(appData),
+                ),
+              ),
+              BlocProvider<AddPermissionGroupBloc>(
+                create: (context) => AddPermissionGroupBloc(
+                  PermissionRepository(appData),
+                ),
+              ),
+              BlocProvider<InviteStaffBloc>(
+                create: (context) => InviteStaffBloc(
+                  PermissionRepository(appData),
+                  StaffMemberRepository(appData),
                 ),
               ),
             ],

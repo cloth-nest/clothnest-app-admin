@@ -26,3 +26,14 @@ class TransactionDetailSuccess extends TransactionDetailState {
   @override
   List<Object> get props => [];
 }
+
+class TransactionDetailLoaded extends TransactionDetailState {
+  final OrderDetailModel orderDetailModel;
+
+  const TransactionDetailLoaded({
+    required this.orderDetailModel,
+  });
+
+  @override
+  List<Object> get props => [];
+}

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'staff_member_bloc.dart';
 
 abstract class StaffMemberEvent extends Equatable {
@@ -14,14 +15,20 @@ class StaffMemberStarted extends StaffMemberEvent {
 }
 
 class StaffMemberAdded extends StaffMemberEvent {
+  final String firstName;
+  final String lastName;
+  final String email;
+  final bool isActive;
+  final List<int> groupPermissionIds;
   final BuildContext context;
-  final String attribute;
-  final int id;
 
   const StaffMemberAdded(
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.isActive,
+    this.groupPermissionIds,
     this.context,
-    this.attribute,
-    this.id,
   );
 }
 

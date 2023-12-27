@@ -30,6 +30,15 @@ class _SideMenuState extends State<SideMenu> {
               const InfoCard(),
               GestureDetector(
                 onTap: () {
+                  widget.callback('Home');
+                },
+                child: const SideMenuTile(
+                  icon: AppAssets.iconHome,
+                  title: 'Home',
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
                   widget.callback('Products');
                 },
                 child: SideMenuExpansionTile(

@@ -1,12 +1,15 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery/data/models/group_permission.dart';
 import 'package:grocery/data/models/staff_data_source.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
+import 'package:grocery/presentation/screens/staff_member/components/invite_staff_member_dialog.dart';
 import 'package:grocery/presentation/screens/staff_member/components/staff_member_table.dart';
 import 'package:grocery/presentation/services/staff_member_bloc/staff_member_bloc.dart';
+import 'package:grocery/presentation/utils/functions.dart';
 import 'package:grocery/presentation/widgets/custom_app_bar.dart';
 
 class StaffMemberScreen extends StatefulWidget {
@@ -94,7 +97,22 @@ class _StaffMemberScreenState extends State<StaffMemberScreen> {
         ),
       ),
       body: BlocListener<StaffMemberBloc, StaffMemberState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is StaffMemberLoaded) {
+            if (state.isAdded == true) {
+              showSnackBar(
+                context,
+                'Invite staff successfully',
+                const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+              );
+            }
+            //return LoadingScreen().show(context: context);
+          }
+          //return LoadingScreen().hide();
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -110,12 +128,30 @@ class _StaffMemberScreenState extends State<StaffMemberScreen> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // final result = await showDialog(
-                      //   context: context,
-                      //   builder: (_) => AddProductAttributeDialog(
-                      //     controller: TextEditingController(),
-                      //   ),
-                      // );
+                      final result = await showDialog(
+                        context: context,
+                        builder: (_) => const InviteStaffMemberDialog(),
+                      );
+
+                      if (result != null) {
+                        String firstName = result[0];
+                        String lastName = result[1];
+                        String email = result[2];
+                        bool isActive = result[3];
+                        List<int> groupPermissionIds =
+                            (result[4] as List<GroupPermission>)
+                                .map((e) => e.id)
+                                .toList();
+
+                        _bloc.add(StaffMemberAdded(
+                          firstName,
+                          lastName,
+                          email,
+                          isActive,
+                          groupPermissionIds,
+                          context,
+                        ));
+                      }
                     },
                     child: Text(
                       'Invite staff member',

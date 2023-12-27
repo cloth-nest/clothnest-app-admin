@@ -99,104 +99,140 @@ class _DetailProductTypeScreenState extends State<DetailProductTypeScreen> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: SizedBox(
-            height: size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'General Information',
-                  style: AppStyles.semibold,
-                ),
-                const SizedBox(height: 5),
-                _buildDivider(),
-                const SizedBox(height: 10),
-                Text(
-                  'Product Type Name',
-                  style: AppStyles.medium,
-                ),
-                const SizedBox(height: 10),
-                TextFieldInput(
-                  hintText: 'Product Type Name',
-                  controller: nameController,
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  children: [
-                    Text(
-                      'Product Attributes',
-                      style: AppStyles.semibold,
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () async {
-                        final result = await showDialog(
-                          context: context,
-                          builder: (_) => const AssignAttributeDialog(),
-                        );
-                      },
-                      child: Text(
-                        'Assign attributes',
-                        style: AppStyles.medium.copyWith(
-                          color: AppColors.primary,
+      body: BlocListener<DetailProductTypeBloc, DetailProductTypeState>(
+        listener: (context, state) {
+          if (state is DetailProductTypeLoading) {
+            return LoadingScreen().show(context: context);
+          } else if (state is DetailProductTypeAdded) {
+            _bloc.add(
+                DetailProductTypeInit(productTypeId: widget.productType.id));
+            return LoadingScreen().hide();
+          } else {
+            return LoadingScreen().hide();
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'General Information',
+                    style: AppStyles.semibold,
+                  ),
+                  const SizedBox(height: 5),
+                  _buildDivider(),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Product Type Name',
+                    style: AppStyles.medium,
+                  ),
+                  const SizedBox(height: 10),
+                  TextFieldInput(
+                    hintText: 'Product Type Name',
+                    controller: nameController,
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Text(
+                        'Product Attributes',
+                        style: AppStyles.semibold,
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await showDialog(
+                            context: context,
+                            builder: (_) => const AssignAttributeDialog(),
+                          );
+
+                          if (result != null) {
+                            _bloc.add(
+                              ProductAttributesAdded(
+                                productTypeId: widget.productType.id,
+                                attributes: result,
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          'Assign attributes',
+                          style: AppStyles.medium.copyWith(
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                _buildDivider(),
-                const SizedBox(height: 10),
-                BlocBuilder<DetailProductTypeBloc, DetailProductTypeState>(
-                    builder: (context, state) {
-                  if (state is DetailProductTypeLoading) {
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  _buildDivider(),
+                  const SizedBox(height: 10),
+                  BlocBuilder<DetailProductTypeBloc, DetailProductTypeState>(
+                      builder: (context, state) {
+                    if (state is DetailProductTypeLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is DetailProductTypeInitial) {
+                      return _buildProductAttributesTable(
+                          ProductTypeDataSourceAsync2(
+                              productTypes: state.productAttributes,
+                              context: context));
+                    }
                     return LoadingScreen().showLoadingWidget();
-                  } else if (state is DetailProductTypeInitial) {
-                    return _buildProductAttributesTable(
-                        ProductTypeDataSourceAsync2(
-                            productTypes: state.productAttributes,
-                            context: context));
-                  }
-                  return LoadingScreen().showLoadingWidget();
-                }),
-                const SizedBox(height: 30),
-                Row(
-                  children: [
-                    Text(
-                      'Variant Attributes',
-                      style: AppStyles.semibold,
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () async {},
-                      child: Text(
-                        'Assign attributes',
-                        style: AppStyles.medium.copyWith(
-                          color: AppColors.primary,
+                  }),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Text(
+                        'Variant Attributes',
+                        style: AppStyles.semibold,
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await showDialog(
+                            context: context,
+                            builder: (_) => const AssignAttributeDialog(),
+                          );
+
+                          if (result != null) {
+                            _bloc.add(
+                              VariantAttributesAdded(
+                                productTypeId: widget.productType.id,
+                                attributes: result,
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          'Assign attributes',
+                          style: AppStyles.medium.copyWith(
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                _buildDivider(),
-                const SizedBox(height: 10),
-                BlocBuilder<DetailProductTypeBloc, DetailProductTypeState>(
-                    builder: (context, state) {
-                  if (state is DetailProductTypeLoading) {
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  _buildDivider(),
+                  const SizedBox(height: 10),
+                  BlocBuilder<DetailProductTypeBloc, DetailProductTypeState>(
+                      builder: (context, state) {
+                    if (state is DetailProductTypeLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is DetailProductTypeInitial) {
+                      return _buildProductAttributesTable(
+                          ProductTypeDataSourceAsync2(
+                              productTypes: state.variantAttributes,
+                              context: context));
+                    }
                     return LoadingScreen().showLoadingWidget();
-                  } else if (state is DetailProductTypeInitial) {
-                    return _buildProductAttributesTable(
-                        ProductTypeDataSourceAsync2(
-                            productTypes: state.variantAttributes,
-                            context: context));
-                  }
-                  return LoadingScreen().showLoadingWidget();
-                }),
-              ],
+                  }),
+                ],
+              ),
             ),
           ),
         ),

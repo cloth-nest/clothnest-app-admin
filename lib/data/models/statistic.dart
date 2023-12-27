@@ -32,13 +32,13 @@ class Statistic {
 
   factory Statistic.fromMap(Map<String, dynamic> map) {
     return Statistic(
-      countedUser: map['users'] ?? 0,
-      countedProduct: map['products'] ?? 0,
-      revenue: map['revenue'] ?? 0,
-      total: map['transactions']['total'] ?? 0,
-      finished: map['transactions']['finished'] ?? 0,
-      inprogress: map['transactions']['inprogress'] ?? 0,
-      cancelled: map['transactions']['cancelled'] ?? 0,
+      countedUser: map['countedUser'] ?? 0,
+      countedProduct: map['countedProduct'] ?? 0,
+      revenue: map['totalRevenue'] * 1.0,
+      total: map['transaction'] ?? 0,
+      finished: map['deliveredOrder'] ?? 0,
+      inprogress: map['onProcessOrder'] ?? 0,
+      cancelled: map['canceledOrder'] ?? 0,
     );
   }
 

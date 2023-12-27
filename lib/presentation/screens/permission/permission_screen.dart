@@ -5,6 +5,7 @@ import 'package:grocery/data/models/permissions_data_source.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
+import 'package:grocery/presentation/screens/permission/add_permission_group_screen.dart';
 import 'package:grocery/presentation/screens/permission/components/permission_table.dart';
 import 'package:grocery/presentation/services/bloc/permission_bloc.dart';
 import 'package:grocery/presentation/widgets/custom_app_bar.dart';
@@ -96,12 +97,14 @@ class _PermissionScreenState extends State<PermissionScreen> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // final result = await showDialog(
-                      //   context: context,
-                      //   builder: (_) => AddProductAttributeDialog(
-                      //     controller: TextEditingController(),
-                      //   ),
-                      // );
+                      final isAdded = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AddPermissionGroupScreen(),
+                        ),
+                      );
+                      if (isAdded) {
+                        _bloc.add(PermissionStarted(context));
+                      }
                     },
                     child: Text(
                       'Create permission group',

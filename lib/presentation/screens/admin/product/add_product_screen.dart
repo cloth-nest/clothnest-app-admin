@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery/data/models/attribute_value.dart';
 import 'package:grocery/data/models/category.dart';
 import 'package:grocery/data/models/product.dart';
 import 'package:grocery/data/models/product_type.dart';
@@ -10,7 +9,6 @@ import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/services/admin/add_product_bloc/add_product_bloc.dart';
 import 'package:grocery/presentation/utils/functions.dart';
-import 'package:grocery/presentation/widgets/custom_app_bar.dart';
 import 'package:grocery/presentation/widgets/custom_button.dart';
 import 'package:grocery/presentation/widgets/text_field_input.dart';
 

@@ -7,8 +7,9 @@ import 'package:grocery/presentation/enum/enum.dart';
 import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/screens/admin/category/categories_screen.dart';
 import 'package:grocery/presentation/screens/admin/product/products_screen.dart';
+import 'package:grocery/presentation/screens/admin/statistic/statistic_screen.dart';
+import 'package:grocery/presentation/screens/admin/transactions/transaction_screen.dart';
 import 'package:grocery/presentation/screens/cart/cart_screen.dart';
-import 'package:grocery/presentation/screens/order/order_screen.dart';
 import 'package:grocery/presentation/screens/configuration/configuration_screen.dart';
 import 'package:grocery/presentation/screens/side_menu/side_menu.dart';
 import 'package:grocery/presentation/services/bottom_navigation_bloc/cubit/navigation_cubit.dart';
@@ -53,8 +54,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
       curve: Curves.fastOutSlowIn,
     ));
 
-    BlocProvider.of<NavigationCubit>(context)
-        .getNavBarItem(NavBarItem.products);
+    BlocProvider.of<NavigationCubit>(context).getNavBarItem(NavBarItem.home);
 
     if (widget.index != 1) {
       BlocProvider.of<NavigationCubit>(context).getNavBarItem(NavBarItem.order);
@@ -86,6 +86,10 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
             child: SideMenu(
               callback: (title) {
                 switch (title) {
+                  case 'Home':
+                    BlocProvider.of<NavigationCubit>(context)
+                        .getNavBarItem(NavBarItem.home);
+                    break;
                   case 'Products':
                     BlocProvider.of<NavigationCubit>(context)
                         .getNavBarItem(NavBarItem.products);
@@ -97,6 +101,10 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                   case 'Configuration':
                     BlocProvider.of<NavigationCubit>(context)
                         .getNavBarItem(NavBarItem.profile);
+                    break;
+                  case 'Orders':
+                    BlocProvider.of<NavigationCubit>(context)
+                        .getNavBarItem(NavBarItem.order);
                     break;
 
                   default:
@@ -123,9 +131,11 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                       } else if (state.navBarItem == NavBarItem.cart) {
                         return const CartScreen();
                       } else if (state.navBarItem == NavBarItem.order) {
-                        return const OrderScreen();
+                        return const TransactionScreen();
                       } else if (state.navBarItem == NavBarItem.products) {
                         return const ProductsScreen();
+                      } else if (state.navBarItem == NavBarItem.home) {
+                        return const StatisticScreen();
                       }
                       return const ConfigurationScreen();
                     },

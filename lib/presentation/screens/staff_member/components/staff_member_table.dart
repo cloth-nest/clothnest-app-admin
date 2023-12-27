@@ -33,7 +33,7 @@ class StaffMembersTable extends StatelessWidget {
             horizontalMargin: 20,
             checkboxHorizontalMargin: 5,
             columnSpacing: 20,
-            wrapInCard: false,
+            wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
 
             /// TODO: add search category

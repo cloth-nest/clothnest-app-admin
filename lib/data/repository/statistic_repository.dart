@@ -6,10 +6,11 @@ import 'package:grocery/data/network/base_api_service.dart';
 import 'package:grocery/data/network/network_api_service.dart';
 import 'package:grocery/data/response/base_response.dart';
 import 'package:grocery/presentation/services/app_data.dart';
+import 'package:intl/intl.dart';
 
 class StatisticRepository extends IServiceAPI {
-  String urlGetStatistics = 'statistic?types=overview';
-  String urlGetStatisticsByRange = 'statistic?types=detail';
+  String urlGetStatistics = 'statistic';
+  String urlGetStatisticsByRange = 'statistic';
 
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
@@ -28,7 +29,10 @@ class StatisticRepository extends IServiceAPI {
     try {
       final response = await apiServices.post(
         urlGetStatistics,
-        {"startDate": "", "endDate": ""},
+        {
+          "startDate": DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          "statisticType": "OVERVIEW",
+        },
         _appData.headers,
       );
       BaseResponse baseResponse = BaseResponse.fromJson(response);
@@ -46,7 +50,11 @@ class StatisticRepository extends IServiceAPI {
     try {
       final response = await apiServices.post(
         urlGetStatisticsByRange,
-        {'startDate': beginDate, "endDate": endDate},
+        {
+          'startDate': beginDate,
+          "endDate": endDate,
+          "statisticType": "DETAIL",
+        },
         _appData.headers,
       );
       BaseResponse baseResponse = BaseResponse.fromJson(response);

@@ -33,6 +33,11 @@ class FirebaseService {
     try {
       DocumentSnapshot doc =
           await _firebaseFirestore.collection('Users').doc(gmail).get();
+
+      if (doc.data() == null) {
+        return '';
+      }
+
       Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
       String fcmToken = data['token'];
 

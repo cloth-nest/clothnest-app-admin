@@ -33,31 +33,11 @@ class AttributeValuesTable extends StatelessWidget {
             horizontalMargin: 20,
             checkboxHorizontalMargin: 5,
             columnSpacing: 20,
-            wrapInCard: false,
+            wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
-
-            /// TODO: add search category
-            // header: Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   mainAxisSize: MainAxisSize.max,
-            //   children: [
-
-            //     // if (kDebugMode && getCurrentRouteOption(context) == custPager)
-            //     //   Row(children: [
-            //     //     OutlinedButton(
-            //     //         onPressed: () => _controller.goToPageWithRow(25),
-            //     //         child: const Text('Go to row 25')),
-            //     //     OutlinedButton(
-            //     //         onPressed: () => _controller.goToRow(5),
-            //     //         child: const Text('Go to row 5'))
-            //     //   ]),
-            //     // if (getCurrentRouteOption(context) == custPager)
-            //     //   PageNumber(controller: _controller)
-            //   ],
-            // ),
             rowsPerPage: rowsPerPage,
-            minWidth: 800,
-            fit: FlexFit.tight,
+            minWidth: 600,
+            fit: FlexFit.loose,
             border: const TableBorder(
               top: BorderSide(color: AppColors.gray),
               bottom: BorderSide(color: AppColors.gray),

@@ -13,7 +13,7 @@ class ProductTypeRepository extends IServiceAPI {
   final AppData _appData;
   final String urlGetProductTypes = "${localURL}product/type?limit=0&page=1";
   final String urlGetAllAttributes = "${localURL}product/type";
-
+  final String urlAddAttribute = "${localURL}product/type/attribute";
   final String urlAddProductType = "${localURL}product/type";
   final String urlGetCategories = "${localURL}category/admin?";
   final String urlDeleteCategory = "${localURL}category";
@@ -57,6 +57,26 @@ class ProductTypeRepository extends IServiceAPI {
       );
     } catch (e) {
       log("error addProductType: $e");
+    }
+  }
+
+  Future<void> addAttribute({
+    required int productTypeId,
+    required String attributeType,
+    required List<int> productAttributeIds,
+  }) async {
+    try {
+      await apiServices.post(
+        urlAddAttribute,
+        {
+          'productTypeId': productTypeId,
+          'attributeType': attributeType,
+          'productAttributeIds': productAttributeIds,
+        },
+        _appData.headers,
+      );
+    } catch (e) {
+      log("error addAttribute: $e");
     }
   }
 

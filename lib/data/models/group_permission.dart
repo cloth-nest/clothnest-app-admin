@@ -1,12 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class Attribute {
+class GroupPermission {
   final int id;
   final String name;
+  final int members;
   final bool? selected;
 
-  Attribute({
+  GroupPermission({
     required this.id,
     required this.name,
+    required this.members,
     this.selected = false,
   });
 
@@ -14,24 +16,28 @@ class Attribute {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'members': members,
     };
   }
 
-  factory Attribute.fromMap(Map<String, dynamic> map) {
-    return Attribute(
+  factory GroupPermission.fromMap(Map<String, dynamic> map) {
+    return GroupPermission(
       id: map['id'] as int,
       name: map['name'] as String,
+      members: map['members'] as int,
     );
   }
 
-  Attribute copyWith({
+  GroupPermission copyWith({
     int? id,
     String? name,
+    int? members,
     bool? selected,
   }) {
-    return Attribute(
+    return GroupPermission(
       id: id ?? this.id,
       name: name ?? this.name,
+      members: members ?? this.members,
       selected: selected ?? this.selected,
     );
   }
