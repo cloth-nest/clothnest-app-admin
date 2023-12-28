@@ -50,21 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBCWVVLlNNYInDeojK-O-_fP7FzXfC6GrU',
-    appId: '1:1051658091586:android:80ced7d852dee4688101db',
-    messagingSenderId: '1051658091586',
-    projectId: 'gocery-79ef0',
-    storageBucket: 'gocery-79ef0.appspot.com',
+    apiKey: 'AIzaSyDllc3TDmql4falRo2e5lZIM5WC3nnkA6w',
+    appId: '1:881324803347:android:19d91892a6b8118aed06e6',
+    messagingSenderId: '881324803347',
+    projectId: 'cloth-nest',
+    storageBucket: 'cloth-nest.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBe67m6EfcOiN9JSn2tSUIzQu31dbV0SMw',
-    appId: '1:1051658091586:ios:6579cfc3eb397b478101db',
-    messagingSenderId: '1051658091586',
-    projectId: 'gocery-79ef0',
-    storageBucket: 'gocery-79ef0.appspot.com',
-    iosClientId:
-        '1051658091586-evrffruvq68nbiatljlnqlul7libnkb8.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDHfyQZdULnqR16yC9AK171ru3GMh6cgPc',
+    appId: '1:881324803347:ios:1648a2ae660a3cb3ed06e6',
+    messagingSenderId: '881324803347',
+    projectId: 'cloth-nest',
+    storageBucket: 'cloth-nest.appspot.com',
     iosBundleId: 'com.clothnest',
   );
 }

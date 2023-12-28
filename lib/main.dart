@@ -10,11 +10,13 @@ import 'package:grocery/presentation/utils/bloc_observer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: 'ClothNest-admin',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseService().registerNotification();
   FirebaseMessaging.onBackgroundMessage(handleMessageBackground);
   Bloc.observer = AppBlocObserver();
+
   runApp(const App());
 }
 

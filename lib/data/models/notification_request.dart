@@ -6,16 +6,19 @@ import 'package:grocery/data/models/data.dart';
 class NotificationRequest {
   final Data data;
   final String to;
+  final String? payload;
 
   NotificationRequest({
     required this.data,
     required this.to,
+    this.payload,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'data': data.toMap(),
+      'notification': data.toMap(),
       'to': to,
+      'payload': {'screen': payload}
     };
   }
 
@@ -23,6 +26,7 @@ class NotificationRequest {
     return NotificationRequest(
       data: Data.fromMap(map['data'] as Map<String, dynamic>),
       to: map['to'] as String,
+      payload: map['data']['screen'],
     );
   }
 

@@ -37,23 +37,22 @@ class TransactionDetailBloc
         content = 'Your order has been cancelled';
       }
 
-      await sendNotification(content, token!);
+      await sendNotification(content, token!, event.orderId);
       emit(const TransactionDetailSuccess());
     } catch (e) {
       emit(TransactionDetailFailure(errorMessage: e.toString()));
     }
   }
 
-  Future<void> sendNotification(String content, String token) async {
+  Future<void> sendNotification(
+      String content, String token, int? idOrder) async {
     Data data = Data(
-      title: 'Gocery Application',
+      title: 'ClothNest Application',
       body: content,
     );
 
     NotificationRequest notificationRequest = NotificationRequest(
-      data: data,
-      to: token,
-    );
+        data: data, to: token, payload: 'order/detail/$idOrder');
 
     await firebaseService.sendNotification(notificationRequest);
   }

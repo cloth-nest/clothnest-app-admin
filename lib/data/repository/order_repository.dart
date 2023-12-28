@@ -109,7 +109,7 @@ class OrderRepository extends IServiceAPI {
 //"message" -> "invalid input syntax for type uuid: "7a78e280-f93b-48e4-b2df-480f6c826445}""
   Future<void> updateStatus(int orderId, bool isCancelled) async {
     try {
-      final response = await apiServices.put(
+      final response = await apiServices.post(
         '$urlUpdateStatus/$orderId',
         {
           "orderStatus": isCancelled ? 'CANCELED' : 'DELIVERED',

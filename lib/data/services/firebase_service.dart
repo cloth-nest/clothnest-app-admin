@@ -21,7 +21,7 @@ class FirebaseService {
       final fcmToken = await _firebaseMessaging.getToken();
 
       await _firebaseFirestore
-          .collection('Users')
+          .collection('Useras')
           .doc(gmail)
           .set({'token': fcmToken});
     } catch (e) {
@@ -134,7 +134,7 @@ class FirebaseService {
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization':
-            'key=AAAA9Nu0_EI:APA91bHonA-BSkaYkOW2AEOaSb_MN7ye74TEhqovf-l5c8q1JZCFgaE9Hc6lFS1pkfPLOmymxCUzgYUVfJ1U5ThuLvl_s5BQuQF5bCCoK3bqwWwsHMnioV0LjN9u_BYYWtEW9Qe8UZn7',
+            'key=AAAAzTMNRRM:APA91bGDQvecy09xkxfaknJh1ymkcA6sEZtgchaCLE4qXdmvqdQRQO4_kXiK9yOqu1kbmh1eJCPg2ZK-DPmXuMCxRstVOWu8zYrCxXZeutMERyWh268ODmltfX_pw4aD9bPmJf2_GpjG',
       };
       final response = await http.post(
         Uri.parse(url),

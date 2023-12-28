@@ -119,7 +119,7 @@ class SecondCheckoutBloc
     FirebaseService firebaseService = FirebaseService();
 
     Data data = Data(
-      title: 'Gocery Application',
+      title: 'ClothNest Application',
       body: '${currentAddress.name} has created an order',
     );
 
