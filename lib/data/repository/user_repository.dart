@@ -12,6 +12,7 @@ class UserRepository extends IServiceAPI {
   String urlGetInfo = "user/get-info";
   String urlUpdateAvatar = "user/update-avatar";
   String urlUpdateInfo = "user/update-info";
+  String urlGetFirebaseToken = "user/ft";
 
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
@@ -20,6 +21,7 @@ class UserRepository extends IServiceAPI {
     urlGetInfo = localURL + urlGetInfo;
     urlUpdateAvatar = localURL + urlUpdateAvatar;
     urlUpdateInfo = localURL + urlUpdateInfo;
+    urlGetFirebaseToken = localURL + urlGetFirebaseToken;
   }
 
   @override
@@ -41,6 +43,26 @@ class UserRepository extends IServiceAPI {
       return user;
     } catch (e) {
       log("error get user info: $e");
+    }
+
+    return null;
+  }
+
+  Future<String?> getFirebaseToken({required String email}) async {
+    try {
+      final response = await apiServices.post(
+        urlGetFirebaseToken,
+        {
+          'email': email,
+        },
+        _appData.headers,
+      );
+
+      final BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      return baseResponse.data['firebaseToken'];
+    } catch (e) {
+      log("error get firebase token: $e");
     }
 
     return null;

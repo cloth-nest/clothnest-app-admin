@@ -7,6 +7,7 @@ import 'package:grocery/data/models/data.dart';
 import 'package:grocery/data/models/notification_request.dart';
 import 'package:grocery/data/models/order_detail_model.dart';
 import 'package:grocery/data/repository/order_repository.dart';
+import 'package:grocery/data/repository/user_repository.dart';
 import 'package:grocery/data/services/firebase_service.dart';
 
 part 'transaction_detail_event.dart';
@@ -15,10 +16,14 @@ part 'transaction_detail_state.dart';
 class TransactionDetailBloc
     extends Bloc<TransactionDetailEvent, TransactionDetailState> {
   final OrderRepository _orderRepository;
+  final UserRepository _userRepository;
+
   FirebaseService firebaseService = FirebaseService();
 
-  TransactionDetailBloc(this._orderRepository)
-      : super(TransactionDetailInitial()) {
+  TransactionDetailBloc(
+    this._orderRepository,
+    this._userRepository,
+  ) : super(TransactionDetailInitial()) {
     on<TransactionDetailStatusChanged>(_onStatusChanged);
     on<TransactionDetailStarted>(_onStarted);
   }
@@ -29,7 +34,8 @@ class TransactionDetailBloc
 
     try {
       await _orderRepository.updateStatus(event.orderId, event.isCancelled);
-      String? token = await firebaseService.getFCMToken(event.email);
+      String? token =
+          await _userRepository.getFirebaseToken(email: event.email);
       String content = "";
       if (event.isCancelled == false) {
         content = 'Your order has been finished';

@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+String fakeAccessToken =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDM4MzUyNzEsImV4cCI6MTcwMzg3MTI3MX0.sdTbMQrbmq9tFp48YCC_g-TR1SgeD0zHDiLvorPfHoQ';
+
 class AppData extends ChangeNotifier {
   late final Future<SharedPreferences> sharedPreferences;
 
@@ -79,8 +82,6 @@ class AppData extends ChangeNotifier {
     //initHeaders();
   }
 
-  String fakeAccessToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDM3NzQwOTksImV4cCI6MTcwMzgxMDA5OX0.voWHeIZ2yuENDMJ8KPvOygp6EiEhPZintPEzyGxJCq0';
   initHeaders() {
     if (_accessToken != null) {
       _headers = {

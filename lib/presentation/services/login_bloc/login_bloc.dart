@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/repository/auth_repository.dart';
 import 'package:grocery/data/response/base_response.dart';
@@ -14,8 +15,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
 
       try {
-        BaseResponse? baseResponse =
-            await _authRepository.login(event.email, event.password);
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+
+        BaseResponse? baseResponse = await _authRepository.login(
+            event.email, event.password, fcmToken ?? '');
 
         if (baseResponse!.statusCode == 200) {
           _authRepository.saveAccessToken(baseResponse.data['accessToken']);

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:grocery/data/models/product.dart';
 import 'package:grocery/data/models/products_data.dart';
 import 'package:grocery/presentation/res/colors.dart';
+import 'package:grocery/presentation/screens/admin/product/add_detail_product_screen.dart';
+import 'package:grocery/presentation/screens/admin/product/product_detail_screen.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorableProductsSelections extends RestorableProperty<Set<int>> {
@@ -147,7 +149,15 @@ class ProductDataSourceAsync extends AsyncDataTableSource {
                     ],
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ProductDetailScreen(
+                        product: product,
+                      ),
+                    ),
+                  );
+                },
               ),
               DataCell(
                 Align(
@@ -166,6 +176,21 @@ class ProductDataSourceAsync extends AsyncDataTableSource {
                   ),
                 ),
                 onTap: () async {},
+              ),
+              DataCell(
+                const SizedBox(
+                  width: 50,
+                ),
+                showEditIcon: true,
+                onTap: () async {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => AddDetailProductScreen(
+                        product: product,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           );

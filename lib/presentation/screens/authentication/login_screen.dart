@@ -35,19 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   navigateToBottomNavigationScreen(String role) {
-    if (role == "Admin") {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const admin.BottomNavigationBarScreen(),
-        ),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const user.BottomNavigationBarScreen(),
-        ),
-      );
-    }
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const user.BottomNavigationBarScreen(),
+      ),
+    );
   }
 
   @override

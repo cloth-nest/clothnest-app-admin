@@ -61,13 +61,18 @@ class AuthRepository extends IServiceAPI {
     }
   }
 
-  Future<BaseResponse?> login(String email, String password) async {
+  Future<BaseResponse?> login(
+    String email,
+    String password,
+    String firebaseToken,
+  ) async {
     try {
       final response = await apiServices.post(
         urlLogin,
         {
           "email": email,
           "password": password,
+          'firebaseToken': firebaseToken,
         },
         _appData.headers,
       );

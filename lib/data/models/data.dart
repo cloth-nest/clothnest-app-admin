@@ -23,7 +23,7 @@ class Data {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
-      'content': body,
+      'body': body,
     };
   }
 

@@ -24,8 +24,8 @@ class ProductImage {
   factory ProductImage.fromMap(Map<String, dynamic> map) {
     return ProductImage(
       id: map['id'] ?? -1,
-      imgUrl: map['imgUrl'] ?? '',
-      index: map['index'] ?? -1,
+      imgUrl: map['image'] ?? '',
+      index: map['order'] ?? -1,
     );
   }
 

@@ -18,7 +18,7 @@ class NotificationRequest {
     return <String, dynamic>{
       'notification': data.toMap(),
       'to': to,
-      'payload': {'screen': payload}
+      'data': {'screen': payload}
     };
   }
 

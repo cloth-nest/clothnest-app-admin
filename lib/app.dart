@@ -15,6 +15,7 @@ import 'package:grocery/data/repository/product_type_repository.dart';
 import 'package:grocery/data/repository/staff_member_repository.dart';
 import 'package:grocery/data/repository/statistic_repository.dart';
 import 'package:grocery/data/repository/user_repository.dart';
+import 'package:grocery/data/repository/warehouse_repository.dart';
 import 'package:grocery/data/repository/zalo_pay_repository.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/screens/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart'
@@ -30,9 +31,12 @@ import 'package:grocery/presentation/services/admin/coupon_bloc/coupon_bloc.dart
     as admin;
 import 'package:grocery/presentation/services/admin/transaction_bloc/transaction_bloc.dart';
 import 'package:grocery/presentation/services/admin/transaction_detail_bloc/transaction_detail_bloc.dart';
+import 'package:grocery/presentation/services/bloc/add_detail_product_bloc.dart';
 import 'package:grocery/presentation/services/bloc/assign_attributes_bloc.dart';
+import 'package:grocery/presentation/services/bloc/detail_product_bloc.dart';
 import 'package:grocery/presentation/services/bloc/invite_staff_bloc.dart';
 import 'package:grocery/presentation/services/bloc/permission_bloc.dart';
+import 'package:grocery/presentation/services/bloc/warehouse_bloc.dart';
 import 'package:grocery/presentation/services/detail_attribute_bloc/detail_attribute_bloc.dart';
 import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
 import 'package:grocery/presentation/services/staff_member_bloc/staff_member_bloc.dart';
@@ -238,8 +242,7 @@ class _AppState extends State<App> {
               ),
               BlocProvider<TransactionDetailBloc>(
                 create: (context) => TransactionDetailBloc(
-                  OrderRepository(appData),
-                ),
+                    OrderRepository(appData), UserRepository(appData)),
               ),
               BlocProvider<ProductAttributeBloc>(
                 create: (context) => ProductAttributeBloc(
@@ -285,6 +288,24 @@ class _AppState extends State<App> {
                 create: (context) => InviteStaffBloc(
                   PermissionRepository(appData),
                   StaffMemberRepository(appData),
+                ),
+              ),
+              BlocProvider<AddDetailProductBloc>(
+                create: (context) => AddDetailProductBloc(
+                  ProductRepository(appData),
+                  ProductTypeRepository(appData),
+                  AttributeValueRepository(appData),
+                  WarehouseRepository(appData),
+                ),
+              ),
+              BlocProvider<DetailProductBloc>(
+                create: (context) => DetailProductBloc(
+                  ProductRepository(appData),
+                ),
+              ),
+              BlocProvider<WarehouseBloc>(
+                create: (context) => WarehouseBloc(
+                  WarehouseRepository(appData),
                 ),
               ),
             ],

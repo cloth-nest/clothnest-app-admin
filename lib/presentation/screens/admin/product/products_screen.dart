@@ -153,6 +153,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
           setState(() {});
         },
       ),
+      const DataColumn2(
+        label: SizedBox(
+          width: 50,
+        ),
+        size: ColumnSize.S,
+        fixedWidth: 40,
+      ),
     ];
   }
 
@@ -161,20 +168,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
       controller: _controller,
       columns: _columns,
       productDataSource: productDataSourceAsync,
-      onPageChanged: (rowIndex) {
-        int page = (rowIndex / _rowsPerPage).round();
-        // _bloc.add(CategoriesPageChanged(
-        //     page: page, limit: _rowsPerPage, context: context));
-      },
+      onPageChanged: (rowIndex) {},
       onRowsPerPageChanged: (value) {
         _rowsPerPage = value!;
-        // _bloc.add(
-        //   CategoriesPageChanged(
-        //     page: 1,
-        //     limit: value,
-        //     context: context,
-        //   ),
-        // );
       },
     );
   }

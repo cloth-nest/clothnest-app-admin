@@ -1,22 +1,26 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery/data/models/products_data_source_async.dart';
+import 'package:grocery/data/models/warehouse_data_source_async.dart';
 import 'package:grocery/presentation/res/colors.dart';
 
-class ProductsTable extends StatelessWidget {
-  final ProductDataSourceAsync? productDataSource;
+class WarehousesTable extends StatelessWidget {
+  final WarehouseDataSourceAsync? warehouseDataSourceAsync;
   final PaginatorController controller;
   final List<DataColumn> columns;
   final Function(int?) onRowsPerPageChanged;
   final Function(int) onPageChanged;
+  final int rowsPerPage;
+  final bool sortAscending;
 
-  const ProductsTable({
+  const WarehousesTable({
     super.key,
-    this.productDataSource,
+    this.warehouseDataSourceAsync,
     required this.controller,
     required this.columns,
     required this.onRowsPerPageChanged,
     required this.onPageChanged,
+    required this.rowsPerPage,
+    required this.sortAscending,
   });
 
   @override
@@ -31,7 +35,8 @@ class ProductsTable extends StatelessWidget {
             columnSpacing: 20,
             wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
-            rowsPerPage: 10,
+            rowsPerPage: rowsPerPage,
+            minWidth: 800,
             fit: FlexFit.tight,
             border: const TableBorder(
               top: BorderSide(color: AppColors.gray),
@@ -48,17 +53,10 @@ class ProductsTable extends StatelessWidget {
             onPageChanged: (rowIndex) {
               onPageChanged(rowIndex);
             },
-            // sortColumnIndex: _sortColumnIndex,
-            // sortAscending: sortAscending,
+            sortColumnIndex: 1,
+            sortAscending: sortAscending,
             sortArrowIcon: Icons.keyboard_arrow_up,
             sortArrowAnimationDuration: const Duration(milliseconds: 0),
-            // onSelectAll: (select) => select != null && select
-            //     ? (getCurrentRouteOption(context) != selectAllPage
-            //         ? _dessertsDataSource!.selectAll()
-            //         : _dessertsDataSource!.selectAllOnThePage())
-            //     : (getCurrentRouteOption(context) != selectAllPage
-            //         ? _dessertsDataSource!.deselectAll()
-            //         : _dessertsDataSource!.deselectAllOnThePage()),
             controller: controller,
             columns: columns,
             hidePaginator: false,
@@ -69,7 +67,7 @@ class ProductsTable extends StatelessWidget {
                 child: const Text('No data'),
               ),
             ),
-            source: productDataSource!,
+            source: warehouseDataSourceAsync!,
           ),
         ],
       ),

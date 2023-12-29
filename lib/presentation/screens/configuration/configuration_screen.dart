@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/res/style.dart';
+import 'package:grocery/presentation/screens/admin/warehouse/warehouse_screen.dart';
 import 'package:grocery/presentation/screens/attributes/attributes_screen.dart';
 import 'package:grocery/presentation/screens/configuration/components/item_configuration.dart';
 import 'package:grocery/presentation/screens/permission/permission_screen.dart';
@@ -136,7 +137,33 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                   ),
                 ],
               ),
-            )
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Text(
+                'Shipping Settings',
+                style: AppStyles.regular,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const WarehouseScreen(),
+                    ),
+                  );
+                },
+                child: const ItemConfiguration(
+                  icon: AppAssets.iconWarehouse,
+                  title: 'Warehouses',
+                  description: 'Manage and update your warehouse information',
+                ),
+              ),
+            ),
           ],
         ),
       ),

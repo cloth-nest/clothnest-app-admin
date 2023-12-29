@@ -21,10 +21,10 @@ class _ItemUploadGroupState extends State<ItemUploadGroup> {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+        crossAxisCount: 5,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        childAspectRatio: 1.2,
+        childAspectRatio: 1,
       ),
       shrinkWrap: true,
       padding: const EdgeInsets.only(bottom: 16),

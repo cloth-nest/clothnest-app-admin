@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,16 @@ void main() async {
   );
   await FirebaseService().registerNotification();
   FirebaseMessaging.onBackgroundMessage(handleMessageBackground);
+
+  // final message = await FirebaseMessaging.instance.getInitialMessage();
+  // FirebaseMessaging.onMessageOpenedApp.listen((message) {
+  //   debugPrint('open app: ${message.from}');
+  // });
+
+  // if (message != null) {
+  //   debugPrint('on click: ${message.from}');
+  // }
+
   Bloc.observer = AppBlocObserver();
 
   runApp(const App());
