@@ -5,6 +5,7 @@ import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/admin/transactions/components/item_transaction.dart';
+import 'package:grocery/presentation/screens/admin/transactions/import_order_screen.dart';
 import 'package:grocery/presentation/screens/admin/transactions/transaction_detail_screen.dart';
 import 'package:grocery/presentation/services/admin/transaction_bloc/transaction_bloc.dart';
 
@@ -26,73 +27,108 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
           if (state is TransactionLoading) {
             return LoadingScreen().showLoadingWidget();
+          } else if (state is TransactionFailure) {
+            if (state.errorMessage == 'ForbiddenError') {
+              return Center(
+                child: Text(
+                  'You don\'t have permission to see transactions',
+                  style: AppStyles.medium.copyWith(color: Colors.red),
+                ),
+              );
+            }
+            return Center(
+              child: Text(state.errorMessage),
+            );
           } else if (state is TransactionSuccess) {
             List<OrderModel> orders = state.orders;
 
             return SafeArea(
-              child: Column(
-                children: [
-                  const SizedBox(height: 70),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  _bloc.add(TransactionStarted());
+                },
+                child: SingleChildScrollView(
+                  child: SizedBox(
+                    height: size.height,
+                    child: Column(
                       children: [
-                        Text(
-                          'Transactions',
-                          style: AppStyles.semibold,
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            'Import Order',
-                            style: AppStyles.medium.copyWith(
-                              color: AppColors.primary,
-                            ),
+                        const SizedBox(height: 70),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Transactions',
+                                style: AppStyles.semibold,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  final result =
+                                      await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => const ImportOrderScreen(),
+                                    ),
+                                  );
+                                  if (result != null) {
+                                    _bloc.add(TransactionStarted());
+                                  }
+                                },
+                                child: Text(
+                                  'Import Order',
+                                  style: AppStyles.medium.copyWith(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        const SizedBox(height: 20),
+                        Expanded(
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              OrderModel order = orders[index];
+                              return GestureDetector(
+                                onTap: () async {
+                                  final result =
+                                      await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => TransactionDetailScreen(
+                                        orderId: order.id,
+                                      ),
+                                    ),
+                                  );
+                                  if (result == true) {
+                                    _bloc.add(TransactionStarted());
+                                  }
+                                },
+                                child: ItemTransaction(
+                                  order: order,
+                                ),
+                              );
+                            },
+                            itemCount: orders.length,
+                          ),
+                        ),
+                        // const Align(
+                        //   alignment: Alignment.bottomCenter,
+                        //   child: Padding(
+                        //     padding: EdgeInsets.only(bottom: 30.0),
+                        //     child: SortFilterTransactions(),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        OrderModel order = orders[index];
-                        return GestureDetector(
-                          onTap: () async {
-                            final result = await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => TransactionDetailScreen(
-                                  orderId: order.id,
-                                ),
-                              ),
-                            );
-                            if (result == true) {
-                              _bloc.add(TransactionStarted());
-                            }
-                          },
-                          child: ItemTransaction(
-                            order: order,
-                          ),
-                        );
-                      },
-                      itemCount: orders.length,
-                    ),
-                  ),
-                  // const Align(
-                  //   alignment: Alignment.bottomCenter,
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(bottom: 30.0),
-                  //     child: SortFilterTransactions(),
-                  //   ),
-                  // ),
-                ],
+                ),
               ),
             );
           }

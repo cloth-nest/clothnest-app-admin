@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/product.dart';
 import 'package:grocery/data/models/product_type.dart';
 import 'package:grocery/data/models/product_types_data.dart';
@@ -50,6 +50,7 @@ class ProductsOverviewBloc
       ));
     } catch (e) {
       debugPrint('error started: $e');
+      emit(ProductsOverviewFailure(errorMessage: e.toString()));
     }
   }
 

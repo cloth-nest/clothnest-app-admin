@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery/data/models/order.dart';
 import 'package:grocery/data/models/order_model.dart';
 import 'package:grocery/data/models/transaction.dart';
 import 'package:grocery/data/repository/order_repository.dart';

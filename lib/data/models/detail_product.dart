@@ -10,6 +10,8 @@ class DetailProduct {
   final String description;
   final List<ProductImage> productImages;
   final ProductType productType;
+  final int variantId;
+  final double price;
   final bool? selected;
 
   DetailProduct({
@@ -18,6 +20,8 @@ class DetailProduct {
     required this.description,
     required this.productImages,
     required this.productType,
+    required this.variantId,
+    required this.price,
     this.selected,
   });
 
@@ -45,6 +49,8 @@ class DetailProduct {
       productType:
           ProductType.fromMap(map['productType'] as Map<String, dynamic>),
       selected: map['selected'] != null ? map['selected'] as bool : null,
+      variantId: map['productVariants'][0]['id'] ?? -1,
+      price: map['productVariants'][0]['price'] * 1.0 ?? 1.0,
     );
   }
 

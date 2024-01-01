@@ -36,13 +36,19 @@ class StatisticRepository extends IServiceAPI {
         _appData.headers,
       );
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       Statistic statistic = convertToObject(baseResponse.data);
       return statistic;
     } catch (e) {
       log('Error get statistic: $e');
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
-
-    return null;
   }
 
   Future<Statistic?> getStatisticByRange(

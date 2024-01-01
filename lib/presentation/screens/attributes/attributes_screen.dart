@@ -73,6 +73,8 @@ class _AttributesScreenState extends State<AttributesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(
@@ -97,58 +99,78 @@ class _AttributesScreenState extends State<AttributesScreen> {
             }
           }
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _bloc.add(ProductAttributeStarted(context));
+          },
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'All attributes',
-                    style: AppStyles.semibold,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      final result = await showDialog(
-                        context: context,
-                        builder: (_) => AddProductAttributeDialog(
-                          controller: TextEditingController(),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'All attributes',
+                          style: AppStyles.semibold,
                         ),
-                      );
-                      if (result != null && result != '') {
-                        _bloc.add(ProductAttributeAdded(context, result));
-                      }
-                    },
-                    child: Text(
-                      'Create attribute',
-                      style: AppStyles.medium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (_) => AddProductAttributeDialog(
+                                controller: TextEditingController(),
+                              ),
+                            );
+                            if (result != null && result != '') {
+                              _bloc.add(ProductAttributeAdded(context, result));
+                            }
+                          },
+                          child: Text(
+                            'Create attribute',
+                            style: AppStyles.medium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  BlocBuilder<ProductAttributeBloc, ProductAttributeState>(
+                      builder: (context, state) {
+                    if (state is ProductAttributeLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is ProductAttributeError) {
+                      if (state.errorMessage == 'ForbiddenError') {
+                        return Center(
+                          child: Text(
+                            'You don\'t have permission to see attributes',
+                            style: AppStyles.medium.copyWith(color: Colors.red),
+                          ),
+                        );
+                      }
+                      return Center(
+                        child: Text(state.errorMessage),
+                      );
+                    } else if (state is ProductAttributeLoaded) {
+                      dataSourceAsync = state.attributesDataSource;
+                      ProductAttributeDataSourceAsync? attributeDataSource =
+                          state.attributesDataSource;
+
+                      return _buildAttributeTable(attributeDataSource);
+                    }
+                    return LoadingScreen().showLoadingWidget();
+                  })
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            BlocBuilder<ProductAttributeBloc, ProductAttributeState>(
-                builder: (context, state) {
-              if (state is ProductAttributeLoading) {
-                return LoadingScreen().showLoadingWidget();
-              } else if (state is ProductAttributeError) {
-                return Text(state.errorMessage);
-              } else if (state is ProductAttributeLoaded) {
-                dataSourceAsync = state.attributesDataSource;
-                ProductAttributeDataSourceAsync? attributeDataSource =
-                    state.attributesDataSource;
-
-                return _buildAttributeTable(attributeDataSource);
-              }
-              return LoadingScreen().showLoadingWidget();
-            })
-          ],
+          ),
         ),
       ),
     );

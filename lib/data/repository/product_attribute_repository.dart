@@ -68,6 +68,11 @@ class ProductAttributeRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       AttributesData attributesData = AttributesData.fromMap(baseResponse.data);
@@ -75,6 +80,10 @@ class ProductAttributeRepository extends IServiceAPI {
       return attributesData;
     } catch (e) {
       log('error getProductAttributes:: $e');
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
   }

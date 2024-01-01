@@ -43,52 +43,75 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 70),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _bloc.add(CategoriesOverviewFetched(context: context));
+          },
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Categories',
-                    style: AppStyles.semibold,
-                  ),
-                  GestureDetector(
-                    onTap: () => handleAddCategory(null),
-                    child: Text(
-                      'Create category',
-                      style: AppStyles.medium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                  const SizedBox(height: 70),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Categories',
+                          style: AppStyles.semibold,
+                        ),
+                        GestureDetector(
+                          onTap: () => handleAddCategory(null),
+                          child: Text(
+                            'Create category',
+                            style: AppStyles.medium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  //list categories
+                  BlocBuilder<CategoriesOverviewBloc, CategoriesOverviewState>(
+                    builder: (context, state) {
+                      if (state is CategoriesOverviewLoading) {
+                        return LoadingScreen().showLoadingWidget();
+                      } else if (state is CategoriesOverviewFailure) {
+                        if (state.errorMessage == 'ForbiddenError') {
+                          return Center(
+                            child: Text(
+                              'You don\'t have permission to see categories',
+                              style:
+                                  AppStyles.medium.copyWith(color: Colors.red),
+                            ),
+                          );
+                        }
+                        return Center(
+                          child: Text(state.errorMessage),
+                        );
+                      } else if (state is CategoriesOverviewSuccess) {
+                        CategoryDataSourceAsync? categoryDataSource =
+                            state.categoryDataSource;
+
+                        return _buildCategoryTable(categoryDataSource);
+                      }
+                      return LoadingScreen().showLoadingWidget();
+                    },
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            //list categories
-            BlocBuilder<CategoriesOverviewBloc, CategoriesOverviewState>(
-              builder: (context, state) {
-                if (state is CategoriesOverviewLoading) {
-                  return LoadingScreen().showLoadingWidget();
-                } else if (state is CategoriesOverviewFailure) {
-                  return Text(state.errorMessage);
-                } else if (state is CategoriesOverviewSuccess) {
-                  CategoryDataSourceAsync? categoryDataSource =
-                      state.categoryDataSource;
-
-                  return _buildCategoryTable(categoryDataSource);
-                }
-                return LoadingScreen().showLoadingWidget();
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );

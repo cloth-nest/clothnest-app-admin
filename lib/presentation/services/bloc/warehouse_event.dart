@@ -14,3 +14,12 @@ class WarehouseStarted extends WarehouseEvent {
     required this.context,
   });
 }
+
+class WarehouseAdded extends WarehouseEvent {
+  final BuildContext context;
+  final String warehouseName;
+  const WarehouseAdded({
+    required this.context,
+    required this.warehouseName,
+  });
+}

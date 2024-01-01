@@ -11,6 +11,7 @@ class WarehouseRepository extends IServiceAPI {
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
   final String urlGetWarehouses = "${localURL}warehouse";
+  final String urlCreateWarehouses = "${localURL}warehouse";
 
   WarehouseRepository(this._appData);
 
@@ -27,6 +28,11 @@ class WarehouseRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       return (baseResponse.data as List)
@@ -34,7 +40,25 @@ class WarehouseRepository extends IServiceAPI {
           .toList();
     } catch (e) {
       log('error getWarehouses:: $e');
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
+  }
+
+  Future<void> createWarehouses({required String warehouseName}) async {
+    try {
+      await apiServices.post(
+        urlCreateWarehouses,
+        {
+          'warehouseName': warehouseName,
+        },
+        _appData.headers,
+      );
+    } catch (e) {
+      log('error createWarehouses:: $e');
+    }
   }
 }

@@ -1,11 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:grocery/data/repository/auth_repository.dart';
 import 'package:grocery/presentation/enum/enum.dart';
 
 part 'navigation_state.dart';
 
 class NavigationCubit extends Cubit<NavigationState> {
-  NavigationCubit()
+  final AuthRepository authRepository;
+
+  NavigationCubit(this.authRepository)
       : super(
           const NavigationState(
             navBarItem: NavBarItem.products,
@@ -35,5 +38,10 @@ class NavigationCubit extends Cubit<NavigationState> {
         emit(const NavigationState(navBarItem: NavBarItem.home, index: 3));
         break;
     }
+  }
+
+  void logOut() async {
+    await authRepository.logout();
+    emit(const NavigationState(navBarItem: NavBarItem.logout, index: 3));
   }
 }

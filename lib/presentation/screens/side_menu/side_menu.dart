@@ -59,14 +59,7 @@ class _SideMenuState extends State<SideMenu> {
                   title: 'Orders',
                 ),
               ),
-              SideMenuExpansionTile(
-                icon: AppAssets.iconDiscount,
-                title: 'Discounts',
-                subTitles: const ['Vouchers'],
-                callback: (value) {
-                  widget.callback(value);
-                },
-              ),
+              const SizedBox(height: 15),
               GestureDetector(
                 onTap: () {
                   widget.callback('Configuration');
@@ -74,6 +67,16 @@ class _SideMenuState extends State<SideMenu> {
                 child: const SideMenuTile(
                   icon: AppAssets.iconConfiguration,
                   title: 'Configuration',
+                ),
+              ),
+              const SizedBox(height: 15),
+              GestureDetector(
+                onTap: () {
+                  widget.callback('Logout');
+                },
+                child: const SideMenuTile(
+                  icon: AppAssets.iconConfiguration,
+                  title: 'Logout',
                 ),
               ),
             ],

@@ -50,7 +50,7 @@ class Product {
       name: map['name'] as String,
       description: map['description'] as String,
       image: map['image'],
-      productType: map['productType'] as String,
+      productType: map['productType'] ?? '',
     );
   }
 

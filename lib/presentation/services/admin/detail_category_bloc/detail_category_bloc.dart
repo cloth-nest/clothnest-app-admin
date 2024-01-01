@@ -61,12 +61,12 @@ class DetailCategoryBloc
     emit(FetchProductsLoading());
 
     try {
-      List<Product>? listProduct =
-          await productRepository.getProductsByIDCategory(event.idCategory);
+      // List<Product>? listProduct =
+      //     await productRepository.getProductsByIDCategory(event.idCategory);
 
-      if (listProduct != null) {
-        products = listProduct;
-      }
+      // if (listProduct != null) {
+      //   products = listProduct;
+      // }
 
       emit(FetchProductsSuccess(products: products));
     } catch (e) {

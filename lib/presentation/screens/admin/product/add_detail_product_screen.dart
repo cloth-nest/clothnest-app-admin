@@ -32,8 +32,8 @@ class _AddDetailProductScreenState extends State<AddDetailProductScreen> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController skuController = TextEditingController();
-
   final _addEditProductFormKey = GlobalKey<FormState>();
+
   AddDetailProductBloc get _bloc =>
       BlocProvider.of<AddDetailProductBloc>(context);
 
@@ -98,6 +98,7 @@ class _AddDetailProductScreenState extends State<AddDetailProductScreen> {
               selectedWarehouses?.add({
                 'warehouse': element['warehouse'],
                 'idWarehouse': element['idWarehouse'],
+                'controller': TextEditingController(),
               });
             }
 
@@ -262,11 +263,12 @@ class _AddDetailProductScreenState extends State<AddDetailProductScreen> {
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Row(
                                 children: [
-                                  Text(
-                                    map['warehouse'],
-                                    style: AppStyles.medium,
+                                  Expanded(
+                                    child: Text(
+                                      map['warehouse'],
+                                      style: AppStyles.medium,
+                                    ),
                                   ),
-                                  const Spacer(),
                                   SizedBox(
                                     width: 50,
                                     height: 50,

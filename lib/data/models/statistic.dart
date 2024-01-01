@@ -34,7 +34,7 @@ class Statistic {
     return Statistic(
       countedUser: map['countedUser'] ?? 0,
       countedProduct: map['countedProduct'] ?? 0,
-      revenue: map['totalRevenue'] * 1.0,
+      revenue: map['totalRevenue'] != null ? map['totalRevenue'] * 1.0 : 0.0,
       total: map['transaction'] ?? 0,
       finished: map['deliveredOrder'] ?? 0,
       inprogress: map['onProcessOrder'] ?? 0,

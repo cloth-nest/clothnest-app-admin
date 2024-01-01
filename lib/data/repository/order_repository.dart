@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
+import 'package:grocery/data/models/cart_entity.dart';
 import 'package:grocery/data/models/inventory.dart';
 import 'package:grocery/data/models/order.dart';
 import 'package:grocery/data/models/order_detail_model.dart';
@@ -23,6 +25,7 @@ class OrderRepository extends IServiceAPI {
   String urlUpdateStatus = "order/admin";
   String urlInventoryCheck = 'order/pre-order';
   String urlCheckCoupon = 'order/pre-order-cp';
+  String urlImportOrder = 'order/admin/import';
 
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
@@ -38,6 +41,7 @@ class OrderRepository extends IServiceAPI {
     urlInventoryCheck = localURL + urlInventoryCheck;
     urlCheckCoupon = localURL + urlCheckCoupon;
     urlGetDetailOrder = localURL + urlGetDetailOrder;
+    urlImportOrder = localURL + urlImportOrder;
   }
 
   @override
@@ -91,6 +95,32 @@ class OrderRepository extends IServiceAPI {
       return false;
     }
     return true;
+  }
+
+  Future<void> importOrder({
+    required List<CartEntity> carts,
+    required int warehouseId,
+  }) async {
+    try {
+      final response = await apiServices.post(
+        urlImportOrder,
+        {
+          'warehouseId': warehouseId,
+          'carts': carts
+              .map(
+                (e) => {
+                  'variantId': e.variantId,
+                  'quantity': e.quantity,
+                },
+              )
+              .toList(),
+        },
+        _appData.headers,
+      );
+      print(response);
+    } catch (e) {
+      log('Error importOrder: $e');
+    }
   }
 
   Future<void> createOrder(Order order) async {
@@ -167,12 +197,20 @@ class OrderRepository extends IServiceAPI {
 
       final BaseResponse baseResponse = BaseResponse.fromJson(response);
 
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       for (var json in baseResponse.data['orders']) {
         OrderModel order = OrderModel.fromMap(json);
         orders.add(order);
       }
     } catch (e) {
       log("error get all orders: $e");
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
 
     return orders;

@@ -58,11 +58,11 @@ class OrderModel {
       status: map['status'] as String,
       total: map['total'] * 1.0,
       createdAt: map['createdAt'] as String,
-      deliveryMethod: map['deliveryMethod'] as String,
+      deliveryMethod: map['deliveryMethod'] ?? '',
       paymentMethod: map['paymentMethod'] as String,
       paymentStatus: map['paymentStatus'] as String,
-      firstName: map['user']['firstName'] as String,
-      lastName: map['user']['lastName'] as String,
+      firstName: map['user'] == null ? '' : map['user']['firstName'] ?? '',
+      lastName: map['user'] == null ? '' : map['user']['lastName'] ?? '',
     );
   }
 

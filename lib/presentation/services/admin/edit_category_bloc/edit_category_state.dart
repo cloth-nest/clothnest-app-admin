@@ -29,9 +29,11 @@ class EditCategorySuccess extends EditCategoryState {
 
 class EditCategoryLoaded extends EditCategoryState {
   final CategoryDataSourceAsync? categoryDataSource;
+  final ProductDataSourceAsync? productDataSourceAsync;
 
   const EditCategoryLoaded({
     required this.categoryDataSource,
+    required this.productDataSourceAsync,
   });
 }
 

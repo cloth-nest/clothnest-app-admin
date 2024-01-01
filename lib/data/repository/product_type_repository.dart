@@ -103,6 +103,11 @@ class ProductTypeRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       ProductTypesData productTypesData =
@@ -111,6 +116,9 @@ class ProductTypeRepository extends IServiceAPI {
       return productTypesData;
     } catch (e) {
       log('error getProductTypeData:: $e');
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
   }

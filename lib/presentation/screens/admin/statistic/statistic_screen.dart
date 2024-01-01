@@ -35,11 +35,24 @@ class _StatisticScreenState extends State<StatisticScreen> {
         listener: (context, state) {
           if (state is StatisticLoading) {
             return LoadingScreen().show(context: context);
-          } else if (state is StatisticSuccess) {
+          } else {
             LoadingScreen().hide();
           }
         },
         builder: (context, state) {
+          if (state is StatisticFailure) {
+            if (state.errorMessage == 'ForbiddenError') {
+              return Center(
+                child: Text(
+                  'You don\'t have permission to see statistics',
+                  style: AppStyles.medium.copyWith(color: Colors.red),
+                ),
+              );
+            }
+            return Center(
+              child: Text(state.errorMessage),
+            );
+          }
           if (state is StatisticSuccess) {
             Statistic statistic = state.statistic;
             return SafeArea(
@@ -49,181 +62,187 @@ class _StatisticScreenState extends State<StatisticScreen> {
                   right: 20,
                   top: 20,
                 ),
-                child: ListView(
-                  children: [
-                    const SizedBox(height: 70),
-                    Text(
-                      'Overview',
-                      style: AppStyles.bold.copyWith(
-                        fontSize: 18,
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    _bloc.add(StatisticStarted());
+                  },
+                  child: ListView(
+                    children: [
+                      const SizedBox(height: 70),
+                      Text(
+                        'Overview',
+                        style: AppStyles.bold.copyWith(
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Box(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 10,
-                      ),
-                      margin: const EdgeInsets.only(top: 10.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Revenue',
-                            style: AppStyles.medium,
-                          ),
-                          const Divider(color: AppColors.text),
-                          Text(
-                            statistic.revenue.toMoney,
-                            style: AppStyles.bold.copyWith(
-                              color: AppColors.secondary,
-                              fontSize: 20,
+                      const SizedBox(height: 10),
+                      Box(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 10,
+                        ),
+                        margin: const EdgeInsets.only(top: 10.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Revenue',
+                              style: AppStyles.medium,
                             ),
-                          )
+                            const Divider(color: AppColors.text),
+                            Text(
+                              statistic.revenue.toMoney,
+                              style: AppStyles.bold.copyWith(
+                                color: AppColors.secondary,
+                                fontSize: 20,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Box(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 10,
+                              ),
+                              margin: const EdgeInsets.only(top: 10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Transactions',
+                                    style: AppStyles.medium,
+                                  ),
+                                  const Divider(color: AppColors.text),
+                                  const SizedBox(height: 15),
+                                  Text(
+                                    statistic.total.toString(),
+                                    style: AppStyles.semibold,
+                                  ),
+                                  const SizedBox(height: 15),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Box(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
+                              ),
+                              margin: const EdgeInsets.only(top: 10.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const SizedBox(height: 10),
+                                  ItemStat(
+                                      title: 'Finished',
+                                      number: statistic.finished,
+                                      color: AppColors.primary),
+                                  const SizedBox(height: 10),
+                                  ItemStat(
+                                    title: 'In progress',
+                                    number: statistic.inprogress,
+                                    color: const Color(0xFFFBC02D),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ItemStat(
+                                    title: 'Cancelled',
+                                    number: statistic.cancelled,
+                                    color: const Color(0xFFFF0000),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Box(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 10,
-                            ),
-                            margin: const EdgeInsets.only(top: 10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Transactions',
-                                  style: AppStyles.medium,
-                                ),
-                                const Divider(color: AppColors.text),
-                                const SizedBox(height: 15),
-                                Text(
-                                  statistic.total.toString(),
-                                  style: AppStyles.semibold,
-                                ),
-                                const SizedBox(height: 15),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Box(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            margin: const EdgeInsets.only(top: 10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                const SizedBox(height: 10),
-                                ItemStat(
-                                    title: 'Finished',
-                                    number: statistic.finished,
-                                    color: AppColors.primary),
-                                const SizedBox(height: 10),
-                                ItemStat(
-                                  title: 'In progress',
-                                  number: statistic.inprogress,
-                                  color: const Color(0xFFFBC02D),
-                                ),
-                                const SizedBox(height: 10),
-                                ItemStat(
-                                  title: 'Cancelled',
-                                  number: statistic.cancelled,
-                                  color: const Color(0xFFFF0000),
-                                ),
-                              ],
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Box(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 10,
+                              ),
+                              margin: const EdgeInsets.only(top: 10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Users',
+                                    style: AppStyles.medium,
+                                  ),
+                                  const Divider(color: AppColors.text),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    statistic.countedUser.toString(),
+                                    style: AppStyles.semibold,
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Box(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 10,
-                            ),
-                            margin: const EdgeInsets.only(top: 10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Users',
-                                  style: AppStyles.medium,
-                                ),
-                                const Divider(color: AppColors.text),
-                                const SizedBox(height: 10),
-                                Text(
-                                  statistic.countedUser.toString(),
-                                  style: AppStyles.semibold,
-                                ),
-                                const SizedBox(height: 10),
-                              ],
+                          const SizedBox(width: 30),
+                          Image.asset(AppAssets.icChart),
+                          const SizedBox(width: 30),
+                          Expanded(
+                            child: Box(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 10,
+                              ),
+                              margin: const EdgeInsets.only(top: 10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Products',
+                                    style: AppStyles.medium,
+                                  ),
+                                  const Divider(color: AppColors.text),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    statistic.countedProduct.toString(),
+                                    style: AppStyles.semibold,
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 30),
-                        Image.asset(AppAssets.icChart),
-                        const SizedBox(width: 30),
-                        Expanded(
-                          child: Box(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 10,
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      const Divider(color: AppColors.text),
+                      const SizedBox(height: 15),
+                      Text(
+                        'Explore detail',
+                        style: AppStyles.bold.copyWith(fontSize: 18),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        'View statistics by date, month or year.',
+                        style: AppStyles.medium,
+                      ),
+                      const SizedBox(height: 30),
+                      CustomButton(
+                        content: 'View Detail',
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const DetailStatisticScreen(),
                             ),
-                            margin: const EdgeInsets.only(top: 10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Products',
-                                  style: AppStyles.medium,
-                                ),
-                                const Divider(color: AppColors.text),
-                                const SizedBox(height: 10),
-                                Text(
-                                  statistic.countedProduct.toString(),
-                                  style: AppStyles.semibold,
-                                ),
-                                const SizedBox(height: 10),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    const Divider(color: AppColors.text),
-                    const SizedBox(height: 15),
-                    Text(
-                      'Explore detail',
-                      style: AppStyles.bold.copyWith(fontSize: 18),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'View statistics by date, month or year.',
-                      style: AppStyles.medium,
-                    ),
-                    const SizedBox(height: 30),
-                    CustomButton(
-                      content: 'View Detail',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const DetailStatisticScreen(),
-                          ),
-                        );
-                      },
-                      color: AppColors.primary,
-                      margin: 0,
-                    )
-                  ],
+                          );
+                        },
+                        color: AppColors.primary,
+                        margin: 0,
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

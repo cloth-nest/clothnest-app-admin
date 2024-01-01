@@ -14,7 +14,7 @@ class AuthRepository extends IServiceAPI {
   String urlRegister = 'auth/register';
   String urlLogin = 'auth/sign-in';
   String urlRefreshToken = 'auth/refresh-token';
-  String urlLogout = "auth/logout";
+  String urlLogout = "auth/sign-out";
 
   final BaseApiServices apiServices = NetworkApiService();
   final FirebaseService firebaseService = FirebaseService();
@@ -34,9 +34,9 @@ class AuthRepository extends IServiceAPI {
 
   Future<void> logout() async {
     try {
-      await apiServices.delete(
+      await apiServices.post(
         urlLogout,
-        {},
+        {"refreshToken": _appData.refreshToken},
         _appData.headers,
       );
     } catch (e) {

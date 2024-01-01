@@ -16,3 +16,11 @@ class WarehouseInitial extends WarehouseState {
 }
 
 class WarehouseLoading extends WarehouseState {}
+
+class AddWarehouseSuccess extends WarehouseState {}
+
+class WarehouseFailure extends WarehouseState {
+  final String errorMessage;
+
+  const WarehouseFailure({required this.errorMessage});
+}

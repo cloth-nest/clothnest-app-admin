@@ -111,6 +111,11 @@ class StaffMemberRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       StaffsData staffsData = StaffsData.fromMap(baseResponse.data);
@@ -118,6 +123,10 @@ class StaffMemberRepository extends IServiceAPI {
       return staffsData;
     } catch (e) {
       log('error getStaffMemberData:: $e');
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
   }

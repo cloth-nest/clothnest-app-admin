@@ -37,8 +37,7 @@ class CategoryDetailBloc
     ));
 
     try {
-      List<Product>? result =
-          await _productRepository.getProductsByIDCategory(event.idCategory);
+      List<Product>? result = [];
       products = result!;
       emit(CategoryDetailSuccess(
         products: products,

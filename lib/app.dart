@@ -27,6 +27,7 @@ import 'package:grocery/presentation/services/admin/add_category_bloc/add_catego
 import 'package:grocery/presentation/services/admin/add_edit_coupon_bloc/add_edit_coupon_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_product_bloc/add_product_bloc.dart';
 import 'package:grocery/presentation/services/admin/bloc/add_permission_group_bloc.dart';
+import 'package:grocery/presentation/services/admin/bloc/import_order_bloc.dart';
 import 'package:grocery/presentation/services/admin/coupon_bloc/coupon_bloc.dart'
     as admin;
 import 'package:grocery/presentation/services/admin/transaction_bloc/transaction_bloc.dart';
@@ -100,7 +101,9 @@ class _AppState extends State<App> {
           return MultiBlocProvider(
             providers: [
               BlocProvider<NavigationCubit>(
-                create: (context) => NavigationCubit(),
+                create: (context) => NavigationCubit(
+                  AuthRepository(appData),
+                ),
               ),
               BlocProvider<AuthenticationBloc>(
                 create: (context) => AuthenticationBloc(
@@ -130,8 +133,7 @@ class _AppState extends State<App> {
               ),
               BlocProvider<EditCategoryBloc>(
                 create: (context) => EditCategoryBloc(
-                  CategoryRepository(appData),
-                ),
+                    CategoryRepository(appData), ProductRepository(appData)),
               ),
               BlocProvider<ProductsOverviewBloc>(
                 create: (context) => ProductsOverviewBloc(
@@ -306,6 +308,13 @@ class _AppState extends State<App> {
               BlocProvider<WarehouseBloc>(
                 create: (context) => WarehouseBloc(
                   WarehouseRepository(appData),
+                ),
+              ),
+              BlocProvider<ImportOrderBloc>(
+                create: (context) => ImportOrderBloc(
+                  WarehouseRepository(appData),
+                  ProductRepository(appData),
+                  OrderRepository(appData),
                 ),
               ),
             ],

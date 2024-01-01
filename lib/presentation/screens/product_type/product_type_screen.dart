@@ -72,6 +72,8 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(
@@ -85,58 +87,78 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
         listener: (context, state) {
           if (state is ProductAttributeLoaded) {}
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _bloc.add(ProductTypeStarted(context));
+          },
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'All Product Types',
-                    style: AppStyles.semibold,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      final result = await showDialog(
-                        context: context,
-                        builder: (_) => AddProductTypeDialog(
-                          controller: TextEditingController(),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'All Product Types',
+                          style: AppStyles.semibold,
                         ),
-                      );
-                      if (result != null) {
-                        _bloc.add(ProductTypeAdded(context, result));
-                      }
-                    },
-                    child: Text(
-                      'Create product type',
-                      style: AppStyles.medium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (_) => AddProductTypeDialog(
+                                controller: TextEditingController(),
+                              ),
+                            );
+                            if (result != null) {
+                              _bloc.add(ProductTypeAdded(context, result));
+                            }
+                          },
+                          child: Text(
+                            'Create product type',
+                            style: AppStyles.medium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  BlocBuilder<ProductTypeBloc, ProductTypeState>(
+                      builder: (context, state) {
+                    if (state is ProductTypeLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is ProductTypeError) {
+                      if (state.errorMessage == 'ForbiddenError') {
+                        return Center(
+                          child: Text(
+                            'You don\'t have permission to see product types',
+                            style: AppStyles.medium.copyWith(color: Colors.red),
+                          ),
+                        );
+                      }
+                      return Center(
+                        child: Text(state.errorMessage),
+                      );
+                    } else if (state is ProductTypeLoaded) {
+                      dataSourceAsync = state.productTypeDataSourceAsync;
+                      ProductTypeDataSourceAsync? productTypeDataSourceAsync =
+                          state.productTypeDataSourceAsync;
+
+                      return _buildProductTypeTable(productTypeDataSourceAsync);
+                    }
+                    return LoadingScreen().showLoadingWidget();
+                  })
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            BlocBuilder<ProductTypeBloc, ProductTypeState>(
-                builder: (context, state) {
-              if (state is ProductTypeLoading) {
-                return LoadingScreen().showLoadingWidget();
-              } else if (state is ProductTypeError) {
-                return Text(state.errorMessage);
-              } else if (state is ProductTypeLoaded) {
-                dataSourceAsync = state.productTypeDataSourceAsync;
-                ProductTypeDataSourceAsync? productTypeDataSourceAsync =
-                    state.productTypeDataSourceAsync;
-
-                return _buildProductTypeTable(productTypeDataSourceAsync);
-              }
-              return LoadingScreen().showLoadingWidget();
-            })
-          ],
+          ),
         ),
       ),
     );

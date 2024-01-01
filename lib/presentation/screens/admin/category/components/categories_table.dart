@@ -31,28 +31,8 @@ class CategoriesTable extends StatelessWidget {
             columnSpacing: 20,
             wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
-
-            /// TODO: add search category
-            // header: Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   mainAxisSize: MainAxisSize.max,
-            //   children: [
-
-            //     // if (kDebugMode && getCurrentRouteOption(context) == custPager)
-            //     //   Row(children: [
-            //     //     OutlinedButton(
-            //     //         onPressed: () => _controller.goToPageWithRow(25),
-            //     //         child: const Text('Go to row 25')),
-            //     //     OutlinedButton(
-            //     //         onPressed: () => _controller.goToRow(5),
-            //     //         child: const Text('Go to row 5'))
-            //     //   ]),
-            //     // if (getCurrentRouteOption(context) == custPager)
-            //     //   PageNumber(controller: _controller)
-            //   ],
-            // ),
+            minWidth: 600,
             rowsPerPage: 10,
-            minWidth: 800,
             fit: FlexFit.tight,
             border: const TableBorder(
               top: BorderSide(color: AppColors.gray),

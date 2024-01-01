@@ -33,6 +33,11 @@ class PermissionRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       PermissionsData staffsData = PermissionsData.fromMap(baseResponse.data);
@@ -40,6 +45,10 @@ class PermissionRepository extends IServiceAPI {
       return staffsData;
     } catch (e) {
       log('error getPermissionData:: $e');
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
   }
@@ -52,6 +61,11 @@ class PermissionRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       return List.from(baseResponse.data['permissions'])
@@ -59,6 +73,10 @@ class PermissionRepository extends IServiceAPI {
           .toList();
     } catch (e) {
       log('error getPermissionData:: $e');
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
   }

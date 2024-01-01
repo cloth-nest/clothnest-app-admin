@@ -21,6 +21,7 @@ class ProductRepository extends IServiceAPI {
   final AppData _appData;
   final String urlAddProduct = "${localURL}product/admin";
   final String urlGetProducts = "${localURL}product/admin?page=1&limit=0";
+  final String urlGetProductsBelongToCategory = "${localURL}product/category";
   final String urlGetDetailProduct = "${localURL}product/admin";
   final String urlCreatBulkImages = "${localURL}product/admin/image";
   final String urlCreatProductVariant = "${localURL}product/admin/variant";
@@ -36,26 +37,23 @@ class ProductRepository extends IServiceAPI {
     return Product.fromMap(value);
   }
 
-  Future<List<Product>?> getProductsByIDCategory(int idCategory) async {
-    List<Product> products = [];
-
+  Future<ProductsData?> getProductsByIDCategory(int idCategory) async {
     var response;
     try {
       response = await apiServices.get(
-        '$urlGetProducts/$idCategory',
+        '$urlGetProductsBelongToCategory/$idCategory?page=1&limit=0',
         _appData.headers,
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
 
-      if (baseResponse.data == null) return null;
-
-      for (var json in baseResponse.data) {
-        Product product = Product.fromMap(json);
-        products.add(product);
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
       }
 
-      return products;
+      if (baseResponse.data == null) return null;
+
+      return ProductsData.fromMap(baseResponse.data);
     } catch (e) {
       log("error get products belong category: $e");
     }
@@ -94,11 +92,19 @@ class ProductRepository extends IServiceAPI {
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
 
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       return ProductsData.fromMap(baseResponse.data);
     } catch (e) {
       log("error get products: $e");
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
 
     return null;

@@ -41,15 +41,23 @@ class CategoryRepository extends IServiceAPI {
             : '${urlGetCategories}page=$page&limit=0&parentId=$parentId',
         _appData.headers,
       );
+      BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
+      if (baseResponse.data == null) return null;
+
+      CategoriesData categoriesData = CategoriesData.fromMap(baseResponse.data);
+
+      return categoriesData;
     } catch (e) {
       log("error get categories: $e");
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
-    BaseResponse baseResponse = BaseResponse.fromJson(response);
-    if (baseResponse.data == null) return null;
-
-    CategoriesData categoriesData = CategoriesData.fromMap(baseResponse.data);
-
-    return categoriesData;
   }
 
   Future<Category> addCategory(String name, File? file, int? parentId) async {

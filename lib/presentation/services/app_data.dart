@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String fakeAccessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDM4MzUyNzEsImV4cCI6MTcwMzg3MTI3MX0.sdTbMQrbmq9tFp48YCC_g-TR1SgeD0zHDiLvorPfHoQ';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiIgUm9vdCIsImVtYWlsIjoicm9vdEBjbG90aG5lc3Qudm4iLCJpYXQiOjE3MDQwNzg5MTIsImV4cCI6MTcwNDExNDkxMn0.MHAi76oIo-ycjw2artFd34xw2Y9Dd107LlPGcq1viZw';
 
 class AppData extends ChangeNotifier {
   late final Future<SharedPreferences> sharedPreferences;
@@ -78,6 +78,7 @@ class AppData extends ChangeNotifier {
   AppData(this.sharedPreferences) {
     getTypeLanguage();
     //getToken();
+    //*fHZnAEiGIenFDeCdBud
 
     //initHeaders();
   }
@@ -87,7 +88,7 @@ class AppData extends ChangeNotifier {
       _headers = {
         'Accept': '*/*',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $fakeAccessToken',
+        'Authorization': 'Bearer $_accessToken',
       };
       notifyListeners();
     } else {

@@ -7,10 +7,10 @@ import 'package:grocery/data/models/warehouse_data_source_async.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
+import 'package:grocery/presentation/screens/admin/warehouse/components/add_warehouse_dialog.dart';
 import 'package:grocery/presentation/screens/admin/warehouse/warehouse_table.dart';
 import 'package:grocery/presentation/services/bloc/warehouse_bloc.dart';
 
-import 'package:grocery/presentation/utils/functions.dart';
 import 'package:grocery/presentation/widgets/custom_app_bar.dart';
 
 class WarehouseScreen extends StatefulWidget {
@@ -42,7 +42,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
   List<DataColumn> get _columns {
     return [
-      DataColumn(
+      DataColumn2(
+        fixedWidth: 40,
         label: const Align(
           alignment: Alignment.centerLeft,
           child: Text('Id'),
@@ -74,6 +75,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(
@@ -85,46 +88,84 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       ),
       body: BlocListener<WarehouseBloc, WarehouseState>(
         listener: (context, state) {},
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _bloc.add(WarehouseStarted(context: context));
+          },
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'All Warehouses',
-                    style: AppStyles.semibold,
-                  ),
-                  GestureDetector(
-                    onTap: () async {},
-                    child: Text(
-                      'Create Warehouse',
-                      style: AppStyles.medium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'All Warehouses',
+                          style: AppStyles.semibold,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (_) => AddWarehouseDialog(
+                                controller: TextEditingController(),
+                              ),
+                            );
+
+                            if (result != null) {
+                              _bloc.add(
+                                WarehouseAdded(
+                                  context: context,
+                                  warehouseName: result,
+                                ),
+                              );
+                            }
+                          },
+                          child: Text(
+                            'Create Warehouse',
+                            style: AppStyles.medium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  BlocBuilder<WarehouseBloc, WarehouseState>(
+                      builder: (context, state) {
+                    if (state is WarehouseLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is WarehouseInitial) {
+                      WarehouseDataSourceAsync? warehouseDataSourceAsync =
+                          WarehouseDataSourceAsync(
+                              warehouses: state.warehouses, context: context);
+
+                      return _buildWarehouseTable(warehouseDataSourceAsync);
+                    } else if (state is WarehouseFailure) {
+                      if (state.errorMessage == 'ForbiddenError') {
+                        return Center(
+                          child: Text(
+                            'You don\'t have permission to see warehouses',
+                            style: AppStyles.medium.copyWith(color: Colors.red),
+                          ),
+                        );
+                      }
+                      return Center(
+                        child: Text(state.errorMessage),
+                      );
+                    }
+                    return LoadingScreen().showLoadingWidget();
+                  })
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            BlocBuilder<WarehouseBloc, WarehouseState>(
-                builder: (context, state) {
-              if (state is WarehouseLoading) {
-                return LoadingScreen().showLoadingWidget();
-              } else if (state is WarehouseInitial) {
-                WarehouseDataSourceAsync? warehouseDataSourceAsync =
-                    WarehouseDataSourceAsync(
-                        warehouses: state.warehouses, context: context);
-
-                return _buildWarehouseTable(warehouseDataSourceAsync);
-              }
-              return LoadingScreen().showLoadingWidget();
-            })
-          ],
+          ),
         ),
       ),
     );

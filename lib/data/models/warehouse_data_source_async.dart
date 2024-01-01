@@ -82,7 +82,7 @@ class WarehouseDataSourceAsync extends AsyncDataTableSource {
   int Function(Warehouse, Warehouse)? _getComparisonFunction(bool ascending) {
     var coef = ascending ? 1 : -1;
 
-    return (Warehouse d1, Warehouse d2) => coef * d1.name.compareTo(d2.name);
+    return (Warehouse d1, Warehouse d2) => coef * d1.id.compareTo(d2.id);
   }
 
   @override
@@ -100,14 +100,14 @@ class WarehouseDataSourceAsync extends AsyncDataTableSource {
 
     await Future.delayed(const Duration(milliseconds: 400));
 
-    List<Warehouse> staffs = warehouses;
+    List<Warehouse> staffs = [...warehouses];
     staffs.sort(_getComparisonFunction(_sortAscending));
 
-    staffs.skip(startIndex).take(count).toList();
+    List<Warehouse> results = staffs.skip(startIndex).take(count).toList();
 
     var r = AsyncRowsResponse(
         warehouses.length,
-        staffs.map((staff) {
+        results.map((staff) {
           return DataRow(
             key: ValueKey<int>(staff.id),
             selected: staff.selected ?? false,

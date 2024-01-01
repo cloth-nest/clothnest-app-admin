@@ -9,6 +9,7 @@ import 'package:grocery/presentation/screens/admin/category/categories_screen.da
 import 'package:grocery/presentation/screens/admin/product/products_screen.dart';
 import 'package:grocery/presentation/screens/admin/statistic/statistic_screen.dart';
 import 'package:grocery/presentation/screens/admin/transactions/transaction_screen.dart';
+import 'package:grocery/presentation/screens/authentication/login_screen.dart';
 import 'package:grocery/presentation/screens/cart/cart_screen.dart';
 import 'package:grocery/presentation/screens/configuration/configuration_screen.dart';
 import 'package:grocery/presentation/screens/side_menu/side_menu.dart';
@@ -107,6 +108,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                         .getNavBarItem(NavBarItem.order);
                     break;
 
+                  case 'Logout':
+                    BlocProvider.of<NavigationCubit>(context).logOut();
+                    break;
                   default:
                 }
               },
@@ -136,6 +140,15 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                         return const ProductsScreen();
                       } else if (state.navBarItem == NavBarItem.home) {
                         return const StatisticScreen();
+                      } else if (state.navBarItem == NavBarItem.logout) {
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((timeStamp) {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          );
+                        });
                       }
                       return const ConfigurationScreen();
                     },

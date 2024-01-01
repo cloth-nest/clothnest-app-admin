@@ -82,6 +82,11 @@ class AttributeValueRepository extends IServiceAPI {
       );
 
       BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
       if (baseResponse.data == null) return null;
 
       AttributeValuesData attributesData =
@@ -90,6 +95,10 @@ class AttributeValueRepository extends IServiceAPI {
       return attributesData;
     } catch (e) {
       log('error getAttributeValues:: $e');
+
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
     }
     return null;
   }

@@ -20,7 +20,7 @@ class ItemConfiguration extends StatelessWidget {
 
     return Container(
       width: size.width / 2,
-      height: 100,
+      height: 114,
       decoration: BoxDecoration(
         border: Border.all(width: 0.5),
         borderRadius: BorderRadius.circular(8),

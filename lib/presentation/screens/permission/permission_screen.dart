@@ -71,6 +71,8 @@ class _PermissionScreenState extends State<PermissionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(
@@ -82,57 +84,78 @@ class _PermissionScreenState extends State<PermissionScreen> {
       ),
       body: BlocListener<PermissionBloc, PermissionState>(
         listener: (context, state) {},
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _bloc.add(PermissionStarted(context));
+          },
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'All Permission Groups',
-                    style: AppStyles.semibold,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      final isAdded = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const AddPermissionGroupScreen(),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'All Permission Groups',
+                          style: AppStyles.semibold,
                         ),
-                      );
-                      if (isAdded) {
-                        _bloc.add(PermissionStarted(context));
-                      }
-                    },
-                    child: Text(
-                      'Create permission group',
-                      style: AppStyles.medium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                        GestureDetector(
+                          onTap: () async {
+                            final isAdded = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const AddPermissionGroupScreen(),
+                              ),
+                            );
+                            if (isAdded) {
+                              _bloc.add(PermissionStarted(context));
+                            }
+                          },
+                          child: Text(
+                            'Create permission group',
+                            style: AppStyles.medium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  BlocBuilder<PermissionBloc, PermissionState>(
+                      builder: (context, state) {
+                    if (state is PermissionLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is PermissionError) {
+                      if (state.errorMessage == 'ForbiddenError') {
+                        return Center(
+                          child: Text(
+                            'You don\'t have permission to see permissions',
+                            style: AppStyles.medium.copyWith(color: Colors.red),
+                          ),
+                        );
+                      }
+                      return Center(
+                        child: Text(state.errorMessage),
+                      );
+                    } else if (state is PermissionLoaded) {
+                      dataSourceAsync = state.permissionDataSourceAsync;
+                      PermissionDataSourceAsync? permissionDataSourceAsync =
+                          state.permissionDataSourceAsync;
+
+                      return _buildPermissionTable(permissionDataSourceAsync);
+                    }
+                    return LoadingScreen().showLoadingWidget();
+                  })
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            BlocBuilder<PermissionBloc, PermissionState>(
-                builder: (context, state) {
-              if (state is PermissionLoading) {
-                return LoadingScreen().showLoadingWidget();
-              } else if (state is PermissionError) {
-                return Text(state.errorMessage);
-              } else if (state is PermissionLoaded) {
-                dataSourceAsync = state.permissionDataSourceAsync;
-                PermissionDataSourceAsync? permissionDataSourceAsync =
-                    state.permissionDataSourceAsync;
-
-                return _buildPermissionTable(permissionDataSourceAsync);
-              }
-              return LoadingScreen().showLoadingWidget();
-            })
-          ],
+          ),
         ),
       ),
     );

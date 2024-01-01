@@ -36,7 +36,7 @@ class WarehousesTable extends StatelessWidget {
             wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
             rowsPerPage: rowsPerPage,
-            minWidth: 800,
+            minWidth: 550,
             fit: FlexFit.tight,
             border: const TableBorder(
               top: BorderSide(color: AppColors.gray),

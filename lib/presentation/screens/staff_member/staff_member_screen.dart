@@ -87,6 +87,8 @@ class _StaffMemberScreenState extends State<StaffMemberScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(
@@ -113,73 +115,93 @@ class _StaffMemberScreenState extends State<StaffMemberScreen> {
           }
           //return LoadingScreen().hide();
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _bloc.add(StaffMemberStarted(context));
+          },
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'All Staff Members',
-                    style: AppStyles.semibold,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      final result = await showDialog(
-                        context: context,
-                        builder: (_) => const InviteStaffMemberDialog(),
-                      );
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'All Staff Members',
+                          style: AppStyles.semibold,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (_) => const InviteStaffMemberDialog(),
+                            );
 
-                      if (result != null) {
-                        String firstName = result[0];
-                        String lastName = result[1];
-                        String email = result[2];
-                        bool isActive = result[3];
-                        List<int> groupPermissionIds =
-                            (result[4] as List<GroupPermission>)
-                                .map((e) => e.id)
-                                .toList();
+                            if (result != null) {
+                              String firstName = result[0];
+                              String lastName = result[1];
+                              String email = result[2];
+                              bool isActive = result[3];
+                              List<int> groupPermissionIds =
+                                  (result[4] as List<GroupPermission>)
+                                      .map((e) => e.id)
+                                      .toList();
 
-                        _bloc.add(StaffMemberAdded(
-                          firstName,
-                          lastName,
-                          email,
-                          isActive,
-                          groupPermissionIds,
-                          context,
-                        ));
-                      }
-                    },
-                    child: Text(
-                      'Invite staff member',
-                      style: AppStyles.medium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                              _bloc.add(StaffMemberAdded(
+                                firstName,
+                                lastName,
+                                email,
+                                isActive,
+                                groupPermissionIds,
+                                context,
+                              ));
+                            }
+                          },
+                          child: Text(
+                            'Invite staff member',
+                            style: AppStyles.medium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  BlocBuilder<StaffMemberBloc, StaffMemberState>(
+                      builder: (context, state) {
+                    if (state is StaffMemberLoading) {
+                      return LoadingScreen().showLoadingWidget();
+                    } else if (state is StaffMemberError) {
+                      if (state.errorMessage == 'ForbiddenError') {
+                        return Center(
+                          child: Text(
+                            'You don\'t have permission to see staffs',
+                            style: AppStyles.medium.copyWith(color: Colors.red),
+                          ),
+                        );
+                      }
+                      return Center(
+                        child: Text(state.errorMessage),
+                      );
+                    } else if (state is StaffMemberLoaded) {
+                      dataSourceAsync = state.staffDataSourceAsync;
+                      StaffDataSourceAsync? staffDataSourceAsync =
+                          state.staffDataSourceAsync;
+
+                      return _buildStaffMemberTable(staffDataSourceAsync);
+                    }
+                    return LoadingScreen().showLoadingWidget();
+                  })
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            BlocBuilder<StaffMemberBloc, StaffMemberState>(
-                builder: (context, state) {
-              if (state is StaffMemberLoading) {
-                return LoadingScreen().showLoadingWidget();
-              } else if (state is StaffMemberError) {
-                return Text(state.errorMessage);
-              } else if (state is StaffMemberLoaded) {
-                dataSourceAsync = state.staffDataSourceAsync;
-                StaffDataSourceAsync? staffDataSourceAsync =
-                    state.staffDataSourceAsync;
-
-                return _buildStaffMemberTable(staffDataSourceAsync);
-              }
-              return LoadingScreen().showLoadingWidget();
-            })
-          ],
+          ),
         ),
       ),
     );
@@ -192,18 +214,9 @@ class _StaffMemberScreenState extends State<StaffMemberScreen> {
       staffDataSourceAsync: staffDataSourceAsync,
       onPageChanged: (rowIndex) {
         int page = (rowIndex / _rowsPerPage).round();
-        // _bloc.add(CategoriesPageChanged(
-        //     page: page, limit: _rowsPerPage, context: context));
       },
       onRowsPerPageChanged: (value) {
         _rowsPerPage = value!;
-        // _bloc.add(
-        //   CategoriesPageChanged(
-        //     page: 1,
-        //     limit: value,
-        //     context: context,
-        //   ),
-        // );
       },
       rowsPerPage: _rowsPerPage,
       sortAscending: sortAscending,

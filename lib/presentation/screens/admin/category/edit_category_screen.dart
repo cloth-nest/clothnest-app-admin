@@ -9,6 +9,7 @@ import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
 import 'package:grocery/presentation/screens/admin/category/add_category_screen.dart';
 import 'package:grocery/presentation/screens/admin/category/components/categories_table.dart';
+import 'package:grocery/presentation/screens/admin/product/components/products_table.dart';
 import 'package:grocery/presentation/screens/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart';
 import 'package:grocery/presentation/services/admin/edit_category_bloc/edit_category_bloc.dart';
 import 'package:grocery/presentation/utils/functions.dart';
@@ -226,49 +227,130 @@ class _EditCategoryScreenState extends State<EditCategoryScreen>
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          BlocSelector<EditCategoryBloc, EditCategoryState,
-                              CategoryDataSourceAsync?>(selector: (state) {
+                          BlocBuilder<EditCategoryBloc, EditCategoryState>(
+                              builder: (context, state) {
                             if (state is EditCategoryLoaded) {
-                              return state.categoryDataSource;
-                            }
-                          }, builder: (context, categoryDataSource) {
-                            if (categoryDataSource != null) {
-                              return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'All Subcategories',
-                                        style: AppStyles.semibold,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () => handleAddCategory(
-                                            widget.category.id),
-                                        child: Text(
-                                          'Create subcategory',
-                                          style: AppStyles.medium.copyWith(
-                                            color: AppColors.primary,
+                              if (state.categoryDataSource != null) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'All Subcategories',
+                                          style: AppStyles.semibold,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () => handleAddCategory(
+                                              widget.category.id),
+                                          child: Text(
+                                            'Create subcategory',
+                                            style: AppStyles.medium.copyWith(
+                                              color: AppColors.primary,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                  CategoriesTable(
-                                    controller: _controller,
-                                    columns: _columns,
-                                    categoryDataSource: categoryDataSource,
-                                    onPageChanged: (rowIndex) {},
-                                    onRowsPerPageChanged: (value) {},
-                                  ),
-                                ],
-                              );
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    CategoriesTable(
+                                      controller: _controller,
+                                      columns: _columns,
+                                      categoryDataSource:
+                                          state.categoryDataSource,
+                                      onPageChanged: (rowIndex) {},
+                                      onRowsPerPageChanged: (value) {},
+                                    ),
+                                  ],
+                                );
+                              }
                             }
+
                             return const SizedBox();
                           }),
-                          const SizedBox.shrink(),
+                          BlocBuilder<EditCategoryBloc, EditCategoryState>(
+                              builder: (context, state) {
+                            if (state is EditCategoryLoaded) {
+                              if (state.productDataSourceAsync != null) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'All Products',
+                                          style: AppStyles.semibold,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () => handleAddCategory(
+                                              widget.category.id),
+                                          child: Text(
+                                            'Create products',
+                                            style: AppStyles.medium.copyWith(
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    ProductsTable(
+                                      controller: _controller,
+                                      columns: [
+                                        DataColumn(
+                                          label: const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text('Product'),
+                                          ),
+                                          onSort: (columnIndex, ascending) =>
+                                              () {
+                                            setState(() {});
+                                          },
+                                        ),
+                                        DataColumn(
+                                          label: const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'Type',
+                                            ),
+                                          ),
+                                          onSort: (columnIndex, ascending) =>
+                                              () {
+                                            setState(() {});
+                                          },
+                                        ),
+                                        DataColumn(
+                                          label: const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text('Description'),
+                                          ),
+                                          onSort: (columnIndex, ascending) =>
+                                              () {
+                                            setState(() {});
+                                          },
+                                        ),
+                                        const DataColumn2(
+                                          label: SizedBox(
+                                            width: 50,
+                                          ),
+                                          size: ColumnSize.S,
+                                          fixedWidth: 40,
+                                        ),
+                                      ],
+                                      productDataSource:
+                                          state.productDataSourceAsync,
+                                      onPageChanged: (rowIndex) {},
+                                      onRowsPerPageChanged: (value) {},
+                                    ),
+                                  ],
+                                );
+                              }
+                            }
+
+                            return const SizedBox();
+                          }),
                         ],
                       ),
                     )
