@@ -1,4 +1,9 @@
 # Clothnest Admin App
+## Members
+- Mai Phạm Quốc Hưng - MSSV: 20521366
+- Nguyễn Thái Tuấn - MSSV: 20522122​
+- Phạm Trương Hải Đoàn - MSSV: 20520046
+
 ## How to run
 B1. Clone repo:
 ```bash
