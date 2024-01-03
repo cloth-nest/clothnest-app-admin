@@ -1,4 +1,4 @@
-**Clothnest Admin App**
+# Clothnest Admin App
 ## How to run
 B1. Clone repo:
 ```bash
