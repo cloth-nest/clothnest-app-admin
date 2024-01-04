@@ -27,23 +27,25 @@ class ItemTagOrder extends StatelessWidget {
 
   Color convertToTextColor(String orderStatus) {
     switch (orderStatus) {
-      case 'Finished':
+      case 'DELIVERED':
         return const Color(0xFF08C25E);
-      case 'Cancelled':
-        return const Color(0xFFFF3030);
-      default:
+      case 'ON_PROCESS':
+      case 'WAIT_FOR_PAYMENT':
         return const Color(0xFF3086FF);
+      default:
+        return const Color(0xFFFF3030);
     }
   }
 
   Color convertToBackgroundColor(String orderStatus) {
     switch (orderStatus) {
-      case 'Finished':
+      case 'DELIVERED':
         return const Color(0xFFEDFFE5);
-      case 'Cancelled':
-        return const Color(0xFFFFE5E5);
-      default:
+      case 'WAIT_FOR_PAYMENT':
+      case 'ON_PROCESS':
         return const Color(0xFFE5F2FF);
+      default:
+        return const Color(0xFFFFE5E5);
     }
   }
 }

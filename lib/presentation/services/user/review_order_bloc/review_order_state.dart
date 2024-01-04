@@ -7,7 +7,11 @@ abstract class ReviewOrderState extends Equatable {
   List<Object> get props => [];
 }
 
-class ReviewOrderInitial extends ReviewOrderState {}
+class ReviewOrderInitial extends ReviewOrderState {
+  final List<Comment> comments;
+
+  const ReviewOrderInitial({required this.comments});
+}
 
 class ReviewOrderLoading extends ReviewOrderState {}
 

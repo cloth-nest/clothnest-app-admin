@@ -60,6 +60,34 @@ class CategoryRepository extends IServiceAPI {
     }
   }
 
+  Future<CategoriesData?> getSecondCategories(
+      {int page = 1, int limit = 10, int? parentId}) async {
+    var response;
+
+    try {
+      response = await apiServices.get(
+        '${urlGetCategories}level=2&page=1&limit=5',
+        _appData.headers,
+      );
+      BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      if (baseResponse.message == 'ForbiddenError') {
+        throw baseResponse.message.toString();
+      }
+
+      if (baseResponse.data == null) return null;
+
+      CategoriesData categoriesData = CategoriesData.fromMap(baseResponse.data);
+
+      return categoriesData;
+    } catch (e) {
+      log("error get categories: $e");
+      if (e == 'ForbiddenError') {
+        rethrow;
+      }
+    }
+  }
+
   Future<Category> addCategory(String name, File? file, int? parentId) async {
     var response;
     _appData.setContentTypeForFormData('multipart/form-data');

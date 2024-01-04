@@ -7,6 +7,7 @@ import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/images.dart';
 import 'package:grocery/presentation/res/style.dart';
+import 'package:grocery/presentation/screens/admin/product/product_review_screen.dart';
 import 'package:grocery/presentation/services/bloc/detail_product_bloc.dart';
 import 'package:grocery/presentation/widgets/text_field_input.dart';
 
@@ -99,6 +100,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       TextFieldInput(
                         hintText: 'Description',
                         controller: descriptionController,
+                      ),
+                      const SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => ProductReviewScreen(
+                                  idProduct: widget.product.id)));
+                        },
+                        child: Text(
+                          'See reviews',
+                          style: AppStyles.semibold.copyWith(
+                            decoration: TextDecoration.underline,
+                            decorationStyle: TextDecorationStyle.dashed,
+                            color: Colors.transparent,
+                            decorationColor: Colors.black,
+                            shadows: [
+                              const Shadow(
+                                  color: Colors.black, offset: Offset(0, -5))
+                            ],
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Text(

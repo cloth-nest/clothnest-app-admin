@@ -108,7 +108,13 @@ class OrderDetailModel {
                   (x) => OrderDetail.fromMap(x as Map<String, dynamic>),
                 ),
               ),
-        shippingFee: map['shippingFee'] * 1.0,
-        vatFee: (map['total'] * 1.0 - map['shippingFee'] * 1.0) / 1.08);
+        shippingFee:
+            map['shippingFee'] != null ? map['shippingFee'] * 1.0 : 0.0,
+        vatFee: map['shippingFee'] == null
+            ? 0.0
+            : (map['total'] * 1.0 - map['shippingFee'] != null
+                    ? map['shippingFee'] * 1.0
+                    : 0.0 * 1.0) /
+                1.08);
   }
 }

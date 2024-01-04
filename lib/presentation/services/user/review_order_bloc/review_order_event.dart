@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'review_order_bloc.dart';
 
 abstract class ReviewOrderEvent extends Equatable {
@@ -5,6 +6,13 @@ abstract class ReviewOrderEvent extends Equatable {
 
   @override
   List<Object> get props => [];
+}
+
+class ReviewStarted extends ReviewOrderEvent {
+  final int idProduct;
+  ReviewStarted({
+    required this.idProduct,
+  });
 }
 
 class ReviewSubmitted extends ReviewOrderEvent {

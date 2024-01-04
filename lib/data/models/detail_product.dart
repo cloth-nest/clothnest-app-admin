@@ -49,8 +49,12 @@ class DetailProduct {
       productType:
           ProductType.fromMap(map['productType'] as Map<String, dynamic>),
       selected: map['selected'] != null ? map['selected'] as bool : null,
-      variantId: map['productVariants'][0]['id'] ?? -1,
-      price: map['productVariants'][0]['price'] * 1.0 ?? 1.0,
+      variantId: (map['productVariants'] as List).isEmpty
+          ? 1
+          : map['productVariants'][0]['id'] ?? -1,
+      price: (map['productVariants'] as List).isEmpty
+          ? 0.0
+          : map['productVariants'][0]['price'] * 1.0 ?? 1.0,
     );
   }
 

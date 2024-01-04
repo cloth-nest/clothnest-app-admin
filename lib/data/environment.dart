@@ -1,5 +1,5 @@
 //String publicURL = 'https://sumitomoapi-test.azurewebsites.net/';
-String localURL = 'http://192.168.1.7:3000/'; // emulator
+String localURL = 'http://172.20.10.5:3000/'; // emulator
 //String localURL = 'http://192.168.51.87:8080/'; // real device
 String accessTokenTest =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMjEyMkBnbS51aXQuZWR1LnZuIiwicm9sZSI6IkFkbWluIn0sImlhdCI6MTY4MzQ1MDAyMCwiZXhwIjoxNjgzNTM2NDIwfQ.QJGAiUi5bkhvtHfnO7Jy6EH9wjqIbxfc3dPDuPiRKKM";

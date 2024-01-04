@@ -16,10 +16,6 @@ class InfoCard extends StatelessWidget {
         ),
       ),
       title: Text(
-        'Mai Hung',
-        style: AppStyles.medium,
-      ),
-      subtitle: Text(
         'Admin',
         style: AppStyles.regular,
       ),

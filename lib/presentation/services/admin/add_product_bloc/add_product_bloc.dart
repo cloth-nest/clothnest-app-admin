@@ -50,7 +50,7 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
 
     try {
       CategoriesData? categoriesData =
-          await categoryRepository.getCategories(page: 1, limit: 0);
+          await categoryRepository.getSecondCategories(page: 1, limit: 0);
       categories = categoriesData!.categories;
       List<ProductType>? results = await productTypeRepository
           .getAllProductAttributes(productTypeId: event.productTypeId);

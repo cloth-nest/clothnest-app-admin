@@ -145,7 +145,7 @@ class _AddDetailProductScreenState extends State<AddDetailProductScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Variant Name',
+                      'Price',
                       style: AppStyles.medium,
                     ),
                     const SizedBox(height: 10),

@@ -97,7 +97,6 @@ class FirebaseService {
       // TODO: handle the received notifications
       // For handling the received notifications
       FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-        log(message.data['title']);
         await showNotification(message);
       });
     } else {
