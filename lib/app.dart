@@ -18,6 +18,7 @@ import 'package:grocery/data/repository/user_repository.dart';
 import 'package:grocery/data/repository/warehouse_repository.dart';
 import 'package:grocery/data/repository/zalo_pay_repository.dart';
 import 'package:grocery/presentation/res/colors.dart';
+import 'package:grocery/presentation/screens/authentication/login_screen.dart';
 import 'package:grocery/presentation/screens/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart'
     as user;
 import 'package:grocery/presentation/screens/onboarding/splash_screen.dart';
@@ -328,7 +329,7 @@ class _AppState extends State<App> {
                 listener: (context, state) {},
                 builder: (context, state) {
                   if (state is AuthenticatonUnAuthorized) {
-                    return const SplashScreen();
+                    return const LoginScreen();
                   } else if (state is AuthenticationAuthorized) {
                     if (state.role == "Admin") {
                       return const user.BottomNavigationBarScreen();
