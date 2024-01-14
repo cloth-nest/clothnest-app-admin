@@ -62,6 +62,12 @@ class _AttributesScreenState extends State<AttributesScreen> {
           });
         },
       ),
+      DataColumn2(
+        size: ColumnSize.S,
+        fixedWidth: 50,
+        label: const SizedBox.shrink(),
+        onSort: (columnIndex, ascending) {},
+      ),
     ];
   }
 
@@ -91,6 +97,15 @@ class _AttributesScreenState extends State<AttributesScreen> {
               showSnackBar(
                 context,
                 'Add product attribute successfully',
+                const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+              );
+            } else if (state.isDeleted != null) {
+              showSnackBar(
+                context,
+                'Delete product attribute successfully',
                 const Icon(
                   Icons.check,
                   color: Colors.white,
@@ -155,9 +170,7 @@ class _AttributesScreenState extends State<AttributesScreen> {
                           ),
                         );
                       }
-                      return Center(
-                        child: Text(state.errorMessage),
-                      );
+                      return _buildAttributeTable(dataSourceAsync);
                     } else if (state is ProductAttributeLoaded) {
                       dataSourceAsync = state.attributesDataSource;
                       ProductAttributeDataSourceAsync? attributeDataSource =

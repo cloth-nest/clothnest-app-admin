@@ -20,6 +20,7 @@ class StaffMemberBloc extends Bloc<StaffMemberEvent, StaffMemberState> {
   StaffMemberBloc(this.staffMemberRepository) : super(StaffMemberInitital()) {
     on<StaffMemberStarted>(_onStarted);
     on<StaffMemberAdded>(_onAdded);
+    on<StaffMemberUpdated>(_onUpdated);
   }
 
   FutureOr<void> _onStarted(
@@ -61,6 +62,28 @@ class StaffMemberBloc extends Bloc<StaffMemberEvent, StaffMemberState> {
       emit(StaffMemberLoaded(staffsDataSourceAsync, true));
     } catch (e) {
       debugPrint('###error on add staff: $e');
+    }
+  }
+
+  FutureOr<void> _onUpdated(
+      StaffMemberUpdated event, Emitter<StaffMemberState> emit) async {
+    try {
+      emit(StaffMemberLoading());
+
+      await staffMemberRepository.updateGroupPermission(
+        idStaff: event.idStaff,
+        groupPermissionIds: event.groupPermissionIds,
+        isActive: event.isActive,
+      );
+
+      StaffsData? staffsData = await staffMemberRepository.getStaffMemberData();
+      StaffDataSourceAsync staffsDataSourceAsync = StaffDataSourceAsync(
+        staffsData: staffsData!,
+        context: event.context,
+      );
+      emit(StaffMemberLoaded(staffsDataSourceAsync, true));
+    } catch (e) {
+      debugPrint('###error on updatestaff: $e');
     }
   }
 }

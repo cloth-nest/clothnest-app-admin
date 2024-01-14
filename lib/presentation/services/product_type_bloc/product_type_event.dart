@@ -16,10 +16,22 @@ class ProductTypeStarted extends ProductTypeEvent {
 class ProductTypeAdded extends ProductTypeEvent {
   final BuildContext context;
   final String productType;
+  final File sizeChartImage;
 
   const ProductTypeAdded(
     this.context,
     this.productType,
+    this.sizeChartImage,
+  );
+}
+
+class ProductTypeDeleted extends ProductTypeEvent {
+  final BuildContext context;
+  final int idProductType;
+
+  const ProductTypeDeleted(
+    this.context,
+    this.idProductType,
   );
 }
 

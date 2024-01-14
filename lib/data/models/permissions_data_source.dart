@@ -1,7 +1,12 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/group_permission.dart';
 import 'package:grocery/data/models/permissions_data.dart';
+import 'package:grocery/presentation/screens/permission/detail_permission_group_screen.dart';
+import 'package:grocery/presentation/services/bloc/permission_bloc.dart';
+import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
+import 'package:grocery/presentation/utils/functions.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorablePermissionSelections extends RestorableProperty<Set<int>> {
@@ -127,7 +132,26 @@ class PermissionDataSourceAsync extends AsyncDataTableSource {
                     permission.name,
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  final result = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => DetailPermissionGroupScreen(
+                        idGroupPermission: permission.id,
+                      ),
+                    ),
+                  );
+
+                  if (result != null) {
+                    context.read<PermissionBloc>().add(
+                          DetailGroupPermissionUpdated(
+                            context: context,
+                            idGroupPermission: permission.id,
+                            groupPermissionName: result[0],
+                            permissions: result[1],
+                          ),
+                        );
+                  }
+                },
               ),
               DataCell(
                 Align(
@@ -136,7 +160,47 @@ class PermissionDataSourceAsync extends AsyncDataTableSource {
                     permission.members.toString(),
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  final result = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => DetailPermissionGroupScreen(
+                        idGroupPermission: permission.id,
+                      ),
+                    ),
+                  );
+
+                  if (result != null) {
+                    context.read<PermissionBloc>().add(
+                          DetailGroupPermissionUpdated(
+                            context: context,
+                            idGroupPermission: permission.id,
+                            groupPermissionName: result[0],
+                            permissions: result[1],
+                          ),
+                        );
+                  }
+                },
+              ),
+              DataCell(
+                const Row(
+                  children: [
+                    SizedBox(width: 13),
+                    Icon(Icons.delete),
+                  ],
+                ),
+                onTap: () async {
+                  if (permission.members != 0) {
+                    context
+                        .read<PermissionBloc>()
+                        .add(PermissionDeleted(context, permission.id));
+                  } else {
+                    showSnackBar(
+                      context,
+                      'Group permission is using',
+                      const Icon(Icons.error_outline),
+                    );
+                  }
+                },
               ),
             ],
           );

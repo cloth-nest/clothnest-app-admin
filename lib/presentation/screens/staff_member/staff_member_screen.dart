@@ -152,14 +152,16 @@ class _StaffMemberScreenState extends State<StaffMemberScreen> {
                                       .map((e) => e.id)
                                       .toList();
 
-                              _bloc.add(StaffMemberAdded(
-                                firstName,
-                                lastName,
-                                email,
-                                isActive,
-                                groupPermissionIds,
-                                context,
-                              ));
+                              _bloc.add(
+                                StaffMemberAdded(
+                                  firstName,
+                                  lastName,
+                                  email,
+                                  isActive,
+                                  groupPermissionIds,
+                                  context,
+                                ),
+                              );
                             }
                           },
                           child: Text(

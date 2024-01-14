@@ -35,26 +35,6 @@ class ProductTypesTable extends StatelessWidget {
             columnSpacing: 20,
             wrapInCard: true,
             renderEmptyRowsInTheEnd: false,
-
-            /// TODO: add search category
-            // header: Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   mainAxisSize: MainAxisSize.max,
-            //   children: [
-
-            //     // if (kDebugMode && getCurrentRouteOption(context) == custPager)
-            //     //   Row(children: [
-            //     //     OutlinedButton(
-            //     //         onPressed: () => _controller.goToPageWithRow(25),
-            //     //         child: const Text('Go to row 25')),
-            //     //     OutlinedButton(
-            //     //         onPressed: () => _controller.goToRow(5),
-            //     //         child: const Text('Go to row 5'))
-            //     //   ]),
-            //     // if (getCurrentRouteOption(context) == custPager)
-            //     //   PageNumber(controller: _controller)
-            //   ],
-            // ),
             rowsPerPage: rowsPerPage,
             minWidth: 600,
             fit: FlexFit.loose,
@@ -77,13 +57,6 @@ class ProductTypesTable extends StatelessWidget {
             sortAscending: sortAscending,
             sortArrowIcon: Icons.keyboard_arrow_up,
             sortArrowAnimationDuration: const Duration(milliseconds: 0),
-            // onSelectAll: (select) => select != null && select
-            //     ? (getCurrentRouteOption(context) != selectAllPage
-            //         ? _dessertsDataSource!.selectAll()
-            //         : _dessertsDataSource!.selectAllOnThePage())
-            //     : (getCurrentRouteOption(context) != selectAllPage
-            //         ? _dessertsDataSource!.deselectAll()
-            //         : _dessertsDataSource!.deselectAllOnThePage()),
             controller: controller,
             columns: columns,
             hidePaginator: false,

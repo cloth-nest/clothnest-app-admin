@@ -83,6 +83,12 @@ class _DetailProductTypeScreenState extends State<DetailProductTypeScreen> {
           });
         },
       ),
+      DataColumn2(
+        size: ColumnSize.S,
+        fixedWidth: 50,
+        label: const SizedBox.shrink(),
+        onSort: (columnIndex, ascending) {},
+      ),
     ];
   }
 
@@ -172,17 +178,23 @@ class _DetailProductTypeScreenState extends State<DetailProductTypeScreen> {
                   _buildDivider(),
                   const SizedBox(height: 10),
                   BlocBuilder<DetailProductTypeBloc, DetailProductTypeState>(
-                      builder: (context, state) {
-                    if (state is DetailProductTypeLoading) {
-                      return LoadingScreen().showLoadingWidget();
-                    } else if (state is DetailProductTypeInitial) {
-                      return _buildProductAttributesTable(
+                    builder: (context, state) {
+                      if (state is DetailProductTypeLoading) {
+                        return LoadingScreen().showLoadingWidget();
+                      } else if (state is DetailProductTypeInitial) {
+                        return _buildProductAttributesTable(
                           ProductTypeDataSourceAsync2(
-                              productTypes: state.productAttributes,
-                              context: context));
-                    }
-                    return LoadingScreen().showLoadingWidget();
-                  }),
+                            productTypes: state.productAttributes,
+                            context: context,
+                            idProductType: widget.productType.id,
+                            attributeType: 'PRODUCT_ATTRIBUTE',
+                          ),
+                          'VARIANT_ATTRIBUTE',
+                        );
+                      }
+                      return LoadingScreen().showLoadingWidget();
+                    },
+                  ),
                   const SizedBox(height: 30),
                   Row(
                     children: [
@@ -225,9 +237,14 @@ class _DetailProductTypeScreenState extends State<DetailProductTypeScreen> {
                       return LoadingScreen().showLoadingWidget();
                     } else if (state is DetailProductTypeInitial) {
                       return _buildProductAttributesTable(
-                          ProductTypeDataSourceAsync2(
-                              productTypes: state.variantAttributes,
-                              context: context));
+                        ProductTypeDataSourceAsync2(
+                          productTypes: state.variantAttributes,
+                          context: context,
+                          idProductType: widget.productType.id,
+                          attributeType: 'VARIANT_ATTRIBUTE',
+                        ),
+                        'PRODUCT_ATTRIBUTE',
+                      );
                     }
                     return LoadingScreen().showLoadingWidget();
                   }),
@@ -249,7 +266,9 @@ class _DetailProductTypeScreenState extends State<DetailProductTypeScreen> {
   }
 
   _buildProductAttributesTable(
-      ProductTypeDataSourceAsync2? productTypeDataSourceAsync) {
+    ProductTypeDataSourceAsync2? productTypeDataSourceAsync,
+    String attributeType,
+  ) {
     return ProductTypesTable2(
       controller: _controller,
       columns: _columns,
@@ -258,6 +277,7 @@ class _DetailProductTypeScreenState extends State<DetailProductTypeScreen> {
       onRowsPerPageChanged: (value) {},
       rowsPerPage: _rowsPerPage,
       sortAscending: sortAscending,
+      attributeType: attributeType,
     );
   }
 }

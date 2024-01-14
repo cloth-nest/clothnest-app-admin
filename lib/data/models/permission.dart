@@ -26,7 +26,7 @@ class Permission extends Equatable {
     return Permission(
       id: map['id'] as int,
       name: map['name'] as String,
-      groupPermissionsCount: map['groupPermissionsCount'] as int,
+      groupPermissionsCount: map['groupPermissionsCount'] ?? map['members'],
     );
   }
 

@@ -1,7 +1,11 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery/data/models/group_permission.dart';
 import 'package:grocery/data/models/staff.dart';
 import 'package:grocery/data/models/staffs_data.dart';
+import 'package:grocery/presentation/screens/staff_member/components/detail_staff_member_dialog.dart';
+import 'package:grocery/presentation/services/staff_member_bloc/staff_member_bloc.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorableStaffSelections extends RestorableProperty<Set<int>> {
@@ -124,7 +128,30 @@ class StaffDataSourceAsync extends AsyncDataTableSource {
                     '${staff.firstName} ${staff.lastName}',
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (_) => DetailStaffMemberDialog(
+                      idStaff: staff.id,
+                    ),
+                  );
+                  if (result != null) {
+                    bool isActive = result[3];
+                    List<int> groupPermissionIds =
+                        (result[4] as List<GroupPermission>)
+                            .map((e) => e.id)
+                            .toList();
+
+                    context.read<StaffMemberBloc>().add(
+                          StaffMemberUpdated(
+                            staff.id,
+                            isActive,
+                            groupPermissionIds,
+                            context,
+                          ),
+                        );
+                  }
+                },
               ),
               DataCell(
                 Align(

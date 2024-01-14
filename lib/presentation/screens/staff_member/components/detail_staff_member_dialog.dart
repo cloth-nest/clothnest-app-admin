@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/group_permission.dart';
+import 'package:grocery/data/models/staff.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
-import 'package:grocery/presentation/services/bloc/invite_staff_bloc.dart';
+import 'package:grocery/presentation/services/bloc/detail_staff_bloc.dart';
 import 'package:grocery/presentation/widgets/text_field_input.dart';
 
 class DetailStaffMemberDialog extends StatefulWidget {
-  const DetailStaffMemberDialog({super.key});
+  final int idStaff;
+
+  const DetailStaffMemberDialog({
+    super.key,
+    required this.idStaff,
+  });
 
   @override
   State<DetailStaffMemberDialog> createState() =>
@@ -32,22 +38,37 @@ class _DetailStaffMemberDialogState extends State<DetailStaffMemberDialog> {
     emailController.dispose();
   }
 
-  InviteStaffBloc get _bloc => BlocProvider.of<InviteStaffBloc>(context);
+  DetailStaffBloc get _bloc => BlocProvider.of<DetailStaffBloc>(context);
 
   @override
   void initState() {
     super.initState();
-    _bloc.add(InviteStaffInit());
+    _bloc.add(DetailStaffStarted(idStaff: widget.idStaff));
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return BlocListener<InviteStaffBloc, InviteStaffState>(
+    return BlocListener<DetailStaffBloc, DetailStaffState>(
       listener: (context, state) {
-        if (state is InviteStaffInitial) {
+        if (state is DetailStaffInitial) {
+          Staff staff = state.staff;
+
+          selectedGroupPermissions = staff.groupPermissions;
           groupPermissions = state.groupPermissions;
+          lastNameController.text = staff.lastName;
+          firstNameController.text = staff.firstName;
+          emailController.text = staff.email;
+          isActiveUser = staff.isActive;
+          for (var i = 0; i < groupPermissions.length; i++) {
+            if (selectedGroupPermissions.contains(groupPermissions[i])) {
+              groupPermissions[i] =
+                  groupPermissions[i].copyWith(selected: true);
+            }
+          }
+
+          setState(() {});
         }
       },
       child: AlertDialog(
@@ -73,7 +94,7 @@ class _DetailStaffMemberDialogState extends State<DetailStaffMemberDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Invite Staff Member', style: AppStyles.semibold),
+                  Text('Detail Staff Member', style: AppStyles.semibold),
                   const SizedBox(height: 20),
                   Row(
                     children: [
@@ -137,6 +158,7 @@ class _DetailStaffMemberDialogState extends State<DetailStaffMemberDialog> {
                         onChanged: (value) {
                           setState(() {
                             isActiveUser = !isActiveUser;
+                            isActive = true;
                           });
                         },
                       ),
@@ -150,11 +172,11 @@ class _DetailStaffMemberDialogState extends State<DetailStaffMemberDialog> {
                     style: AppStyles.medium,
                   ),
                   const SizedBox(height: 10),
-                  BlocBuilder<InviteStaffBloc, InviteStaffState>(
+                  BlocBuilder<DetailStaffBloc, DetailStaffState>(
                       builder: (context, state) {
-                    if (state is InviteStaffLoading) {
+                    if (state is DetailStaffLoading) {
                       return LoadingScreen().showLoadingWidget();
-                    } else if (state is InviteStaffInitial) {
+                    } else if (state is DetailStaffInitial) {
                       return Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
@@ -219,7 +241,7 @@ class _DetailStaffMemberDialogState extends State<DetailStaffMemberDialog> {
                         ),
                         const SizedBox(width: 10),
                         _buildButton(
-                          title: 'Send invite',
+                          title: 'Update',
                           callback: () {
                             if (isActive) {
                               Navigator.of(context).pop([

@@ -23,7 +23,12 @@ class ProductAttributeError extends ProductAttributeState {
 class ProductAttributeLoaded extends ProductAttributeState {
   final ProductAttributeDataSourceAsync attributesDataSource;
   final bool? isAdded;
-  const ProductAttributeLoaded(this.attributesDataSource, this.isAdded);
+  final bool? isDeleted;
+  const ProductAttributeLoaded(
+    this.attributesDataSource,
+    this.isAdded,
+    this.isDeleted,
+  );
 
   @override
   List<Object> get props => [attributesDataSource];

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -21,6 +22,7 @@ class ProductTypeBloc extends Bloc<ProductTypeEvent, ProductTypeState> {
     on<ProductTypeStarted>(_onStarted);
     on<ProductTypeAdded>(_onAdded);
     on<ProductAttributeUpdated>(_onUpdated);
+    on<ProductTypeDeleted>(_onDeleted);
   }
 
   FutureOr<void> _onStarted(
@@ -46,6 +48,7 @@ class ProductTypeBloc extends Bloc<ProductTypeEvent, ProductTypeState> {
     try {
       await productTypeRepository.addProductType(
         event.productType,
+        event.sizeChartImage,
       );
       ProductTypesData? productTypesData =
           await productTypeRepository.getProductTypeData();
@@ -67,6 +70,26 @@ class ProductTypeBloc extends Bloc<ProductTypeEvent, ProductTypeState> {
         event.attribute,
         event.id,
       );
+    } catch (e) {
+      emit(ProductTypeError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _onDeleted(
+      ProductTypeDeleted event, Emitter<ProductTypeState> emit) async {
+    emit(ProductTypeLoading());
+    try {
+      await productTypeRepository.deleteProductType(
+        event.idProductType,
+      );
+      ProductTypesData? productTypesData =
+          await productTypeRepository.getProductTypeData();
+      ProductTypeDataSourceAsync attributeDataSourceAsync =
+          ProductTypeDataSourceAsync(
+        productTypesData: productTypesData!,
+        context: event.context,
+      );
+      emit(ProductTypeLoaded(attributeDataSourceAsync, true));
     } catch (e) {
       emit(ProductTypeError(e.toString()));
     }

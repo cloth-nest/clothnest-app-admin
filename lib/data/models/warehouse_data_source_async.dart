@@ -1,7 +1,10 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/staff.dart';
 import 'package:grocery/data/models/warehouse.dart';
+import 'package:grocery/presentation/screens/admin/warehouse/components/detail_warehouse_dialog.dart';
+import 'package:grocery/presentation/services/bloc/warehouse_bloc.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorableWarehouseSelections extends RestorableProperty<Set<int>> {
@@ -124,7 +127,25 @@ class WarehouseDataSourceAsync extends AsyncDataTableSource {
                     staff.id.toString(),
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (_) => DetailWarehouseDialog(
+                      controller: TextEditingController(),
+                      warehouse: staff.name,
+                    ),
+                  );
+
+                  if (result != null) {
+                    context.read<WarehouseBloc>().add(
+                          WarehouseUpdated(
+                            context: context,
+                            warehouseName: result,
+                            idWarehouse: staff.id,
+                          ),
+                        );
+                  }
+                },
               ),
               DataCell(
                 Align(
@@ -133,7 +154,39 @@ class WarehouseDataSourceAsync extends AsyncDataTableSource {
                     staff.name,
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (_) => DetailWarehouseDialog(
+                      controller: TextEditingController(),
+                      warehouse: staff.name,
+                    ),
+                  );
+
+                  if (result != null) {
+                    context.read<WarehouseBloc>().add(
+                          WarehouseUpdated(
+                            context: context,
+                            warehouseName: result,
+                            idWarehouse: staff.id,
+                          ),
+                        );
+                  }
+                },
+              ),
+              DataCell(
+                const Row(
+                  children: [
+                    SizedBox(width: 13),
+                    Icon(Icons.delete),
+                  ],
+                ),
+                onTap: () async {
+                  context.read<WarehouseBloc>().add(WarehouseDeleted(
+                        context: context,
+                        idWarehouse: staff.id,
+                      ));
+                },
               ),
             ],
           );

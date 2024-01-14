@@ -1,8 +1,11 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/product_type.dart';
 import 'package:grocery/data/models/product_types_data.dart';
 import 'package:grocery/presentation/screens/product_type/detail_product_type_screen.dart';
+import 'package:grocery/presentation/services/admin/bloc/detail_product_type_bloc.dart';
+import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorableProductTypeSelections extends RestorableProperty<Set<int>> {
@@ -84,8 +87,7 @@ class ProductTypeDataSourceAsync extends AsyncDataTableSource {
       bool ascending) {
     var coef = ascending ? 1 : -1;
 
-    return (ProductType d1, ProductType d2) =>
-        coef * d1.name.compareTo(d2.name);
+    return (ProductType d1, ProductType d2) => coef * d1.id.compareTo(d2.id);
   }
 
   @override
@@ -152,6 +154,19 @@ class ProductTypeDataSourceAsync extends AsyncDataTableSource {
                   );
                 },
               ),
+              DataCell(
+                const Row(
+                  children: [
+                    SizedBox(width: 13),
+                    Icon(Icons.delete),
+                  ],
+                ),
+                onTap: () async {
+                  context
+                      .read<ProductTypeBloc>()
+                      .add(ProductTypeDeleted(context, attribute.id));
+                },
+              ),
             ],
           );
         }).toList());
@@ -163,20 +178,34 @@ class ProductTypeDataSourceAsync extends AsyncDataTableSource {
 class ProductTypeDataSourceAsync2 extends AsyncDataTableSource {
   final List<ProductType> productTypes;
   final BuildContext context;
+  final int idProductType;
+  final String attributeType;
 
   ProductTypeDataSourceAsync2({
     required this.productTypes,
     required this.context,
+    required this.idProductType,
+    required this.attributeType,
   }) {
     debugPrint('ProductTypeDataSourceAsync created');
   }
 
-  ProductTypeDataSourceAsync2.empty(this.productTypes, this.context) {
+  ProductTypeDataSourceAsync2.empty(
+    this.productTypes,
+    this.context,
+    this.idProductType,
+    this.attributeType,
+  ) {
     _empty = true;
     debugPrint('ProductTypeDataSourceAsync.empty created');
   }
 
-  ProductTypeDataSourceAsync2.error(this.productTypes, this.context) {
+  ProductTypeDataSourceAsync2.error(
+    this.productTypes,
+    this.context,
+    this.idProductType,
+    this.attributeType,
+  ) {
     _errorCounter = 0;
     debugPrint('ProductTypeDataSourceAsync.error created');
   }
@@ -197,8 +226,7 @@ class ProductTypeDataSourceAsync2 extends AsyncDataTableSource {
       bool ascending) {
     var coef = ascending ? 1 : -1;
 
-    return (ProductType d1, ProductType d2) =>
-        coef * d1.name.compareTo(d2.name);
+    return (ProductType d1, ProductType d2) => coef * d1.id.compareTo(d2.id);
   }
 
   @override
@@ -247,6 +275,21 @@ class ProductTypeDataSourceAsync2 extends AsyncDataTableSource {
                     attribute.name,
                   ),
                 ),
+              ),
+              DataCell(
+                const Row(
+                  children: [
+                    SizedBox(width: 13),
+                    Icon(Icons.delete),
+                  ],
+                ),
+                onTap: () async {
+                  context.read<DetailProductTypeBloc>().add(AttributeRemoved(
+                        productTypeId: idProductType,
+                        attributeType: attributeType,
+                        productAttributeIds: [attribute.id],
+                      ));
+                },
               ),
             ],
           );

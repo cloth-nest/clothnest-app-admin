@@ -1,27 +1,30 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:grocery/presentation/res/colors.dart';
 import 'package:grocery/presentation/res/style.dart';
-import 'package:grocery/presentation/widgets/item_add_image.dart';
-import 'package:grocery/presentation/widgets/item_image.dart';
 import 'package:grocery/presentation/widgets/text_field_input.dart';
 
-class AddProductTypeDialog extends StatefulWidget {
+class DetailWarehouseDialog extends StatefulWidget {
   final TextEditingController controller;
+  final String warehouse;
 
-  const AddProductTypeDialog({
+  const DetailWarehouseDialog({
     super.key,
     required this.controller,
+    required this.warehouse,
   });
 
   @override
-  State<AddProductTypeDialog> createState() => _AddProductTypeDialogState();
+  State<DetailWarehouseDialog> createState() => _DetailWarehouseDialogState();
 }
 
-class _AddProductTypeDialogState extends State<AddProductTypeDialog> {
+class _DetailWarehouseDialogState extends State<DetailWarehouseDialog> {
   bool isActive = false;
-  File? imageFile;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.text = widget.warehouse;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,59 +47,22 @@ class _AddProductTypeDialogState extends State<AddProductTypeDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Create new product type', style: AppStyles.medium),
+            Text('Detail warehouse', style: AppStyles.medium),
             const SizedBox(height: 20),
             SizedBox(
               width: 500,
               child: TextFieldInput(
                 controller: widget.controller,
-                hintText: 'Product Type Name',
+                hintText: 'Warehouse Name',
                 onChanged: (value) {
                   if (value!.isNotEmpty) {
                     setState(() {
-                      if (imageFile != null &&
-                          widget.controller.text.isNotEmpty) {
-                        isActive = true;
-                      }
+                      isActive = true;
                     });
                   }
                 },
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              'Size Chart Image',
-              style: AppStyles.medium.copyWith(),
-            ),
-            const SizedBox(height: 10),
-            imageFile == null
-                ? ItemAddImage(
-                    callback: (files) {
-                      setState(
-                        () {
-                          imageFile = files[0];
-                          if (imageFile != null &&
-                              widget.controller.text.isNotEmpty) {
-                            isActive = true;
-                          }
-                        },
-                      );
-                    },
-                    index: 0)
-                : SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: ItemImage(
-                      fileImage: imageFile!,
-                      callback: (index) {
-                        setState(
-                          () {
-                            imageFile = null;
-                          },
-                        );
-                      },
-                    ),
-                  ),
             const SizedBox(height: 10),
             SizedBox(
               height: 80,
@@ -114,12 +80,9 @@ class _AddProductTypeDialogState extends State<AddProductTypeDialog> {
                   ),
                   const SizedBox(width: 10),
                   _buildButton(
-                    title: 'Save',
+                    title: 'Update',
                     callback: () {
-                      if (isActive) {
-                        Navigator.of(context)
-                            .pop([widget.controller.text.trim(), imageFile]);
-                      }
+                      Navigator.of(context).pop(widget.controller.text.trim());
                     },
                     color: isActive
                         ? Colors.black

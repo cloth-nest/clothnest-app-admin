@@ -60,6 +60,12 @@ class _PermissionScreenState extends State<PermissionScreen> {
         ),
         onSort: (columnIndex, ascending) {},
       ),
+      DataColumn2(
+        size: ColumnSize.S,
+        fixedWidth: 50,
+        label: const SizedBox.shrink(),
+        onSort: (columnIndex, ascending) {},
+      ),
     ];
   }
 
@@ -140,9 +146,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
                           ),
                         );
                       }
-                      return Center(
-                        child: Text(state.errorMessage),
-                      );
+                      return _buildPermissionTable(dataSourceAsync);
                     } else if (state is PermissionLoaded) {
                       dataSourceAsync = state.permissionDataSourceAsync;
                       PermissionDataSourceAsync? permissionDataSourceAsync =
@@ -162,6 +166,9 @@ class _PermissionScreenState extends State<PermissionScreen> {
   }
 
   _buildPermissionTable(PermissionDataSourceAsync? permissionDataSourceAsync) {
+    if (permissionDataSourceAsync == null) {
+      return const SizedBox.shrink();
+    }
     return PermissionsTable(
       controller: _controller,
       columns: _columns,

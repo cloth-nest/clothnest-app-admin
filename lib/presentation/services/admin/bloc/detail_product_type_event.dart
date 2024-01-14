@@ -25,6 +25,18 @@ class ProductAttributesAdded extends DetailProductTypeEvent {
   });
 }
 
+class AttributeRemoved extends DetailProductTypeEvent {
+  final int productTypeId;
+  final List<int> productAttributeIds;
+  final String attributeType;
+
+  const AttributeRemoved({
+    required this.productTypeId,
+    required this.productAttributeIds,
+    required this.attributeType,
+  });
+}
+
 class VariantAttributesAdded extends DetailProductTypeEvent {
   final int productTypeId;
   final List<Attribute> attributes;

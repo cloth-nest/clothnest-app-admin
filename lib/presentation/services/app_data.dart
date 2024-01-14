@@ -75,6 +75,11 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  resetHeader() {
+    _headers['Content-Type'] = 'application/json';
+    notifyListeners();
+  }
+
   AppData(this.sharedPreferences) {
     getTypeLanguage();
     //getToken();

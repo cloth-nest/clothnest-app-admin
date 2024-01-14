@@ -32,6 +32,23 @@ class StaffMemberAdded extends StaffMemberEvent {
   );
 }
 
+class StaffMemberUpdated extends StaffMemberEvent {
+  // final String firstName;
+  // final String lastName;
+  // final String email;
+  final int idStaff;
+  final bool isActive;
+  final List<int> groupPermissionIds;
+  final BuildContext context;
+
+  const StaffMemberUpdated(
+    this.idStaff,
+    this.isActive,
+    this.groupPermissionIds,
+    this.context,
+  );
+}
+
 class ProductAttributeUpdated extends StaffMemberEvent {
   final BuildContext context;
   final String attribute;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery/data/environment.dart';
 import 'package:grocery/data/interfaces/i_service_api.dart';
 import 'package:grocery/data/models/product_type.dart';
+import 'package:grocery/data/models/staff.dart';
 import 'package:grocery/data/models/staffs_data.dart';
 import 'package:grocery/data/network/base_api_service.dart';
 import 'package:grocery/data/network/network_api_service.dart';
@@ -15,12 +16,7 @@ class StaffMemberRepository extends IServiceAPI {
   final String urlGetStaffMembers = "${localURL}user/staff?page=1&limit=0";
   final String urlInviteStaffMember = "${localURL}user/staff/invite";
   final String urlUpdateGroupPermission = "${localURL}user/staff";
-  final String urlGetCategories = "${localURL}category/admin?";
-  final String urlDeleteCategory = "${localURL}category";
-  final String urlEditCategory = "${localURL}category";
-  final String urlGetOneCategory = "${localURL}category";
-  final String urlUpdateProductAttribute = "${localURL}product/attributes";
-
+  final String urlGetDetailStaff = "${localURL}user/staff";
   StaffMemberRepository(this._appData);
 
   @override
@@ -28,22 +24,21 @@ class StaffMemberRepository extends IServiceAPI {
     return ProductType.fromMap(value);
   }
 
-  Future<BaseResponse> deleteCategory(int idCategory) async {
-    var response;
-
+  Future<Staff?> getStaffDetail({required int idStaff}) async {
     try {
-      response = await apiServices.delete(
-        '$urlDeleteCategory/$idCategory',
-        {},
+      final response = await apiServices.get(
+        '$urlGetDetailStaff/$idStaff',
         _appData.headers,
       );
+
+      final BaseResponse baseResponse = BaseResponse.fromJson(response);
+
+      return Staff.fromMap(baseResponse.data);
     } catch (e) {
-      log("error delete category: $e");
+      debugPrint('##on error get staff detail: $e');
     }
 
-    BaseResponse baseResponse = BaseResponse.fromJson(response);
-
-    return baseResponse;
+    return null;
   }
 
   Future<int> inviteStaffMember({
@@ -86,20 +81,6 @@ class StaffMemberRepository extends IServiceAPI {
       debugPrint('go to here');
     } catch (e) {
       log("error inviteStaffMember: $e");
-    }
-  }
-
-  Future<void> updateProductAttribute(String attribute, int id) async {
-    try {
-      await apiServices.patch(
-        '$urlUpdateProductAttribute/$id',
-        {
-          'productAttributeName': attribute,
-        },
-        _appData.headers,
-      );
-    } catch (e) {
-      log("error updateProductAttribute: $e");
     }
   }
 

@@ -22,3 +22,13 @@ class ProductAttributeAdded extends ProductAttributeEvent {
     this.attribute,
   );
 }
+
+class ProductAttributeDeleted extends ProductAttributeEvent {
+  final BuildContext context;
+  final int idProductAttribute;
+
+  const ProductAttributeDeleted(
+    this.context,
+    this.idProductAttribute,
+  );
+}

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
@@ -48,12 +49,23 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state is LoginFailure) {
           LoadingScreen().hide();
-          showSnackBar(
-            context,
-            state.error,
-            const Icon(
-              Icons.error,
-              color: AppColors.primary,
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => CupertinoAlertDialog(
+              title: Text('Login Failed'),
+              content: Text(
+                  'Can not login. Please enter your email address and password correctly.'),
+              actions: <Widget>[
+                CupertinoButton(
+                  onPressed: () {
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
             ),
           );
         } else if (state is LoginLoading) {

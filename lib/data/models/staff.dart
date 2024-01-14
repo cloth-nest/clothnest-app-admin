@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:grocery/data/models/group_permission.dart';
+
 class Staff {
   final int id;
   final String email;
@@ -6,6 +8,7 @@ class Staff {
   final String lastName;
   final bool isActive;
   final bool? selected;
+  final List<GroupPermission> groupPermissions;
 
   Staff({
     required this.id,
@@ -14,6 +17,7 @@ class Staff {
     required this.lastName,
     required this.isActive,
     this.selected = false,
+    required this.groupPermissions,
   });
 
   Map<String, dynamic> toMap() {
@@ -34,6 +38,11 @@ class Staff {
       firstName: map['firstName'] as String,
       lastName: map['lastName'] as String,
       isActive: map['isActive'] as bool,
+      groupPermissions: map['groupPermissions'] == null
+          ? []
+          : (map['groupPermissions'] as List)
+              .map((e) => GroupPermission.fromMap(e))
+              .toList(),
     );
   }
 }

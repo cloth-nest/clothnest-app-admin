@@ -11,6 +11,7 @@ class ProductTypesTable2 extends StatelessWidget {
   final Function(int) onPageChanged;
   final int rowsPerPage;
   final bool sortAscending;
+  final String attributeType;
 
   const ProductTypesTable2({
     super.key,
@@ -21,6 +22,7 @@ class ProductTypesTable2 extends StatelessWidget {
     required this.onPageChanged,
     required this.rowsPerPage,
     required this.sortAscending,
+    required this.attributeType,
   });
 
   @override
@@ -33,26 +35,6 @@ class ProductTypesTable2 extends StatelessWidget {
         wrapInCard: false,
         renderEmptyRowsInTheEnd: false,
         fit: FlexFit.loose,
-
-        /// TODO: add search category
-        // header: Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   mainAxisSize: MainAxisSize.max,
-        //   children: [
-
-        //     // if (kDebugMode && getCurrentRouteOption(context) == custPager)
-        //     //   Row(children: [
-        //     //     OutlinedButton(
-        //     //         onPressed: () => _controller.goToPageWithRow(25),
-        //     //         child: const Text('Go to row 25')),
-        //     //     OutlinedButton(
-        //     //         onPressed: () => _controller.goToRow(5),
-        //     //         child: const Text('Go to row 5'))
-        //     //   ]),
-        //     // if (getCurrentRouteOption(context) == custPager)
-        //     //   PageNumber(controller: _controller)
-        //   ],
-        // ),
         rowsPerPage: rowsPerPage,
         minWidth: 600,
         border: const TableBorder(

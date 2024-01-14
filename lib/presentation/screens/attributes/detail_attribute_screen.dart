@@ -39,6 +39,7 @@ class _DetailAttributeScreenState extends State<DetailAttributeScreen> {
 
   bool isActive = false;
   String title = '';
+  AttributeValueDataSourceAsync? attributeDataSource;
 
   @override
   void initState() {
@@ -70,11 +71,19 @@ class _DetailAttributeScreenState extends State<DetailAttributeScreen> {
           });
         },
       ),
+      DataColumn2(
+        size: ColumnSize.S,
+        fixedWidth: 50,
+        label: const SizedBox.shrink(),
+        onSort: (columnIndex, ascending) {},
+      ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
     return Scaffold(
       appBar: CustomAppBar(
         title: Row(
@@ -111,79 +120,88 @@ class _DetailAttributeScreenState extends State<DetailAttributeScreen> {
           ],
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-              top: 20,
-              bottom: 20,
-            ),
-            child: Text('General Information', style: AppStyles.medium),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFieldInput(
-              isEnabled: true,
-              hintText: 'Name Attribute',
-              controller: attributeNameController,
-              onChanged: (value) {
-                setState(() {
-                  isActive = true;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _bloc.add(DetailAttributeStarted(context, widget.id));
+        },
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: size.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Attribute Values',
-                  style: AppStyles.semibold,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    top: 20,
+                    bottom: 20,
+                  ),
+                  child: Text('General Information', style: AppStyles.medium),
                 ),
-                GestureDetector(
-                  onTap: () async {
-                    final result = await showDialog(
-                      context: context,
-                      builder: (_) => AddAttributeValueDialog(
-                        controller: TextEditingController(),
-                      ),
-                    );
-                    if (result != null && result != '') {
-                      _bloc.add(
-                          DetailAttributeAdded(context, result, widget.id));
-                    }
-                  },
-                  child: Text(
-                    'Assign value',
-                    style: AppStyles.medium.copyWith(
-                      color: AppColors.primary,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFieldInput(
+                    isEnabled: true,
+                    hintText: 'Name Attribute',
+                    controller: attributeNameController,
+                    onChanged: (value) {
+                      setState(() {
+                        isActive = true;
+                      });
+                    },
                   ),
                 ),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Attribute Values',
+                        style: AppStyles.semibold,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await showDialog(
+                            context: context,
+                            builder: (_) => AddAttributeValueDialog(
+                              controller: TextEditingController(),
+                            ),
+                          );
+                          if (result != null && result != '') {
+                            _bloc.add(DetailAttributeAdded(
+                                context, result, widget.id));
+                          }
+                        },
+                        child: Text(
+                          'Assign value',
+                          style: AppStyles.medium.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                BlocBuilder<DetailAttributeBloc, DetailAttributeState>(
+                    builder: (context, state) {
+                  if (state is DetailAttributeLoading) {
+                    return LoadingScreen().showLoadingWidget();
+                  } else if (state is DetailAttributeError) {
+                    return _buildAttributeValueTable(attributeDataSource);
+                  } else if (state is DetailAttributeLoaded) {
+                    attributeDataSource = state.attributesDataSource;
+
+                    return _buildAttributeValueTable(attributeDataSource);
+                  }
+                  return LoadingScreen().showLoadingWidget();
+                })
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          BlocBuilder<DetailAttributeBloc, DetailAttributeState>(
-              builder: (context, state) {
-            if (state is DetailAttributeLoading) {
-              return LoadingScreen().showLoadingWidget();
-            } else if (state is DetailAttributeError) {
-              return Text(state.errorMessage);
-            } else if (state is DetailAttributeLoaded) {
-              AttributeValueDataSourceAsync? attributeDataSource =
-                  state.attributesDataSource;
-
-              return _buildAttributeValueTable(attributeDataSource);
-            }
-            return LoadingScreen().showLoadingWidget();
-          })
-        ],
+        ),
       ),
     );
   }

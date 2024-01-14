@@ -18,8 +18,31 @@ class WarehouseStarted extends WarehouseEvent {
 class WarehouseAdded extends WarehouseEvent {
   final BuildContext context;
   final String warehouseName;
+
   const WarehouseAdded({
     required this.context,
     required this.warehouseName,
+  });
+}
+
+class WarehouseUpdated extends WarehouseEvent {
+  final BuildContext context;
+  final String warehouseName;
+  final int idWarehouse;
+
+  const WarehouseUpdated({
+    required this.context,
+    required this.warehouseName,
+    required this.idWarehouse,
+  });
+}
+
+class WarehouseDeleted extends WarehouseEvent {
+  final BuildContext context;
+  final int idWarehouse;
+
+  const WarehouseDeleted({
+    required this.context,
+    required this.idWarehouse,
   });
 }

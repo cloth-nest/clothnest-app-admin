@@ -20,6 +20,7 @@ class DetailProductTypeBloc
     on<DetailProductTypeInit>(_onInit);
     on<ProductAttributesAdded>(_onProductAttributesAdded);
     on<VariantAttributesAdded>(_onVariantAttributesAdded);
+    on<AttributeRemoved>(_onRemoved);
   }
 
   FutureOr<void> _onInit(
@@ -71,6 +72,33 @@ class DetailProductTypeBloc
       );
 
       emit(DetailProductTypeAdded());
+    } catch (e) {
+      debugPrint('##error _onVariantAttributesAdded: $e');
+    }
+  }
+
+  FutureOr<void> _onRemoved(
+      AttributeRemoved event, Emitter<DetailProductTypeState> emit) async {
+    emit(DetailProductTypeLoading());
+
+    try {
+      await productTypeRepository.removeAttribute(
+        event.productTypeId,
+        event.attributeType,
+        event.productAttributeIds,
+      );
+
+      List<ProductType>? productAttributes = await productTypeRepository
+          .getAllProductAttributes(productTypeId: event.productTypeId);
+      List<ProductType>? variantAttributes = await productTypeRepository
+          .getAllVariantAttributes(productTypeId: event.productTypeId);
+
+      emit(
+        DetailProductTypeInitial(
+          productAttributes: productAttributes ?? [],
+          variantAttributes: variantAttributes ?? [],
+        ),
+      );
     } catch (e) {
       debugPrint('##error _onVariantAttributesAdded: $e');
     }

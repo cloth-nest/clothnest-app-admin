@@ -1,8 +1,6 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery/data/models/group_permission.dart';
-import 'package:grocery/data/models/staff_data_source.dart';
 import 'package:grocery/data/models/warehouse_data_source_async.dart';
 import 'package:grocery/presentation/helper/loading/loading_screen.dart';
 import 'package:grocery/presentation/res/colors.dart';
@@ -63,6 +61,12 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
             sortAscending = ascending;
           });
         },
+      ),
+      DataColumn2(
+        size: ColumnSize.S,
+        fixedWidth: 50,
+        label: const SizedBox.shrink(),
+        onSort: (columnIndex, ascending) {},
       ),
     ];
   }
@@ -142,11 +146,10 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                     if (state is WarehouseLoading) {
                       return LoadingScreen().showLoadingWidget();
                     } else if (state is WarehouseInitial) {
-                      WarehouseDataSourceAsync? warehouseDataSourceAsync =
-                          WarehouseDataSourceAsync(
-                              warehouses: state.warehouses, context: context);
+                      dataSourceAsync = WarehouseDataSourceAsync(
+                          warehouses: state.warehouses, context: context);
 
-                      return _buildWarehouseTable(warehouseDataSourceAsync);
+                      return _buildWarehouseTable(dataSourceAsync);
                     } else if (state is WarehouseFailure) {
                       if (state.errorMessage == 'ForbiddenError') {
                         return Center(
@@ -156,9 +159,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                           ),
                         );
                       }
-                      return Center(
-                        child: Text(state.errorMessage),
-                      );
+                      return _buildWarehouseTable(dataSourceAsync);
                     }
                     return LoadingScreen().showLoadingWidget();
                   })
@@ -172,6 +173,9 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   }
 
   _buildWarehouseTable(WarehouseDataSourceAsync? warehouseDataSourceAsync) {
+    if (dataSourceAsync == null) {
+      return const SizedBox.shrink();
+    }
     return WarehousesTable(
       controller: _controller,
       columns: _columns,

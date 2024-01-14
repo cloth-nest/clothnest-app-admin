@@ -22,12 +22,14 @@ import 'package:grocery/presentation/screens/authentication/login_screen.dart';
 import 'package:grocery/presentation/screens/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart'
     as user;
 import 'package:grocery/presentation/screens/onboarding/splash_screen.dart';
+import 'package:grocery/presentation/screens/permission/detail_permission_group_screen.dart';
 import 'package:grocery/presentation/services/add_edit_address_bloc/add_edit_address_bloc.dart';
 import 'package:grocery/presentation/services/address_bloc/address_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_category_bloc/add_category_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_edit_coupon_bloc/add_edit_coupon_bloc.dart';
 import 'package:grocery/presentation/services/admin/add_product_bloc/add_product_bloc.dart';
 import 'package:grocery/presentation/services/admin/bloc/add_permission_group_bloc.dart';
+import 'package:grocery/presentation/services/admin/bloc/bloc/detail_group_permission_bloc.dart';
 import 'package:grocery/presentation/services/admin/bloc/import_order_bloc.dart';
 import 'package:grocery/presentation/services/admin/coupon_bloc/coupon_bloc.dart'
     as admin;
@@ -36,6 +38,7 @@ import 'package:grocery/presentation/services/admin/transaction_detail_bloc/tran
 import 'package:grocery/presentation/services/bloc/add_detail_product_bloc.dart';
 import 'package:grocery/presentation/services/bloc/assign_attributes_bloc.dart';
 import 'package:grocery/presentation/services/bloc/detail_product_bloc.dart';
+import 'package:grocery/presentation/services/bloc/detail_staff_bloc.dart';
 import 'package:grocery/presentation/services/bloc/invite_staff_bloc.dart';
 import 'package:grocery/presentation/services/bloc/permission_bloc.dart';
 import 'package:grocery/presentation/services/bloc/warehouse_bloc.dart';
@@ -311,11 +314,22 @@ class _AppState extends State<App> {
                   WarehouseRepository(appData),
                 ),
               ),
+              BlocProvider<DetailStaffBloc>(
+                create: (context) => DetailStaffBloc(
+                  StaffMemberRepository(appData),
+                  PermissionRepository(appData),
+                ),
+              ),
               BlocProvider<ImportOrderBloc>(
                 create: (context) => ImportOrderBloc(
                   WarehouseRepository(appData),
                   ProductRepository(appData),
                   OrderRepository(appData),
+                ),
+              ),
+              BlocProvider<DetailGroupPermissionBloc>(
+                create: (context) => DetailGroupPermissionBloc(
+                  PermissionRepository(appData),
                 ),
               ),
             ],

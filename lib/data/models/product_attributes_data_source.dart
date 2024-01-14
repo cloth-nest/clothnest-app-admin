@@ -86,7 +86,7 @@ class ProductAttributeDataSourceAsync extends AsyncDataTableSource {
   int Function(Attribute, Attribute)? _getComparisonFunction(bool ascending) {
     var coef = ascending ? 1 : -1;
 
-    return (Attribute d1, Attribute d2) => coef * d1.name.compareTo(d2.name);
+    return (Attribute d1, Attribute d2) => coef * d1.id.compareTo(d2.id);
   }
 
   @override
@@ -149,6 +149,19 @@ class ProductAttributeDataSourceAsync extends AsyncDataTableSource {
                   context
                       .read<ProductAttributeBloc>()
                       .add(ProductAttributeStarted(context));
+                },
+              ),
+              DataCell(
+                const Row(
+                  children: [
+                    SizedBox(width: 13),
+                    Icon(Icons.delete),
+                  ],
+                ),
+                onTap: () async {
+                  context
+                      .read<ProductAttributeBloc>()
+                      .add(ProductAttributeDeleted(context, attribute.id));
                 },
               ),
             ],

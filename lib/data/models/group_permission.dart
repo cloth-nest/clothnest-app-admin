@@ -1,15 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class GroupPermission {
+import 'package:equatable/equatable.dart';
+import 'package:grocery/data/models/permission.dart';
+
+class GroupPermission extends Equatable {
   final int id;
   final String name;
   final int members;
   final bool? selected;
+  final List<Permission>? groupPermissions;
 
   GroupPermission({
     required this.id,
     required this.name,
     required this.members,
     this.selected = false,
+    this.groupPermissions,
   });
 
   Map<String, dynamic> toMap() {
@@ -24,7 +29,12 @@ class GroupPermission {
     return GroupPermission(
       id: map['id'] as int,
       name: map['name'] as String,
-      members: map['members'] as int,
+      members: map['members'] ?? 0,
+      groupPermissions: map['groupPermissions'] != null
+          ? (map['groupPermissions'] as List)
+              .map((e) => Permission.fromMap(e))
+              .toList()
+          : null,
     );
   }
 
@@ -41,4 +51,8 @@ class GroupPermission {
       selected: selected ?? this.selected,
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
 }

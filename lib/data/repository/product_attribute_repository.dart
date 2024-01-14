@@ -15,7 +15,7 @@ class ProductAttributeRepository extends IServiceAPI {
   final String urlGetProductAttributes = "${localURL}product/attributes";
   final String urlAddProductAttribute = "${localURL}product/attributes";
   final String urlGetCategories = "${localURL}category/admin?";
-  final String urlDeleteCategory = "${localURL}category";
+  final String urlDeleleteProductAttribute = "${localURL}product/attributes";
   final String urlEditCategory = "${localURL}category";
   final String urlGetOneCategory = "${localURL}category";
 
@@ -26,22 +26,21 @@ class ProductAttributeRepository extends IServiceAPI {
     return Attribute.fromMap(value);
   }
 
-  Future<BaseResponse> deleteCategory(int idCategory) async {
-    var response;
-
+  Future<void> deleteProductAttribute(int idProductAttribute) async {
     try {
-      response = await apiServices.delete(
-        '$urlDeleteCategory/$idCategory',
+      var response = await apiServices.delete(
+        '$urlDeleleteProductAttribute/$idProductAttribute',
         {},
         _appData.headers,
       );
+
+      if (response['error'] != null) {
+        throw response['error']['message'];
+      }
     } catch (e) {
       log("error delete category: $e");
+      rethrow;
     }
-
-    BaseResponse baseResponse = BaseResponse.fromJson(response);
-
-    return baseResponse;
   }
 
   Future<void> addProductAttribute(String attribute) async {

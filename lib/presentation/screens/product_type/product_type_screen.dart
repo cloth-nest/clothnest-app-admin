@@ -1,4 +1,5 @@
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/product_type_data_source.dart';
@@ -9,6 +10,7 @@ import 'package:grocery/presentation/screens/product_type/components/add_product
 import 'package:grocery/presentation/screens/product_type/components/product_types_table.dart';
 import 'package:grocery/presentation/services/product_attribute_bloc/product_attribute_bloc.dart';
 import 'package:grocery/presentation/services/product_type_bloc/product_type_bloc.dart';
+import 'package:grocery/presentation/utils/functions.dart';
 import 'package:grocery/presentation/widgets/custom_app_bar.dart';
 
 class ProductTypeScreen extends StatefulWidget {
@@ -60,6 +62,12 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
             sortAscending = ascending;
           });
         },
+      ),
+      DataColumn2(
+        size: ColumnSize.S,
+        fixedWidth: 50,
+        label: const SizedBox.shrink(),
+        onSort: (columnIndex, ascending) {},
       ),
     ];
   }
@@ -116,7 +124,8 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                               ),
                             );
                             if (result != null) {
-                              _bloc.add(ProductTypeAdded(context, result));
+                              _bloc.add(ProductTypeAdded(
+                                  context, result[0], result[1]));
                             }
                           },
                           child: Text(
@@ -130,31 +139,58 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  BlocBuilder<ProductTypeBloc, ProductTypeState>(
-                      builder: (context, state) {
-                    if (state is ProductTypeLoading) {
-                      return LoadingScreen().showLoadingWidget();
-                    } else if (state is ProductTypeError) {
-                      if (state.errorMessage == 'ForbiddenError') {
-                        return Center(
-                          child: Text(
-                            'You don\'t have permission to see product types',
-                            style: AppStyles.medium.copyWith(color: Colors.red),
-                          ),
-                        );
+                  BlocListener<ProductTypeBloc, ProductTypeState>(
+                    listener: (context, state) {
+                      if (state is ProductTypeError) {
+                        if (state.errorMessage != 'ForbiddenError') {
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => CupertinoAlertDialog(
+                              title: const Text('Product Type Failed'),
+                              content: Text(state.errorMessage),
+                              actions: <Widget>[
+                                CupertinoButton(
+                                  onPressed: () {
+                                    if (Navigator.of(context).canPop()) {
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       }
-                      return Center(
-                        child: Text(state.errorMessage),
-                      );
-                    } else if (state is ProductTypeLoaded) {
-                      dataSourceAsync = state.productTypeDataSourceAsync;
-                      ProductTypeDataSourceAsync? productTypeDataSourceAsync =
-                          state.productTypeDataSourceAsync;
+                    },
+                    child: BlocBuilder<ProductTypeBloc, ProductTypeState>(
+                        builder: (context, state) {
+                      if (state is ProductTypeLoading) {
+                        return LoadingScreen().showLoadingWidget();
+                      } else if (state is ProductTypeError) {
+                        if (state.errorMessage == 'ForbiddenError') {
+                          return Center(
+                            child: Text(
+                              'You don\'t have permission to see product types',
+                              style:
+                                  AppStyles.medium.copyWith(color: Colors.red),
+                            ),
+                          );
+                        }
 
-                      return _buildProductTypeTable(productTypeDataSourceAsync);
-                    }
-                    return LoadingScreen().showLoadingWidget();
-                  })
+                        return _buildProductTypeTable(dataSourceAsync);
+                      } else if (state is ProductTypeLoaded) {
+                        dataSourceAsync = state.productTypeDataSourceAsync;
+                        ProductTypeDataSourceAsync? productTypeDataSourceAsync =
+                            state.productTypeDataSourceAsync;
+
+                        return _buildProductTypeTable(
+                            productTypeDataSourceAsync);
+                      }
+                      return LoadingScreen().showLoadingWidget();
+                    }),
+                  )
                 ],
               ),
             ),

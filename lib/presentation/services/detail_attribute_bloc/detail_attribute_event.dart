@@ -26,6 +26,32 @@ class DetailAttributeAdded extends DetailAttributeEvent {
   );
 }
 
+class DetailAttributeUpdated extends DetailAttributeEvent {
+  final BuildContext context;
+  final String attribute;
+  final int id;
+  final int idProductAttribute;
+
+  const DetailAttributeUpdated(
+    this.context,
+    this.attribute,
+    this.id,
+    this.idProductAttribute,
+  );
+}
+
+class DetailAttributeDeleted extends DetailAttributeEvent {
+  final BuildContext context;
+  final int id;
+  final int idProductAttribute;
+
+  const DetailAttributeDeleted(
+    this.context,
+    this.id,
+    this.idProductAttribute,
+  );
+}
+
 class ProductAttributeUpdated extends DetailAttributeEvent {
   final BuildContext context;
   final String attribute;

@@ -12,12 +12,16 @@ class AttributeValueRepository extends IServiceAPI {
   final BaseApiServices apiServices = NetworkApiService();
   final AppData _appData;
   final String urlGetAttributeValues = "${localURL}product/attributes/values";
+  final String urlDeleteAttributeValues =
+      "${localURL}product/attributes/values";
+
   final String urlAddProductAttribute = "${localURL}product/attributes/values";
   final String urlGetCategories = "${localURL}category/admin?";
   final String urlDeleteCategory = "${localURL}category";
   final String urlEditCategory = "${localURL}category";
   final String urlGetOneCategory = "${localURL}category";
   final String urlUpdateProductAttribute = "${localURL}product/attributes";
+  final String urlUpdateAttribute = "${localURL}product/attributes/values";
 
   AttributeValueRepository(this._appData);
 
@@ -70,6 +74,37 @@ class AttributeValueRepository extends IServiceAPI {
       );
     } catch (e) {
       log("error updateProductAttribute: $e");
+    }
+  }
+
+  Future<void> updateAttributeValue(String attribute, int id) async {
+    try {
+      await apiServices.patch(
+        '$urlUpdateAttribute/$id',
+        {
+          'attributeValue': attribute,
+        },
+        _appData.headers,
+      );
+    } catch (e) {
+      log("error updateProductAttribute: $e");
+    }
+  }
+
+  Future<void> deleteProductAttribute(int id) async {
+    try {
+      final response = await apiServices.delete(
+        '$urlDeleteAttributeValues/$id',
+        {},
+        _appData.headers,
+      );
+
+      if (response['error'] != null) {
+        throw response['error']['message'];
+      }
+    } catch (e) {
+      log("error deleteProductAttribute: $e");
+      rethrow;
     }
   }
 

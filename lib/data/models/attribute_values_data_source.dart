@@ -1,7 +1,11 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery/data/models/attribute_value.dart';
 import 'package:grocery/data/models/attribute_values_data.dart';
+import 'package:grocery/presentation/screens/attributes/components/detail_attribute_value_dialog.dart';
+import 'package:grocery/presentation/services/detail_attribute_bloc/detail_attribute_bloc.dart';
+import 'package:grocery/presentation/services/product_attribute_bloc/product_attribute_bloc.dart';
 
 /// Keeps track of selected rows, feed the data into DesertsDataSource
 class RestorableAttributeValuesSelections extends RestorableProperty<Set<int>> {
@@ -49,20 +53,30 @@ class RestorableAttributeValuesSelections extends RestorableProperty<Set<int>> {
 class AttributeValueDataSourceAsync extends AsyncDataTableSource {
   final AttributeValuesData attributesData;
   final BuildContext context;
+  final int idProductAttribute;
 
   AttributeValueDataSourceAsync({
     required this.attributesData,
     required this.context,
+    required this.idProductAttribute,
   }) {
     debugPrint('AttributeDataSourceAsync created');
   }
 
-  AttributeValueDataSourceAsync.empty(this.attributesData, this.context) {
+  AttributeValueDataSourceAsync.empty(
+    this.attributesData,
+    this.context,
+    this.idProductAttribute,
+  ) {
     _empty = true;
     debugPrint('AttributeDataSourceAsync.empty created');
   }
 
-  AttributeValueDataSourceAsync.error(this.attributesData, this.context) {
+  AttributeValueDataSourceAsync.error(
+    this.attributesData,
+    this.context,
+    this.idProductAttribute,
+  ) {
     _errorCounter = 0;
     debugPrint('AttributeDataSourceAsync.error created');
   }
@@ -110,13 +124,13 @@ class AttributeValueDataSourceAsync extends AsyncDataTableSource {
             },
             cells: [
               DataCell(
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    attribute.id.toString(),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      attribute.id.toString(),
+                    ),
                   ),
-                ),
-              ),
+                  onTap: () async {}),
               DataCell(
                 Align(
                   alignment: Alignment.centerLeft,
@@ -124,7 +138,41 @@ class AttributeValueDataSourceAsync extends AsyncDataTableSource {
                     attribute.value,
                   ),
                 ),
-                onTap: () async {},
+                onTap: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (_) => DetailAttributeValueDialog(
+                      controller: TextEditingController(text: attribute.value),
+                    ),
+                  );
+                  if (result != null && result != '') {
+                    context.read<DetailAttributeBloc>().add(
+                          DetailAttributeUpdated(
+                            context,
+                            result,
+                            attribute.id,
+                            idProductAttribute,
+                          ),
+                        );
+                  }
+                },
+              ),
+              DataCell(
+                const Row(
+                  children: [
+                    SizedBox(width: 13),
+                    Icon(Icons.delete),
+                  ],
+                ),
+                onTap: () async {
+                  context
+                      .read<DetailAttributeBloc>()
+                      .add(DetailAttributeDeleted(
+                        context,
+                        attribute.id,
+                        idProductAttribute,
+                      ));
+                },
               ),
             ],
           );

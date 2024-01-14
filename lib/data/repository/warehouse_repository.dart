@@ -61,4 +61,33 @@ class WarehouseRepository extends IServiceAPI {
       log('error createWarehouses:: $e');
     }
   }
+
+  Future<void> updateWarehouses(
+      {required String warehouseName, required int idWarehouse}) async {
+    try {
+      await apiServices.post(
+        '$urlCreateWarehouses/$idWarehouse',
+        {
+          'warehouseName': warehouseName,
+        },
+        _appData.headers,
+      );
+    } catch (e) {
+      log('error updateWarehouses:: $e');
+    }
+  }
+
+  Future<void> deleteWarehouses({required int idWarehouse}) async {
+    try {
+      final response = await apiServices.delete(
+          '$urlCreateWarehouses/$idWarehouse', {}, _appData.headers);
+
+      if (response['error'] != null) {
+        throw response['error']['message'];
+      }
+    } catch (e) {
+      log('error deleteWarehouses:: $e');
+      rethrow;
+    }
+  }
 }
